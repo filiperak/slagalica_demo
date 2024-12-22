@@ -57,11 +57,13 @@ const handleSocket = (io) => {
                 const game = player.game
                 const otherPlayer = Players.getPlayers(game).find(p => p.id !== socket.id)
                 
+                //OVDE JE PROBLEM POSTO ISKLJUČIŠ OVOG DRUGOG ON SE NEĆE SAM PONOVO KONEKTOVATI!!!!!!!!!!!
                 if(otherPlayer){
                     io.to(player.game).emit("notification",bulidNotification("Your oponent left"))
                     const socketToDisconnect = io.sockets.sockets.get(otherPlayer.id)
                     if(socketToDisconnect){
                         socketToDisconnect.disconnect(true)
+                        socketToDisconnect.connect(true)
                     }
                 }
             }
