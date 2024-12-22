@@ -26,8 +26,9 @@ export class PlayerState{
         return this.players.find(player => player.id === id)
     }
 
-    getPlayers(){
-        return Array.from(new Set(this.players.map(player => player.game)))
+    getPlayers(game){
+        //return Array.from(new Set(this.players.map(player => player.game)))
+        return this.players.filter(player => player.game === game)
     }
 
 }
