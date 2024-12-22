@@ -22,7 +22,7 @@ const handleSocket = (io) => {
             //check if the game exists
             if(prevGame) {
                 socket.leave(prevGame)
-                io.to(prevGame).emit("notification",bulidNotification(`Your (${name}) oponent lest the game`))
+                io.to(prevGame).emit("notification",bulidNotification(`Your (${name}) oponent left the game`))
             }
 
             const player = Players.activatePlayer(socket.id,name,game)
@@ -40,13 +40,32 @@ const handleSocket = (io) => {
                 io.to(player.game).emit("startGame",{
                     //fetch game logic and data and sent to room
                       
-                        game: player.game,
-                        playersInGame: playersInGame
+                    game: player.game,
+                    playersInGame: playersInGame
                 })
             }
         })
 
-        
+        socket.on("disconnect",() => {
+            console.log(socket.id,"DISCONNECTED");
+            
+            const player = Players.getPlayer(socket.id)
+            Players.playerLeaves(socket.id)
+
+            if(player){
+                
+                const game = player.game
+                const otherPlayer = Players.getPlayers(game).find(p => p.id !== socket.id)
+                
+                if(otherPlayer){
+                    io.to(player.game).emit("notification",bulidNotification("Your oponent left"))
+                    const socketToDisconnect = io.sockets.sockets.get(otherPlayer.id)
+                    if(socketToDisconnect){
+                        socketToDisconnect.disconnect(true)
+                    }
+                }
+            }
+        })
         
     })
 }

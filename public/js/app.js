@@ -10,6 +10,7 @@ const randomGame = document.querySelector("#randomGame")
 const gameContainer = document.querySelector("#gameContainer")
 const usernameInp = document.querySelector(".username-inp")
 
+let gameUi
 
 createGame.addEventListener("click",() => {
     let gid = createGameId()
@@ -34,7 +35,11 @@ socket.on("notification",(data) => {
 socket.on("startGame",({game,playersInGame}) => {
     console.log(game,playersInGame);
     
-    const gameUi = new Ui(gameContainer,playersInGame,game)
+    gameUi = new Ui(gameContainer,playersInGame,game)
 
     gameUi.createInfoTab()
+})
+
+socket.on("disconnect",() => {
+    gameUi.removeGameElement()
 })
