@@ -26,7 +26,7 @@ const handleSocket = (io) => {
             }
 
             const player = Players.activatePlayer(socket.id,name,game)
-            console.log(player);
+            console.log("PLAYER:",player);
             
 
             socket.join(player.game)
@@ -34,7 +34,7 @@ const handleSocket = (io) => {
             socket.to(player.game).emit("notification", bulidNotification(`${name} joined the game`))
 
             playersInGame = Players.getPlayers(game)
-            console.log(playersInGame);
+            console.log("players in game:",playersInGame);
             
             if(playersInGame.length === 2){
                 io.to(player.game).emit("startGame",{
@@ -57,13 +57,17 @@ const handleSocket = (io) => {
                 const game = player.game
                 const otherPlayer = Players.getPlayers(game).find(p => p.id !== socket.id)
                 
-                //OVDE JE PROBLEM POSTO ISKLJUČIŠ OVOG DRUGOG ON SE NEĆE SAM PONOVO KONEKTOVATI!!!!!!!!!!!
                 if(otherPlayer){
-                    io.to(player.game).emit("notification",bulidNotification("Your oponent left"))
-                    const socketToDisconnect = io.sockets.sockets.get(otherPlayer.id)
-                    if(socketToDisconnect){
-                        socketToDisconnect.disconnect(true)
-                        socketToDisconnect.connect(true)
+                    //io.to(otherPlayer.id).emit("notification",bulidNotification("Your oponent left"))
+                    io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Your oponent left"))
+                    
+                    //OVDE JE PROBLEM POSTO ISKLJUČIŠ OVOG DRUGOG ON SE NEĆE SAM PONOVO KONEKTOVATI!!!!!!!!!!!
+                    const socketToRemove = io.sockets.sockets.get(otherPlayer.id);
+
+                    if (socketToRemove) {
+                        socketToRemove.leave(game);
+                        console.log(otherPlayer.name , "HAS LEFT");
+    
                     }
                 }
             }
