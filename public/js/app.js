@@ -28,6 +28,17 @@ joinGame.addEventListener("click",() => {
     }
 })
 
+//join random game
+randomGame.addEventListener("click",() => {
+    if(usernameInp.value){
+        socket.emit("joinRandomGame",{name:usernameInp.value})
+    }
+})
+
+
+// move the socket functions to a seperate folder
+
+
 socket.on("notification",(data) => {
     alert(data.text)
 })

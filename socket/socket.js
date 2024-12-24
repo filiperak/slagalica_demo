@@ -1,10 +1,12 @@
 import { PlayerState } from "../services/playerState.js";
 import { bulidNotification } from "../utils/buildNotification.js";
+import { createGameId } from "../utils/createGameId.js";
 
 const handleSocket = (io) => {
 
     //init player state
     const Players = new PlayerState()
+    const waitingPlayers = []
 
     io.on("connection", (socket) => {
         socket.emit(socket.id)
@@ -46,6 +48,27 @@ const handleSocket = (io) => {
             }
         })
 
+        socket.on("joinRandomGame",({name}) => {
+            if(waitingPlayers.length > 0){
+                const opponent = waitingPlayers.shift()
+                const gameId = createGameId()
+                console.log(opponent);
+                
+                [socket,opponent.socket].forEach((p) => {
+                    p.join(gameId) 
+                    io.to(p.id).emit("startGame",{
+                        game: gameId,
+                        playersInGame: [
+                            { id: socket.id, name },
+                            { id: opponent.socket.id, name: opponent.name },
+                        ],
+                    })
+                })
+            }else{
+                waitingPlayers.push({socket,name})
+            }
+        })
+
         socket.on("disconnect",() => {
             console.log(socket.id,"DISCONNECTED");
             
@@ -70,6 +93,11 @@ const handleSocket = (io) => {
     
                     }
                 }
+            }
+            //Remove player if waithing in queue
+            const index = waitingPlayers.findIndex((p) => p.socket.id === socket.id)
+            if(index !== -1){
+                waitingPlayers.splice(index,1)
             }
         })
         
