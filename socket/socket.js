@@ -8,6 +8,7 @@ const handleSocket = (io) => {
     const Players = new PlayerState()
     const waitingPlayers = []
 
+
     io.on("connection", (socket) => {
         socket.emit(socket.id)
         console.log(socket.id);
@@ -52,7 +53,10 @@ const handleSocket = (io) => {
             if(waitingPlayers.length > 0){
                 const opponent = waitingPlayers.shift()
                 const gameId = createGameId()
-                console.log(opponent);
+
+                // DONT DELETE THIS LOG 
+                console.log();  // DONT DELETE THIS LOG 
+                // DONT DELETE THIS LOG 
                 
                 [socket,opponent.socket].forEach((p) => {
                     p.join(gameId) 
@@ -66,10 +70,13 @@ const handleSocket = (io) => {
                 })
             }else{
                 waitingPlayers.push({socket,name})
+                console.log("PLAYER IF WAITHING" ,socket.id,name);
+                
             }
         })
 
         socket.on("disconnect",() => {
+            //dodaj da izbacuje i ljude iz multyplayera 
             console.log(socket.id,"DISCONNECTED");
             
             const player = Players.getPlayer(socket.id)
@@ -88,7 +95,13 @@ const handleSocket = (io) => {
                     const socketToRemove = io.sockets.sockets.get(otherPlayer.id);
 
                     if (socketToRemove) {
+                        console.log(socket.rooms);
+                        
                         socketToRemove.leave(game);
+                        console.log(game);
+                        console.log(socket.rooms);
+
+                        
                         console.log(otherPlayer.name , "HAS LEFT");
     
                     }
