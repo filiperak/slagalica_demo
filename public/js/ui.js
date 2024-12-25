@@ -17,8 +17,10 @@ export class Ui{
         this._element.appendChild(infoTab)
     }
     removeGameElement(){
-        while(this._element.firstChild){
-            this._element.removeChild(this._element.firstChild)
+        if(this._element.firstChild){
+            while(this._element.firstChild){
+                this._element.removeChild(this._element.firstChild)
+            }
         }
     }
 }
