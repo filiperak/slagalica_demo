@@ -18,22 +18,22 @@ createGame.addEventListener("click",() => {
 })
 
 joinGame.addEventListener("click",() => {
-    if(usernameInp.value && gameId.value) {
-        console.log(usernameInp.value);
-        
+    if(usernameInp.value) {
+        const game = gameId.value? gameId.value:null   
+
         socket.emit("enterRoom",{
             name:usernameInp.value,
-            game: gameId.value
+            game: game
         })
     }
 })
 
 //join random game
-randomGame.addEventListener("click",() => {
-    if(usernameInp.value){
-        socket.emit("joinRandomGame",{name:usernameInp.value})
-    }
-})
+// randomGame.addEventListener("click",() => {
+//     if(usernameInp.value){
+//         socket.emit("joinRandomGame",{name:usernameInp.value})
+//     }
+// })
 
 
 // move the socket functions to a seperate folder

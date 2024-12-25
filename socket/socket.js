@@ -6,8 +6,6 @@ const handleSocket = (io) => {
 
     //init player state
     const Players = new PlayerState()
-    const waitingPlayers = []
-
 
     io.on("connection", (socket) => {
         socket.emit(socket.id)
@@ -30,6 +28,28 @@ const handleSocket = (io) => {
 
             const player = Players.activatePlayer(socket.id,name,game)
             console.log("PLAYER:",player);
+            /////////////////////////////
+            if(player.game == null){
+
+                if(!Players.playeersQueue.length){
+                    Players.playeersQueue.push(player)
+                }else{
+                    const opponent = Players.playeersQueue.shift()
+                    console.log(opponent);
+                    
+                    const gameId = createGameId()
+
+                    // DO NOT DELETE THIS LOG 
+                    console.log();  // DO NOT DELETE THIS LOG 
+                    // DO NOT DELETE THIS LOG 
+
+                    [socket,opponent.socket].forEach(p => {
+                        console.log(gameId);
+                        p.game = gameId
+                    })
+                }
+
+            }
             
 
             socket.join(player.game)
@@ -49,31 +69,31 @@ const handleSocket = (io) => {
             }
         })
 
-        socket.on("joinRandomGame",({name}) => {
-            if(waitingPlayers.length > 0){
-                const opponent = waitingPlayers.shift()
-                const gameId = createGameId()
+        // socket.on("joinRandomGame",({name}) => {
+        //     if(waitingPlayers.length > 0){
+        //         const opponent = waitingPlayers.shift()
+        //         const gameId = createGameId()
 
-                // DONT DELETE THIS LOG 
-                console.log();  // DONT DELETE THIS LOG 
-                // DONT DELETE THIS LOG 
+        //         // DONT DELETE THIS LOG 
+        //         console.log();  // DONT DELETE THIS LOG 
+        //         // DONT DELETE THIS LOG 
                 
-                [socket,opponent.socket].forEach((p) => {
-                    p.join(gameId) 
-                    io.to(p.id).emit("startGame",{
-                        game: gameId,
-                        playersInGame: [
-                            { id: socket.id, name },
-                            { id: opponent.socket.id, name: opponent.name },
-                        ],
-                    })
-                })
-            }else{
-                waitingPlayers.push({socket,name})
-                console.log("PLAYER IF WAITHING" ,socket.id,name);
+        //         [socket,opponent.socket].forEach((p) => {
+        //             p.join(gameId) 
+        //             io.to(p.id).emit("startGame",{
+        //                 game: gameId,
+        //                 playersInGame: [
+        //                     { id: socket.id, name },
+        //                     { id: opponent.socket.id, name: opponent.name },
+        //                 ],
+        //             })
+        //         })
+        //     }else{
+        //         waitingPlayers.push({socket,name})
+        //         console.log("PLAYER IF WAITHING" ,socket.id,name);
                 
-            }
-        })
+        //     }
+        // })
 
         socket.on("disconnect",() => {
             //dodaj da izbacuje i ljude iz multyplayera 
@@ -108,10 +128,10 @@ const handleSocket = (io) => {
                 }
             }
             //Remove player if waithing in queue
-            const index = waitingPlayers.findIndex((p) => p.socket.id === socket.id)
-            if(index !== -1){
-                waitingPlayers.splice(index,1)
-            }
+            // const index = waitingPlayers.findIndex((p) => p.socket.id === socket.id)
+            // if(index !== -1){
+            //     waitingPlayers.splice(index,1)
+            // }
         })
         
     })
