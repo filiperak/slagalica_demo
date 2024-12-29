@@ -30,27 +30,8 @@ const handleSocket = (io) => {
             }
 
             const player = Players.activatePlayer(socket.id,name,game)
-            /////////////////////////////
-            if(player.game === null){
-                
-                // if(!Players.playersQueue.length){
-                //     Players.playersQueue.push(player)
-                // }else{
-                //     //const opponent = Players.playersQueue.shift()
-                //     //const opponentSocket = io.sockets.sockets.get(opponent.id);
-                //     //console.log("INPORTANT",opponent.id);
-                    
-                //     const gameId = createGameId()
-                    
-                //     // DO NOT DELETE THIS LOG 
-                //     console.log();  // DO NOT DELETE THIS LOG 
-                //     // DO NOT DELETE THIS LOG 
-                    
-                //     // [socket,opponentSocket].forEach(p => {
-                //     //     p.game = gameId
-                //     // })
 
-                // }
+            if(player.game === null){
 
                 if(clientNo === 0){
                     tempGame = createGameId();
@@ -93,13 +74,9 @@ const handleSocket = (io) => {
                 
                 if(otherPlayer){
                     const opponentSocket = io.sockets.sockets.get(otherPlayer.id);
-                    //io.to(otherPlayer.id).emit("notification",bulidNotification("Your oponent left"))
                     if(opponentSocket && opponentSocket.connected){
                         io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Your oponent left"))
-                        // const index = Players.playersQueue.indexOf(otherPlayer)
-                        // if(index !== -1){
-                        //     Players.playersQueue.splice(index,1)
-                        // }
+
                     }
                     if (opponentSocket) {
                         console.log(otherPlayer.name , "HAS LEFT");
