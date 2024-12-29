@@ -6,10 +6,13 @@ const handleSocket = (io) => {
 
     //init player state
     const Players = new PlayerState()
+    let tempGame;
+    let clientNo = 0;
 
     io.on("connection", (socket) => {
         socket.emit(socket.id)
         console.log(socket.id);
+
 
         socket.on("enterRoom",({name,game}) => {
             
@@ -30,24 +33,32 @@ const handleSocket = (io) => {
             /////////////////////////////
             if(player.game === null){
                 
-                if(!Players.playersQueue.length){
-                    Players.playersQueue.push(player)
+                // if(!Players.playersQueue.length){
+                //     Players.playersQueue.push(player)
+                // }else{
+                //     //const opponent = Players.playersQueue.shift()
+                //     //const opponentSocket = io.sockets.sockets.get(opponent.id);
+                //     //console.log("INPORTANT",opponent.id);
+                    
+                //     const gameId = createGameId()
+                    
+                //     // DO NOT DELETE THIS LOG 
+                //     console.log();  // DO NOT DELETE THIS LOG 
+                //     // DO NOT DELETE THIS LOG 
+                    
+                //     // [socket,opponentSocket].forEach(p => {
+                //     //     p.game = gameId
+                //     // })
+
+                // }
+
+                if(clientNo === 0){
+                    tempGame = createGameId();
+                    player.game = tempGame;
+                    clientNo ++;
                 }else{
-                    const opponent = Players.playersQueue.shift()
-                    const opponentSocket = io.sockets.sockets.get(opponent.id);
-                    console.log("INPORTANT",opponent.id);
-                    
-                    const gameId = createGameId()
-                    
-                    // DO NOT DELETE THIS LOG 
-                    console.log();  // DO NOT DELETE THIS LOG 
-                    // DO NOT DELETE THIS LOG 
-                    
-                    [socket,opponentSocket].forEach(p => {
-                        console.log(gameId,"YYYYYYYYY");
-                        p.game = gameId
-                        console.log(p,"YYYYYYYYYYYY");
-                    })
+                    player.game = tempGame;
+                    clientNo = 0;
                 }
             }   
             
@@ -56,7 +67,7 @@ const handleSocket = (io) => {
 
             socket.to(player.game).emit("notification", bulidNotification(`${name} joined the game`))
 
-            playersInGame = Players.getPlayers(game)
+            playersInGame = Players.getPlayers(player.game)
             console.log("players in game:",playersInGame);
             
             if(playersInGame.length === 2){
@@ -85,25 +96,18 @@ const handleSocket = (io) => {
                     //io.to(otherPlayer.id).emit("notification",bulidNotification("Your oponent left"))
                     if(opponentSocket && opponentSocket.connected){
                         io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Your oponent left"))
-                        const index = Players.playersQueue.indexOf(otherPlayer)
-                        if(index !== -1){
-                            Players.playersQueue.splice(index,1)
-                        }
+                        // const index = Players.playersQueue.indexOf(otherPlayer)
+                        // if(index !== -1){
+                        //     Players.playersQueue.splice(index,1)
+                        // }
                     }
-                    //OVDE JE PROBLEM POSTO ISKLJUČIŠ OVOG DRUGOG ON SE NEĆE SAM PONOVO KONEKTOVATI!!!!!!!!!!!
-
                     if (opponentSocket) {
-                        
                         console.log(otherPlayer.name , "HAS LEFT");
-                        console.log(otherPlayer.game,Players.playersQueue)
                         opponentSocket.leave(otherPlayer.game);
-                        console.log(otherPlayer.game,Players.playersQueue)
-        
                     }
                 }
             }
         })
-        
     })
 }
 

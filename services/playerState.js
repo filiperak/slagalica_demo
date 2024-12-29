@@ -1,7 +1,7 @@
 export class PlayerState{
     constructor(){
         this.players = []
-        this.playersQueue = [] 
+        //this.playersQueue = [] 
     }
 
     setPlayers(newPlayers) {
