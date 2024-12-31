@@ -52,9 +52,9 @@ socket.on("startGame",({game,playersInGame}) => {
 })
 
 socket.on("disconnect",() => {
-    gameUi.removeGameElement()
+    gameUi.removeEveryElement()
 })
 
 socket.on("opponentLeft",() => {
-    gameUi.removeGameElement()
+    gameUi.removeEveryElement()
 })
