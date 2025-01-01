@@ -51,10 +51,10 @@ socket.on("startGame",({game,playersInGame}) => {
     gameUi.createInfoTab()
 })
 
-socket.on("disconnect",() => {
-    gameUi.removeEveryElement()
-})
+// socket.on("disconnect",() => {
+//     gameUi.removeEveryElement()
+// })
 
-socket.on("opponentLeft",() => {
-    gameUi.removeEveryElement()
-})
+// socket.on("opponentLeft",() => {
+//     gameUi.removeEveryElement()
+// })

@@ -6,10 +6,10 @@ import { Game } from "../services/game.js";
 const handleSocket = (io) => {
 
     //init player state
-    const Players = new PlayerState()
+    //const Players = new PlayerState()
     let tempGame;
     let clientNo = 0;
-    const games = []
+    const games = {}
 
     io.on("connection", (socket) => {
         socket.emit(socket.id)
@@ -18,78 +18,76 @@ const handleSocket = (io) => {
 
         socket.on("enterRoom",({name,game}) => {
             
-            let playersInGame = Players.getPlayers(game)
-            if(playersInGame.length >= 2){
-                socket.emit("notification",bulidNotification("Room is full"))
-                return
-            } 
-            //leave previous room
-            const prevGame = Players.getPlayer(socket.id)?.game
-            //check if the game exists
-            if(prevGame) {
-                socket.leave(prevGame)
-                io.to(prevGame).emit("notification",bulidNotification(`Your (${name}) oponent left the game`))
+            let playerGame;
+
+            if(game === null){
+                if(clientNo === 0){
+                    tempGame = createGameId()
+                    game = tempGame
+                    clientNo++
+                }else{
+                    game = tempGame
+                    clientNo = 0
+                }
             }
 
-            const player = Players.activatePlayer(socket.id,name,game)
+            if(games[game]){
+                playerGame = games[game];
+            }else{
+                // dodaj logiku kada nema game id
+                playerGame = new Game(game)
+                games[game] = playerGame
+            }
 
-            if(player.game === null){
+            if(playerGame.players.length >= 2){
+                socket.emit("notification",bulidNotification("Room is full"))
+                return
+            }
+            const newPlayer = playerGame.addPlayer(socket.id,name)
+            if(!newPlayer){
+                socket.emit("notification",bulidNotification("Room is full"))
+                return
+            }
 
-                if(clientNo === 0){
-                    tempGame = createGameId();
-                    player.game = tempGame;
-                    clientNo ++;
-                }else{
-                    player.game = tempGame;
-                    clientNo = 0;
-                }
-            }   
+            socket.join(game)
+            console.log(`Player ${name} joined game ${game}`)
+
+            socket.to(game).emit("notification", bulidNotification(`${name} joined the game`))
+
             
-            console.log("PLAYER:",player);
-            socket.join(player.game)
-
-            //proveri sta se ovde desava mozda treba da init game u Palyer state
-
-            games.push({gameId:player.game,game:new Game})
-
-            socket.to(player.game).emit("notification", bulidNotification(`${name} joined the game`))
-
-            playersInGame = Players.getPlayers(player.game)
-            console.log("players in game:",playersInGame);
-            
-            if(playersInGame.length === 2){
-                io.to(player.game).emit("startGame",{
+            if(playerGame.isReady()){
+                io.to(game).emit("startGame",{
                     //fetch game logic and data and sent to room
                       
-                    game: player.game,
-                    playersInGame: playersInGame
+                    game:game,
+                    playersInGame: playerGame.players
                 })
             }
         })
 
         socket.on("disconnect",() => {
-            console.log(socket.id,"DISCONNECTED");
+            // console.log(socket.id,"DISCONNECTED");
             
-            const player = Players.getPlayer(socket.id)
-            Players.playerLeaves(socket.id)
+            // const player = Players.getPlayer(socket.id)
+            // Players.playerLeaves(socket.id)
 
-            if(player){
+            // if(player){
                 
-                const game = player.game
-                const otherPlayer = Players.getPlayers(game).find(p => p.id !== socket.id)
+            //     const game = player.game
+            //     const otherPlayer = Players.getPlayers(game).find(p => p.id !== socket.id)
                 
-                if(otherPlayer){
-                    const opponentSocket = io.sockets.sockets.get(otherPlayer.id);
-                    if(opponentSocket && opponentSocket.connected){
-                        io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Your oponent left"))
+            //     if(otherPlayer){
+            //         const opponentSocket = io.sockets.sockets.get(otherPlayer.id);
+            //         if(opponentSocket && opponentSocket.connected){
+            //             io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Your oponent left"))
 
-                    }
-                    if (opponentSocket) {
-                        console.log(otherPlayer.name , "HAS LEFT");
-                        opponentSocket.leave(otherPlayer.game);
-                    }
-                }
-            }
+            //         }
+            //         if (opponentSocket) {
+            //             console.log(otherPlayer.name , "HAS LEFT");
+            //             opponentSocket.leave(otherPlayer.game);
+            //         }
+            //     }
+            // }
         })
     })
 }
