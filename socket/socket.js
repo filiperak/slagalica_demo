@@ -1,6 +1,7 @@
 import { PlayerState } from "../services/playerState.js";
 import { bulidNotification } from "../utils/buildNotification.js";
 import { createGameId } from "../utils/createGameId.js";
+import { Game } from "../services/game.js";
 
 const handleSocket = (io) => {
 
@@ -8,6 +9,7 @@ const handleSocket = (io) => {
     const Players = new PlayerState()
     let tempGame;
     let clientNo = 0;
+    const games = []
 
     io.on("connection", (socket) => {
         socket.emit(socket.id)
@@ -45,6 +47,10 @@ const handleSocket = (io) => {
             
             console.log("PLAYER:",player);
             socket.join(player.game)
+
+            //proveri sta se ovde desava mozda treba da init game u Palyer state
+
+            games.push({gameId:player.game,game:new Game})
 
             socket.to(player.game).emit("notification", bulidNotification(`${name} joined the game`))
 
