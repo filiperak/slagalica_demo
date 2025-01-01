@@ -1,12 +1,9 @@
-import { PlayerState } from "../services/playerState.js";
 import { bulidNotification } from "../utils/buildNotification.js";
 import { createGameId } from "../utils/createGameId.js";
 import { Game } from "../services/game.js";
 
 const handleSocket = (io) => {
 
-    //init player state
-    //const Players = new PlayerState()
     let tempGame;
     let clientNo = 0;
     const games = {}
@@ -34,7 +31,6 @@ const handleSocket = (io) => {
             if(games[game]){
                 playerGame = games[game];
             }else{
-                // dodaj logiku kada nema game id
                 playerGame = new Game(game)
                 games[game] = playerGame
             }
@@ -54,7 +50,6 @@ const handleSocket = (io) => {
 
             socket.to(game).emit("notification", bulidNotification(`${name} joined the game`))
 
-            
             if(playerGame.isReady()){
                 io.to(game).emit("startGame",{
                     //fetch game logic and data and sent to room
@@ -65,30 +60,28 @@ const handleSocket = (io) => {
             }
         })
 
-        socket.on("disconnect",() => {
-            // console.log(socket.id,"DISCONNECTED");
-            
-            // const player = Players.getPlayer(socket.id)
-            // Players.playerLeaves(socket.id)
-
-            // if(player){
-                
-            //     const game = player.game
-            //     const otherPlayer = Players.getPlayers(game).find(p => p.id !== socket.id)
-                
-            //     if(otherPlayer){
-            //         const opponentSocket = io.sockets.sockets.get(otherPlayer.id);
-            //         if(opponentSocket && opponentSocket.connected){
-            //             io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Your oponent left"))
-
-            //         }
-            //         if (opponentSocket) {
-            //             console.log(otherPlayer.name , "HAS LEFT");
-            //             opponentSocket.leave(otherPlayer.game);
-            //         }
-            //     }
-            // }
-        })
+        socket.on("disconnect", () => {
+            console.log(socket.id, "DISCONNECTED");
+        
+            for (const gameId in games) {
+                const game = games[gameId];
+        
+                if (game.players.some(player => player.id === socket.id)) {
+                    const otherPlayer = game.players.find(p => p.id !== socket.id);
+                    if (otherPlayer) {
+                        console.log(otherPlayer);
+                        
+                        io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Opponent left the game"));
+                    }
+        
+                    delete games[gameId]; 
+                    console.log(`Game ${gameId} deleted`);
+        
+                    break;
+                }
+            }        
+        });
+        
     })
 }
 
