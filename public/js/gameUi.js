@@ -1,4 +1,4 @@
-export class Ui{
+export class GameUi{
     constructor(element,players,gameId){
         this._element = element
         this._players = players

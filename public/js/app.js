@@ -1,5 +1,6 @@
-import { Ui } from "./ui.js"
+import { GameUi } from "./gameUi.js"
 import { createGameId } from "./util/createGameId.js"
+import { setUsername } from "./util/username.js"
 
 const socket = io("ws://localhost:3500")
 
@@ -9,6 +10,10 @@ const joinGame = document.querySelector("#joinGame")
 const randomGame = document.querySelector("#randomGame")
 const gameContainer = document.querySelector("#gameContainer")
 const usernameInp = document.querySelector(".username-inp")
+const popup = document.querySelector(".popup-container")
+
+setUsername(usernameInp)
+
 
 let gameUi
 
@@ -46,7 +51,7 @@ socket.on("notification",(data) => {
 socket.on("startGame",({game,playersInGame}) => {
     console.log(game,playersInGame);
     
-    gameUi = new Ui(gameContainer,playersInGame,game)
+    gameUi = new GameUi(gameContainer,playersInGame,game)
 
     gameUi.createInfoTab()
 })

@@ -1,19 +1,67 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+  font-family: "Rubik", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-style: normal;
 }
-.app-menu{
-    max-width: 600px;
-    border: 1px solid;
-    margin: 0 auto;
-    /* text-align: center; */
-    display: flex;
-    align-items: center;
-    flex-direction: column;
+:root {
+  --border-radious: 4px;
 }
-.menu-button{
-    /* display: block; */
-    margin: 10px;
-    width: 90%;
+body {
+  /* background: radial-gradient(circle, #1a2a44, #0d1b2a); */
+  background-color: #eef0f4;
+  height: 100svh;
+  text-align: center;
+  padding: 3px;
+}
+.app-menu {
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+  margin: 30px auto;
+  gap: 10px;
+}
+.app-menu h3{
+    color: #1a2a44;
+    font-size: 1.8em;
+    font-weight: 600;
+}
+.menu-button {
+  font-size: 20px;
+  background-color: #FFFDF8;
+  color: #1a2a44;
+  padding: 15px;
+  border-radius: 8px;
+  flex-grow: 1;
+  text-align: center;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+  border: none;
+  cursor: pointer;
+}
+.menu-input {
+    color: #432000;
+    background-color: #DCE1EB;
+    border: 0;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 20px;
+    text-align: center;
+    font-family: 'Rubik', sans-serif;
+    margin: 10px 0;
+    outline: none;
+
+}
+.menu-button:hover{
+    background-color: #00ff00 ;
+}
+.logo-img{
+    height: 20%;
+    width: 20%;
+    margin: auto;
 }
