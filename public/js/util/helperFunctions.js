@@ -10,3 +10,7 @@ export const setUsername = (elem) => {
         localStorage.setItem("slagalicaUsername",elem.value)
     })
 }
+
+export const toggleModel = (modalElement) => {
+    modalElement.classList.toggle("hide")
+}
