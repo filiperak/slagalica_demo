@@ -75,8 +75,10 @@ const handleSocket = (io) => {
                         
                         io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Opponent left the game"));
                     }else{
-                        tempGame = null
-                        clientNo = 0
+                        if(gameId === tempGame){
+                            tempGame = null
+                            clientNo = 0
+                        }
                         delete games[gameId]; 
                         console.log(`Game ${gameId} deleted`);
                     }
@@ -101,10 +103,15 @@ const handleSocket = (io) => {
                         
                         io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Opponent left the game"));
                     }else{
+                        //PROBLEM SA OVOM LOGIKOM JE AKO IGRAČ KOJI JE UŠAO U CUSTOM SOBU
+                        //IZAĐE ONDA ĆE SE LOBY (CLIENTNO) VRATITI NA NULU I ONDA CE UVEK 
+                        //BITI VIŠE IGRAČA NEGO STO CE BITI SOBA
+                        if(gameId === tempGame){
+                            tempGame = null
+                            clientNo = 0
+                        }
                         delete games[gameId]; 
                         console.log(`Game ${gameId} deleted`);
-                        tempGame = null
-                        clientNo = 0
                     }
         
                     break;
