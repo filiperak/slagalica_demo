@@ -14,10 +14,14 @@ const popup = document.querySelector(".popup-container")
 const cancleModel = document.querySelector(".loading-model-cancle")
 const loadingModal = document.querySelector(".loading-model")
 
-setUsername(usernameInp)
-cancleModel.addEventListener("click",() => toggleModel(loadingModal))
-
 let gameUi
+
+setUsername(usernameInp)
+cancleModel.addEventListener("click",() => {
+    socket.emit("leaveGame")
+    toggleModel(loadingModal)
+})
+
 
 createGame.addEventListener("click",() => {
     let gid = createGameId()
@@ -26,7 +30,7 @@ createGame.addEventListener("click",() => {
 
 joinGame.addEventListener("click",() => {
     if(usernameInp.value) {
-        const game = gameId.value? gameId.value:null   
+        const game = gameId.value? gameId.value:null 
 
         socket.emit("enterRoom",{
             name:usernameInp.value,

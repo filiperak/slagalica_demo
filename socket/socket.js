@@ -58,6 +58,8 @@ const handleSocket = (io) => {
                     playersInGame: playerGame.players
                 })
             }
+            //test
+            //tempGame = null
         })
 
         socket.on("disconnect", () => {
@@ -72,16 +74,43 @@ const handleSocket = (io) => {
                         console.log(otherPlayer);
                         
                         io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Opponent left the game"));
+                    }else{
+                        tempGame = null
+                        clientNo = 0
+                        delete games[gameId]; 
+                        console.log(`Game ${gameId} deleted`);
                     }
-        
-                    delete games[gameId]; 
-                    console.log(`Game ${gameId} deleted`);
-        
                     break;
                 }
             }        
         });
+
+        socket.on("leaveGame",() => {
+            console.log(("leave game"));
+            
+            for (const gameId in games) {
+                const game = games[gameId];
         
+                if (game.players.some(player => player.id === socket.id)) {
+
+                    game.removePlayer(socket.id)
+                    socket.leave(game)
+                    const otherPlayer = game.players.find(p => p.id !== socket.id);
+                    if (otherPlayer) {
+                        console.log(otherPlayer);
+                        
+                        io.to(otherPlayer.id).emit("opponentLeft",bulidNotification("Opponent left the game"));
+                    }else{
+                        delete games[gameId]; 
+                        console.log(`Game ${gameId} deleted`);
+                        tempGame = null
+                        clientNo = 0
+                    }
+        
+                    break;
+                }
+            } 
+        })
     })
 }
 
