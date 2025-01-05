@@ -4,17 +4,28 @@ export class GameUi{
         this._players = players
         this._gameId = gameId
     }
-    createInfoTab(){
-        const infoTab = document.createElement("div")
+    createGameMenu(){
+        const menu = document.createElement("div")
+        // this._players.forEach(elem => {
+        //     let name = document.createElement("p")
+        //     name.innerText = elem.name
+        //     menu.append(name)
+        // })
+        // const gameName = document.createElement("div")
+        // gameName.innerText = this._gameId
+        // menu.appendChild(gameName) 
+
+        menu.classList.add("game-menu")
+        const header = document.createElement("header")
+        header.classList.add("game-menu--header")
         this._players.forEach(elem => {
             let name = document.createElement("p")
             name.innerText = elem.name
-            infoTab.append(name)
+            header.append(name)
         })
-        const gameName = document.createElement("div")
-        gameName.innerText = this._gameId
-        infoTab.appendChild(gameName) 
-        this._element.appendChild(infoTab)
+        menu.append(header)
+
+        this._element.appendChild(menu)
     }
     removeEveryElement(){
         if(this._element.firstChild){

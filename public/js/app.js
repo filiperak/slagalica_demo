@@ -60,7 +60,7 @@ socket.on("startGame",({game,playersInGame}) => {
     
     gameUi = new GameUi(gameContainer,playersInGame,game)
     toggleModel(loadingModal)
-    gameUi.createInfoTab()
+    gameUi.createGameMenu()
 })
 
 socket.on("disconnect",() => {

@@ -21,7 +21,7 @@ body {
   padding: 3px;
   position: relative;
 }
-.app-menu {
+.app-menu ,.game-menu{
   display: flex;
   flex-direction: column;
   max-width: 700px;
@@ -33,7 +33,7 @@ body {
     font-size: 1.8em;
     font-weight: 600;
 }
-.menu-button {
+.menu-button{
   font-size: 20px;
   background-color: #FFFDF8;
   color: #1a2a44;
@@ -111,4 +111,33 @@ body {
 }
 .loading-modal-message > button:hover{
   background-color: #432000;
+}
+
+.game-menu{
+  z-index: 1;
+  /* background-color: #eef0f4; */
+  /* background-color: #1b3976; */
+  border: #00ff00;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+.game-menu--header{
+  display: flex;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+.game-menu--header p{
+  font-size: 20px;
+  background-color: #FFFDF8;
+  color: #1a2a44;
+  padding: 15px;
+  border-radius: 8px;
+  flex-grow: 1;
+  text-align: center;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+  border: none;
 }
