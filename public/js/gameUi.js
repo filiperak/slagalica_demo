@@ -1,20 +1,12 @@
 export class GameUi{
-    constructor(element,players,gameId){
+    constructor(element,players,gameId,socket){
         this._element = element
         this._players = players
         this._gameId = gameId
+        this._socket = socket
     }
     createGameMenu(){
         const menu = document.createElement("div")
-        // this._players.forEach(elem => {
-        //     let name = document.createElement("p")
-        //     name.innerText = elem.name
-        //     menu.append(name)
-        // })
-        // const gameName = document.createElement("div")
-        // gameName.innerText = this._gameId
-        // menu.appendChild(gameName) 
-
         menu.classList.add("game-menu")
         const header = document.createElement("header")
         header.classList.add("game-menu--header")
@@ -23,10 +15,29 @@ export class GameUi{
             name.innerText = elem.name
             header.append(name)
         })
-        menu.append(header)
-
+        const exitBtn = document.createElement("div")
+        exitBtn.classList.add("game-menu--exit-btn")
+        exitBtn.innerText = "Leave"
+        exitBtn.addEventListener("click",() => {
+            //alert("aaaaa")
+            this._socket.emit("leaveGame")
+            this.removeEveryElement()
+        })
+        
+        menu.append(header,exitBtn)
+        
         this._element.appendChild(menu)
     }
+
+    // exitBtn(){
+    //     const exitBtn = document.createElement("div")
+    //     exitBtn.classList.add("game-menu--exit-btn")
+    //     exitBtn.addEventListener("click",() => {
+    //         socket.emit("leaveGame")
+    //         this.removeEveryElement()
+    //     })
+    // }
+
     removeEveryElement(){
         if(this._element.firstChild){
             while(this._element.firstChild){

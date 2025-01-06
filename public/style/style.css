@@ -4,7 +4,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-
   font-family: "Rubik", serif;
   font-optical-sizing: auto;
   font-weight: 300;
@@ -12,10 +11,17 @@
 }
 :root {
   --border-radious: 8px;
+  --ligth-primary:#FFFDF8;
+  --background-primary:#eef0f4;
+  --dark-primary:#DCE1EB;
+  --dark-blue:#1a2a44;
+  --lime-grean:#00ff00;
+  --dark-brown: #432000;
+  --box-shadow:0px 1px 4px rgba(0, 0, 0, 0.2);
 }
 body {
   /* background: radial-gradient(circle, #1a2a44, #0d1b2a); */
-  background-color: #eef0f4;
+  background-color: var(--background-primary);
   height: 100svh;
   text-align: center;
   padding: 3px;
@@ -29,25 +35,31 @@ body {
   gap: 10px;
 }
 .app-menu h3{
-    color: #1a2a44;
+    color: var(--dark-blue);
     font-size: 1.8em;
     font-weight: 600;
 }
+.a{
+  font-size: 20px;
+  padding: 15px;
+  text-align: center;
+  border: none;
+}
 .menu-button{
   font-size: 20px;
-  background-color: #FFFDF8;
-  color: #1a2a44;
+  background-color: var(--ligth-primary);
+  color: var(--dark-blue);
   padding: 15px;
   border-radius: 8px;
   flex-grow: 1;
   text-align: center;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--box-shadow);
   border: none;
   cursor: pointer;
 }
 .menu-input {
-    color: #432000;
-    background-color: #DCE1EB;
+    color: var(--dark-brown);
+    background-color: var( --dark-primary);
     border: 0;
     padding: 15px;
     border-radius: 8px;
@@ -59,7 +71,7 @@ body {
 
 }
 .menu-button:hover{
-    background-color: #00ff00 ;
+    background-color: var(--lime-grean) ;
 }
 .logo-img{
     height: 20%;
@@ -69,7 +81,7 @@ body {
 .trade-mark{
     margin-top: auto;
     font-size: 0.9rem;
-    color: #DCE1EB;
+    color: var( --dark-primary);
 }
 
 .hide{
@@ -91,14 +103,14 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color:#DCE1EB; 
+  background-color:var( --dark-primary); 
   padding: 50px;
   z-index: 100;
   border-radius: 8px;
   font-size: 1.5rem;
 }
 .loading-modal-message > button {
-  background-color: #1a2a44;
+  background-color: var(--dark-blue);
   border: 0;
   padding: 15px;
   border-radius: 8px;
@@ -106,18 +118,17 @@ body {
   font-family: 'Rubik', sans-serif;
   margin-top: 30px;
   outline: none; 
-  color: #DCE1EB;
+  color: var( --dark-primary);
   cursor: pointer;
 }
 .loading-modal-message > button:hover{
-  background-color: #432000;
+  background-color: var(--dark-brown);
 }
 
 .game-menu{
   z-index: 1;
-  /* background-color: #eef0f4; */
+  background-color: var(--background-primary);
   /* background-color: #1b3976; */
-  border: #00ff00;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -132,12 +143,15 @@ body {
 }
 .game-menu--header p{
   font-size: 20px;
-  background-color: #FFFDF8;
-  color: #1a2a44;
+  background-color: var(--ligth-primary);
+  color: var(--dark-blue);
   padding: 15px;
   border-radius: 8px;
   flex-grow: 1;
   text-align: center;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--box-shadow);
   border: none;
+}
+.game-menu--exit-btn{
+
 }
