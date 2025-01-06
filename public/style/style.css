@@ -22,12 +22,13 @@
 body {
   /* background: radial-gradient(circle, #1a2a44, #0d1b2a); */
   background-color: var(--background-primary);
-  height: 100svh;
+  height: 100dvh;
   text-align: center;
   padding: 3px;
   position: relative;
 }
-.app-menu ,.game-menu{
+.app-menu ,
+.game-menu{
   display: flex;
   flex-direction: column;
   max-width: 700px;
@@ -39,32 +40,31 @@ body {
     font-size: 1.8em;
     font-weight: 600;
 }
-.a{
+.menu-button,
+.menu-input,
+.loading-modal-message > button ,
+.game-menu--header p{
   font-size: 20px;
   padding: 15px;
   text-align: center;
   border: none;
+  border-radius: var(--border-radious);
+}
+.game-menu--header p,
+.menu-button{
+  background-color: var( --ligth-primary);
+  color: var(--dark-blue);
+  box-shadow: var(--box-shadow);
+
 }
 .menu-button{
-  font-size: 20px;
-  background-color: var(--ligth-primary);
-  color: var(--dark-blue);
-  padding: 15px;
-  border-radius: 8px;
   flex-grow: 1;
-  text-align: center;
-  box-shadow: var(--box-shadow);
-  border: none;
   cursor: pointer;
 }
 .menu-input {
     color: var(--dark-brown);
     background-color: var( --dark-primary);
     border: 0;
-    padding: 15px;
-    border-radius: 8px;
-    font-size: 20px;
-    text-align: center;
     font-family: 'Rubik', sans-serif;
     margin: 10px 0;
     outline: none;
@@ -106,15 +106,12 @@ body {
   background-color:var( --dark-primary); 
   padding: 50px;
   z-index: 100;
-  border-radius: 8px;
+  border-radius: var(--border-radious);
   font-size: 1.5rem;
 }
 .loading-modal-message > button {
   background-color: var(--dark-blue);
   border: 0;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
   font-family: 'Rubik', sans-serif;
   margin-top: 30px;
   outline: none; 
@@ -128,7 +125,6 @@ body {
 .game-menu{
   z-index: 1;
   background-color: var(--background-primary);
-  /* background-color: #1b3976; */
   position: absolute;
   top: 0;
   bottom: 0;
@@ -138,20 +134,24 @@ body {
 .game-menu--header{
   display: flex;
   justify-content: space-between;
-
   gap: 10px;
 }
 .game-menu--header p{
-  font-size: 20px;
-  background-color: var(--ligth-primary);
-  color: var(--dark-blue);
-  padding: 15px;
-  border-radius: 8px;
   flex-grow: 1;
-  text-align: center;
-  box-shadow: var(--box-shadow);
   border: none;
 }
 .game-menu--exit-btn{
-
+  margin-top: auto;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 8px;
+  text-align: center;
+  border: none;
+  border-radius: var(--border-radious);
+  background-color: var(--dark-blue);
+  color: var(--dark-primary);
+  cursor: pointer;
+}
+.game-menu--exit-btn:hover{
+  background-color: var(--dark-brown);
 }
