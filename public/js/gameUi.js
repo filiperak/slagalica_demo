@@ -1,3 +1,6 @@
+import { capitalizeAfterSpaces } from "./util/helperFunctions.js"
+
+
 export class GameUi{
     constructor(element,players,gameId,socket){
         this._element = element
@@ -8,7 +11,7 @@ export class GameUi{
     createGameMenu(){
 
         //add request to fetch game data
-        
+
         const menu = document.createElement("div")
         menu.classList.add("game-menu")
         const header = document.createElement("header")
@@ -39,8 +42,9 @@ export class GameUi{
             //console.log(gameClass(game));
             
             gameOptionName.classList.add(gameClass(game),"game-option--container")
-            gameOptionName.innerText = game
+            gameOptionName.innerText = capitalizeAfterSpaces(game)
 
+            //promeni ovu u pravu datu iz socket paketa
 
             const scorePOne = document.createElement("p")
             scorePOne.innerText = "0"
@@ -53,8 +57,7 @@ export class GameUi{
             gameOption.append(gameOptionName,scorePOne,scorePTwo)
 
             gameOptionName.addEventListener("click",() => {
-                this._element.appendChild(this.createGameContainer())
-                alert("game started")
+                this._element.appendChild(this.createGameContainer(game))
             })
 
             gameOptions.appendChild(gameOption)
@@ -89,7 +92,8 @@ export class GameUi{
         return scoreBoard
     }
 
-    createGameContainer(){
+    createGameContainer(game){
+
         const gameContainer = document.createElement("div")
         gameContainer.classList.add("game-container")
 
@@ -98,15 +102,64 @@ export class GameUi{
         backButton.classList.add("game-container--back-btn")
         backButton.innerText = "\u2190 Back"
         gameContainerHeader.appendChild(backButton)
-        gameContainer.appendChild(gameContainerHeader)
+
+        const header = document.createElement("h1")
+        // header.classList.add("game-container--header")
+
+        header.innerText = capitalizeAfterSpaces(game)
+
+
+        gameContainer.append(gameContainerHeader,header)
 
         backButton.addEventListener("click",() => {
-            // this.removeElement(gameContainer)
             this.removeEveryElement()
             this.createGameMenu()
         })
+
+        switch(game){
+            case "slagalica":
+                this.slagalica()
+                break
+            case "moj broj":
+                this.mojBroj()
+                break
+            case "spojnice":
+                this.spojnice()
+                break
+            case "skocko":
+                this.skocko()
+                break
+            case "ko zna zna":
+                this.koZnaZna()
+                break
+            case "asocijacije":
+                this.asocijacije()
+                break
+            default:
+                console.log("game not found")
+        }
+
         return gameContainer
     }
+    slagalica(){
+
+    }
+    mojBroj(){
+
+    }
+    spojnice(){
+
+    }
+    skocko(){
+
+    }
+    koZnaZna(){
+
+    }
+    asocijacije(){
+
+    }
+
 
     removeEveryElement(){
         if(this._element.firstChild){

@@ -28,17 +28,16 @@ body {
   position: relative;
 }
 .app-menu ,
-.game-menu{
+.game-menu,
+.game-container{
   display: flex;
   flex-direction: column;
   max-width: 700px;
   margin: 40px auto;
   gap: 10px;
+  padding: 5px;
 }
-.game-menu{
-  max-width: 704px;
-}
-.app-menu h3{
+.app-menu h3,.game-container h1{
     color: var(--dark-blue);
     font-size: 1.8em;
     font-weight: 600;
@@ -131,7 +130,7 @@ body {
   background-color: var(--dark-brown);
 }
 
-.game-menu{
+.game-menu,.game-container{
   z-index: 1;
   background-color: var(--background-primary);
   position: absolute;
@@ -139,6 +138,9 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
+}
+.game-container{
+  z-index: 2;	
 }
 .game-menu--header{
   display: flex;
@@ -149,7 +151,7 @@ body {
   flex-grow: 1;
   border: none;
 }
-.game-menu--exit-btn{
+.game-menu--exit-btn,.game-container--back-btn{
   margin-top: auto;
   margin-left: auto;
   margin-right: auto;
@@ -162,7 +164,7 @@ body {
   cursor: pointer;
 }
 
-.game-menu--exit-btn:hover{
+.game-menu--exit-btn:hover,.game-container--back-btn:hover{
   background-color: var(--dark-brown);
 }
 .game-options{
@@ -183,7 +185,17 @@ body {
 .game-option--score,.sore-board--player-score{
   min-width: 55px;
 }
-.score-board{
+.game-container{
   /* min-width: 40px;
   min-width: 40px; */
 }
+.game-container > header{
+
+}
+.game-container--back-btn{
+  margin: 0 auto 0 0;
+  max-width: 100px;
+}
+/* .game-container--header{
+  color: var(--dark-blue);
+} */
