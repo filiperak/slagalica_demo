@@ -6,6 +6,9 @@ export class GameUi{
         this._socket = socket
     }
     createGameMenu(){
+
+        //add request to fetch game data
+        
         const menu = document.createElement("div")
         menu.classList.add("game-menu")
         const header = document.createElement("header")
@@ -49,6 +52,11 @@ export class GameUi{
 
             gameOption.append(gameOptionName,scorePOne,scorePTwo)
 
+            gameOptionName.addEventListener("click",() => {
+                this._element.appendChild(this.createGameContainer())
+                alert("game started")
+            })
+
             gameOptions.appendChild(gameOption)
         })
         const scoreBoard = this.createScoreBoard()
@@ -68,7 +76,6 @@ export class GameUi{
         scoreBoard.classList.add("score-board")
         const spacer = document.createElement("div")
         spacer.classList.add("spacer")
-        spacer.innerText = " "
 
         const playerOneScore = document.createElement("p")
         playerOneScore.innerText = "0"
@@ -82,6 +89,25 @@ export class GameUi{
         return scoreBoard
     }
 
+    createGameContainer(){
+        const gameContainer = document.createElement("div")
+        gameContainer.classList.add("game-container")
+
+        const gameContainerHeader = document.createElement("header")
+        const backButton = document.createElement("div")
+        backButton.classList.add("game-container--back-btn")
+        backButton.innerText = "\u2190 Back"
+        gameContainerHeader.appendChild(backButton)
+        gameContainer.appendChild(gameContainerHeader)
+
+        backButton.addEventListener("click",() => {
+            // this.removeElement(gameContainer)
+            this.removeEveryElement()
+            this.createGameMenu()
+        })
+        return gameContainer
+    }
+
     removeEveryElement(){
         if(this._element.firstChild){
             while(this._element.firstChild){
@@ -89,7 +115,7 @@ export class GameUi{
             }
         }
     }
-    removeElement(){
+    removeElement(elem){
         if(elem){
             while(elem.firstChild){
                 elem.removeChild(elem.firstChild)
