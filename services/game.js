@@ -3,6 +3,7 @@ export class Game {
         this.gameId = gameId;
         this.players = [];
         this.gameCompleted = false;
+        //spoji score i player u jedan objekat
         this.score = { 
             player1:{
                 games:{ 
