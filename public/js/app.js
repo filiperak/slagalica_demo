@@ -61,6 +61,8 @@ socket.on("startGame",({game,playersInGame}) => {
     gameUi = new GameUi(gameContainer,playersInGame,game,socket)
     toggleModel(loadingModal)
     gameUi.createGameMenu()
+    console.log(game);
+    
     //gameUi.createGames()
 })
 

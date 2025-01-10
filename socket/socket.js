@@ -54,7 +54,7 @@ const handleSocket = (io) => {
                 io.to(game).emit("startGame",{
                     //fetch game logic and data and sent to room
                       
-                    game:game,
+                    game:game, //ovde treba da se posalje ceo objekat igre game[game], najbitnije score u kojem se nalaze poeni
                     playersInGame: playerGame.players
                 })
             }

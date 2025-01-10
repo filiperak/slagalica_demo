@@ -34,7 +34,7 @@ export class GameUi{
         const gameOptions = document.createElement("div")
         gameOptions.classList.add("game-options")
         games.forEach(game => {
-            const gameOption = document.createElement("gameOption")
+            const gameOption = document.createElement("div")
             gameOption.classList.add("game-option")
 
             const gameOptionName = document.createElement("p")
