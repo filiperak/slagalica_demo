@@ -35,6 +35,9 @@ body {
   margin: 40px auto;
   gap: 10px;
 }
+.game-menu{
+  max-width: 704px;
+}
 .app-menu h3{
     color: var(--dark-blue);
     font-size: 1.8em;
@@ -43,7 +46,10 @@ body {
 .menu-button,
 .menu-input,
 .loading-modal-message > button ,
-.game-menu--header p{
+.game-menu--header p,
+.game-option--container,
+.game-option--score,
+.score-board > p{
   font-size: 20px;
   padding: 15px;
   text-align: center;
@@ -51,11 +57,14 @@ body {
   border-radius: var(--border-radious);
 }
 .game-menu--header p,
-.menu-button{
+.menu-button,
+.game-option--container,
+.game-option--score,
+.sore-board--player-score
+{ /* score board */
   background-color: var( --ligth-primary);
   color: var(--dark-blue);
   box-shadow: var(--box-shadow);
-
 }
 .menu-button{
   flex-grow: 1;
@@ -152,6 +161,29 @@ body {
   color: var(--dark-primary);
   cursor: pointer;
 }
+
 .game-menu--exit-btn:hover{
   background-color: var(--dark-brown);
+}
+.game-options{
+  gap: 10px;
+}
+.game-option,.score-board{
+  display: flex;
+  margin:10px 0;
+  gap: 10px;
+}
+.game-option--container:hover,.geme-option--container:active{
+  background-color: var(--dark-primary);
+}
+.game-option--container,.spacer{
+  cursor: pointer;
+  flex: 1;
+}
+.game-option--score,.sore-board--player-score{
+  min-width: 55px;
+}
+.score-board{
+  /* min-width: 40px;
+  min-width: 40px; */
 }
