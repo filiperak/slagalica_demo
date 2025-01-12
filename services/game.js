@@ -3,31 +3,6 @@ export class Game {
         this.gameId = gameId;
         this.players = [];
         this.gameCompleted = false;
-        //spoji score i player u jedan objekat
-        // this.score = { 
-        //     player1:{
-        //         games:{ 
-        //         slagalica:{opend:false,score:0},
-        //         mojBroj:{opend:false,score:0},
-        //         spojnice:{opend:false,score:0},
-        //         skocko:{opend:false,score:0},
-        //         koZnaZna:{opend:false,score:0},
-        //         asocijacije:{opend:false,score:0}
-        //         },
-        //         total:0
-        //     },
-        //     player2:{
-        //         games:{ 
-        //             slagalica:{opend:false,score:0},
-        //             mojBroj:{opend:false,score:0},
-        //             spojnice:{opend:false,score:0},
-        //             skocko:{opend:false,score:0},
-        //             koZnaZna:{opend:false,score:0},
-        //             asocijacije:{opend:false,score:0}
-        //         },
-        //         total:0
-        //     }
-        // };
     }
 
     addPlayer(id, name) {
@@ -42,7 +17,9 @@ export class Game {
                     koZnaZna:{opend:false,score:0},
                     asocijacije:{opend:false,score:0}
                 },
-                total:0
+                get total() {
+                    return Object.values(this.games).reduce((total, game) => total + game.score, 0);
+                }
             }
             this.players.push({ id, name,score:playerScore });
             return true;
@@ -57,10 +34,6 @@ export class Game {
     getPlayer(id) {
         return this.players.find((player) => player.id === id);
     }
-
-    // switchTurn() {
-    //     this.turn = this.turn === 1 ? 2 : 1;
-    // }
 
     updateScore(playerIndex, points) {
         if (playerIndex === 0) this.score.player1 += points;

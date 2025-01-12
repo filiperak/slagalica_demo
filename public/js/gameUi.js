@@ -6,18 +6,12 @@ export class GameUi{
         this._players = players
         this._gameId = gameId
         this._socket = socket
-    }
-
-    set players(players){
-        this._players = players
         this.reversePlayerIndex()
     }
 
-    get players(){
-        return this._players
-    }
     createGameMenu(){
-
+        console.log(this._players);
+        
         //add request to fetch game data
         this._socket.emit("requestGameData",this._gameId)
         this._socket.on("gameState",data => {
@@ -29,7 +23,7 @@ export class GameUi{
             const header = document.createElement("header")
             header.classList.add("game-menu--header")
 
-            data.players.forEach(elem => {
+            this._players.forEach(elem => {
                 let name = document.createElement("p")
                 name.innerText = elem.name
                 header.append(name)
@@ -97,25 +91,6 @@ export class GameUi{
                     gameOptionScore.innerText = p.score.games[gameKey].score
                     gameOption.append(gameOptionScore)   
                 })
-
-               
-
-
-                // const scorePOne = document.createElement("p")
-                // scorePOne.innerText = "0"
-                // scorePOne.classList.add("game-option--score")
-    
-                // const scorePTwo = document.createElement("p")
-                // scorePTwo.innerText = "80"
-                // scorePTwo.classList.add("game-option--score")
-    
-                // gameOption.append(gameOptionName,scorePOne,scorePTwo)
-                //gameOption.append(gameOptionName,gameOptionScore)
-    
-                // gameOptionName.addEventListener("click",() => {
-                //     this._element.appendChild(this.createGameContainer(game))
-                // })
-    
                 gameOptions.appendChild(gameOption)
             })
             const scoreBoard = this.createScoreBoard()
@@ -137,16 +112,14 @@ export class GameUi{
         scoreBoard.classList.add("score-board")
         const spacer = document.createElement("div")
         spacer.classList.add("spacer")
+        scoreBoard.append(spacer)
 
-        const playerOneScore = document.createElement("p")
-        playerOneScore.innerText = "0"
-        playerOneScore.classList.add("sore-board--player-score")    
-        
-        const playerTwoScore = document.createElement("p")
-        playerTwoScore.innerText = "10"
-        playerTwoScore.classList.add("sore-board--player-score")    
-        
-        scoreBoard.append(spacer,playerOneScore,playerTwoScore)
+        this._players.forEach(p => {
+            const playerScore = document.createElement("p")
+            playerScore.innerText = p.score.total
+            playerScore.classList.add("sore-board--player-score")    
+            scoreBoard.appendChild(playerScore)
+        })   
         return scoreBoard
     }
 
@@ -162,7 +135,6 @@ export class GameUi{
         gameContainerHeader.appendChild(backButton)
 
         const header = document.createElement("h1")
-        // header.classList.add("game-container--header")
 
         header.innerText = capitalizeAfterSpaces(game)
 
@@ -234,10 +206,10 @@ export class GameUi{
         }
     }
     reversePlayerIndex() {
-        if (this._players[0].id !== this._socket.id) {
-            if (this._players[1].id === this._socket.id) {
-                [this._players[0], this._players[1]] = [this._players[1], this._players[0]];
-            }
+        const currentPlayerIndex = this._players.findIndex(player => player.id === this._socket.id);
+        if (currentPlayerIndex !== -1) {
+            const [currentPlayer] = this._players.splice(currentPlayerIndex, 1);
+            this._players.unshift(currentPlayer);
         }
     }
 }
