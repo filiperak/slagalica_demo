@@ -70,4 +70,11 @@ export class Game {
     isReady() {
         return this.players.length === 2;
     }
+    handleOpendGame(gameKey,playerId){
+        this.players.forEach(player => {
+            if(player.id === playerId){
+                player.score.games[gameKey].opend = true
+            }
+        })
+    }
 }
