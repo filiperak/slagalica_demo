@@ -62,6 +62,15 @@ const handleSocket = (io) => {
             //tempGame = null
         })
 
+        socket.on("requestGameData",gameId => {
+            const game = games[gameId]
+
+            if(game){
+                socket.emit("gameState",game)
+            }
+            
+        })
+
         socket.on("disconnect", () => {
             console.log(socket.id, "DISCONNECTED");
         

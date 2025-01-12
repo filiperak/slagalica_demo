@@ -11,65 +11,69 @@ export class GameUi{
     createGameMenu(){
 
         //add request to fetch game data
+        this._socket.emit("requestGameData",this._gameId)
+        this._socket.on("gameState",data => {
 
-        const menu = document.createElement("div")
-        menu.classList.add("game-menu")
-        const header = document.createElement("header")
-        header.classList.add("game-menu--header")
-        this._players.forEach(elem => {
-            let name = document.createElement("p")
-            name.innerText = elem.name
-            header.append(name)
-        })
-        const exitBtn = document.createElement("div")
-        exitBtn.classList.add("game-menu--exit-btn")
-        exitBtn.innerText = "Leave"
-        exitBtn.addEventListener("click",() => {
-            this._socket.emit("leaveGame")
-            this.removeEveryElement()
-        })
-
-        const games = ["slagalica","moj broj","spojnice","skočko","ko zna zna","asocijacije"]
-
-        const gameOptions = document.createElement("div")
-        gameOptions.classList.add("game-options")
-        games.forEach(game => {
-            const gameOption = document.createElement("div")
-            gameOption.classList.add("game-option")
-
-            const gameOptionName = document.createElement("p")
-            const gameClass = (g) => g.trim().replace(/\s+/g, '-')
-            //console.log(gameClass(game));
-            
-            gameOptionName.classList.add(gameClass(game),"game-option--container")
-            gameOptionName.innerText = capitalizeAfterSpaces(game)
-
-            //promeni ovu u pravu datu iz socket paketa
-
-            const scorePOne = document.createElement("p")
-            scorePOne.innerText = "0"
-            scorePOne.classList.add("game-option--score")
-
-            const scorePTwo = document.createElement("p")
-            scorePTwo.innerText = "80"
-            scorePTwo.classList.add("game-option--score")
-
-            gameOption.append(gameOptionName,scorePOne,scorePTwo)
-
-            gameOptionName.addEventListener("click",() => {
-                this._element.appendChild(this.createGameContainer(game))
+            const menu = document.createElement("div")
+            menu.classList.add("game-menu")
+            const header = document.createElement("header")
+            header.classList.add("game-menu--header")
+            this._players.forEach(elem => {
+                let name = document.createElement("p")
+                name.innerText = elem.name
+                header.append(name)
             })
-
-            gameOptions.appendChild(gameOption)
+            const exitBtn = document.createElement("div")
+            exitBtn.classList.add("game-menu--exit-btn")
+            exitBtn.innerText = "Leave"
+            exitBtn.addEventListener("click",() => {
+                this._socket.emit("leaveGame")
+                this.removeEveryElement()
+            })
+    
+            const games = ["slagalica","moj broj","spojnice","skočko","ko zna zna","asocijacije"]
+    
+            const gameOptions = document.createElement("div")
+            gameOptions.classList.add("game-options")
+            games.forEach(game => {
+                const gameOption = document.createElement("div")
+                gameOption.classList.add("game-option")
+    
+                const gameOptionName = document.createElement("p")
+                const gameClass = (g) => g.trim().replace(/\s+/g, '-')
+                //console.log(gameClass(game));
+                
+                gameOptionName.classList.add(gameClass(game),"game-option--container")
+                gameOptionName.innerText = capitalizeAfterSpaces(game)
+    
+                //promeni ovu u pravu datu iz socket paketa
+    
+                const scorePOne = document.createElement("p")
+                scorePOne.innerText = "0"
+                scorePOne.classList.add("game-option--score")
+    
+                const scorePTwo = document.createElement("p")
+                scorePTwo.innerText = "80"
+                scorePTwo.classList.add("game-option--score")
+    
+                gameOption.append(gameOptionName,scorePOne,scorePTwo)
+    
+                gameOptionName.addEventListener("click",() => {
+                    this._element.appendChild(this.createGameContainer(game))
+                })
+    
+                gameOptions.appendChild(gameOption)
+            })
+            const scoreBoard = this.createScoreBoard()
+    
+            menu.appendChild(header)  
+            menu.appendChild(gameOptions) 
+            menu.appendChild(scoreBoard) 
+            menu.appendChild(exitBtn)
+            
+            this._element.appendChild(menu)
         })
-        const scoreBoard = this.createScoreBoard()
 
-        menu.appendChild(header)  
-        menu.appendChild(gameOptions) 
-        menu.appendChild(scoreBoard) 
-        menu.appendChild(exitBtn)
-        
-        this._element.appendChild(menu)
     }
 
     createScoreBoard(){

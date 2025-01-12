@@ -4,19 +4,36 @@ export class Game {
         this.players = [];
         this.gameCompleted = false;
         //spoji score i player u jedan objekat
-        this.score = { 
-            player1:{
-                games:{ 
-                slagalica:{opend:false,score:0},
-                mojBroj:{opend:false,score:0},
-                spojnice:{opend:false,score:0},
-                skocko:{opend:false,score:0},
-                koZnaZna:{opend:false,score:0},
-                asocijacije:{opend:false,score:0}
-                },
-                total:0
-            },
-            player2:{
+        // this.score = { 
+        //     player1:{
+        //         games:{ 
+        //         slagalica:{opend:false,score:0},
+        //         mojBroj:{opend:false,score:0},
+        //         spojnice:{opend:false,score:0},
+        //         skocko:{opend:false,score:0},
+        //         koZnaZna:{opend:false,score:0},
+        //         asocijacije:{opend:false,score:0}
+        //         },
+        //         total:0
+        //     },
+        //     player2:{
+        //         games:{ 
+        //             slagalica:{opend:false,score:0},
+        //             mojBroj:{opend:false,score:0},
+        //             spojnice:{opend:false,score:0},
+        //             skocko:{opend:false,score:0},
+        //             koZnaZna:{opend:false,score:0},
+        //             asocijacije:{opend:false,score:0}
+        //         },
+        //         total:0
+        //     }
+        // };
+    }
+
+    addPlayer(id, name) {
+        if (this.players.length < 2) {
+
+            const playerScore = {
                 games:{ 
                     slagalica:{opend:false,score:0},
                     mojBroj:{opend:false,score:0},
@@ -27,13 +44,7 @@ export class Game {
                 },
                 total:0
             }
-        };
-        this.turn = 1;
-    }
-
-    addPlayer(id, name) {
-        if (this.players.length < 2) {
-            this.players.push({ id, name });
+            this.players.push({ id, name,score:playerScore });
             return true;
         }
         return false; 
