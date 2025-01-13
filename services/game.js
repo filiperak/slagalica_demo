@@ -2,6 +2,26 @@ export class Game {
     constructor(gameId) {
         this.gameId = gameId;
         this.players = [];
+        this.gameState = {
+            slagalica: {
+                
+            },
+            mojBroj: {
+                
+            },
+            spojnice: {
+                
+            },
+            skocko: {
+                
+            },
+            koZnaZna: {
+                
+            },
+            asocijacije: {
+                
+            }
+        };
         this.gameCompleted = false;
     }
 
@@ -35,11 +55,6 @@ export class Game {
         return this.players.find((player) => player.id === id);
     }
 
-    updateScore(playerIndex, points) {
-        if (playerIndex === 0) this.score.player1 += points;
-        if (playerIndex === 1) this.score.player2 += points;
-    }
-
     isReady() {
         return this.players.length === 2;
     }
@@ -49,5 +64,9 @@ export class Game {
                 player.score.games[gameKey].opend = true
             }
         })
+    }
+    createSlagalica(){
+        const letters = ["A","B","C","Č","Ć","D","Đ","E","F","G","H","I","J","K","L","Lj","M","N","Nj","O","P","R","S","Š","T","U","V","Z","Ž"]
+        
     }
 }

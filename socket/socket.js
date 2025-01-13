@@ -62,11 +62,11 @@ const handleSocket = (io) => {
             //tempGame = null
         })
 
-        socket.on("requestGameData",gameId => {
+        socket.on("requestPlayerData",gameId => {
             const game = games[gameId]
 
             if(game){
-                socket.emit("gameState",game)
+                socket.emit("playersState",game)
             }
             
         })

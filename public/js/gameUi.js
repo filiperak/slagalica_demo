@@ -13,8 +13,8 @@ export class GameUi{
         console.log(this._players);
         
         //add request to fetch game data
-        this._socket.emit("requestGameData",this._gameId)
-        this._socket.on("gameState",data => {
+        this._socket.emit("requestPlayerData",this._gameId)
+        this._socket.on("playersState",data => {
             
             const menu = document.createElement("div")
             menu.classList.add("game-menu")
