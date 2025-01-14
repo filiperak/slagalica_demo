@@ -74,12 +74,16 @@ export class GameUi{
                         gameOptionName.classList.add("game-opened")
                     }else{
                         const handleOpenGameClick = () => {
-                            this._element.appendChild(this.createGameContainer(game))
+                            //this._element.appendChild(this.createGameContainer(game))
                             this._socket.emit("opendGame",{
                                 gameId:this._gameId,
                                 gameKey,
                                 playerId:this._socket.id
-                            })                            
+                            })       
+                            this._socket.on("gameData",data => {
+                                this._element.appendChild(this.createGameContainer(game))
+                                console.log(data);
+                            })                     
                         }
                         gameOptionName.addEventListener("click",handleOpenGameClick)
                     }
