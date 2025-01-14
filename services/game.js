@@ -1,3 +1,4 @@
+import srDictCapital from "../db/sr-latin-capital-dict.js"
 export class Game {
     constructor(gameId) {
         this.gameId = gameId;
@@ -67,6 +68,30 @@ export class Game {
     }
     createSlagalica(){
         const letters = ["A","B","C","Č","Ć","D","Đ","E","F","G","H","I","J","K","L","Lj","M","N","Nj","O","P","R","S","Š","T","U","V","Z","Ž"]
+        const getRandomLongWord = (arr) => {
+            while(true){
+                const word = arr[Math.floor(Math.random() * arr.length)]
+                if(word.length > 8){
+                    return word
+                }
+            }
+        }
+        const getRandowLetter = (arr) =>  arr[Math.floor(Math.random () * arr.length)]
+        const shuffle = (arr) => arr.sort(() => Math.random() - 0.5)    
+        
+        const wordCombination = () => {
+            const maxLen = 12
+            const word = getRandomLongWord(srDictCapital)
+            const letterComb = []
+            letterComb.push(word.split(""))
+            for(let i = word.length; i < maxLen; i++){
+                letterComb.push(getRandowLetter(letters))
+            }
+            return {word,letterComb:shuffle(letterComb.flat())}
+        }
+        return wordCombination()
+    }
+    validateSlagalica(){
         
     }
 }
