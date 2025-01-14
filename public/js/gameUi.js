@@ -81,7 +81,7 @@ export class GameUi{
                                 playerId:this._socket.id
                             })       
                             this._socket.on("gameData",data => {
-                                this._element.appendChild(this.createGameContainer(game))
+                                this._element.appendChild(this.createGameContainer(game,data))
                                 console.log(data);
                             })                     
                         }
@@ -127,7 +127,7 @@ export class GameUi{
         return scoreBoard
     }
 
-    createGameContainer(game){
+    createGameContainer(game,data){
 
         const gameContainer = document.createElement("div")
         gameContainer.classList.add("game-container")
@@ -152,7 +152,7 @@ export class GameUi{
 
         switch(game){
             case "slagalica":
-                this.slagalica()
+                this.slagalica(data,gameContainer)
                 break
             case "moj broj":
                 this.mojBroj()
@@ -175,8 +175,69 @@ export class GameUi{
 
         return gameContainer
     }
-    slagalica(){
+    slagalica(data,parent){
 
+        const inputWord = []
+
+        const slagalicaContainer = document.createElement("div")
+        slagalicaContainer.classList.add("slagalica-container")
+
+        const slagalicaInput = document.createElement("div")
+        slagalicaInput.classList.add("slagalica-container--input")
+
+        const slagalicaInputContainer = document.createElement("div")
+        slagalicaInputContainer.classList.add("slagalica-container--input-container")
+        // inputWord.forEach(elem => {
+        //     const letter = document.createElement("p")
+        //     letter.classList.add("slagalica--input-letter")
+        //     letter.innerText = elem
+        //     slagalicaInputContainer.appendChild(letter)
+        // })
+
+
+
+        const slagalicaInputLine = document.createElement("div")
+        slagalicaInputLine.classList.add("slagalica-container--input-line")
+        slagalicaInput.append(slagalicaInputContainer,slagalicaInputLine)
+        //slagalicaContainer.appendChild(slagalicaInput)  
+
+        const renderInputLetters = () => {
+            slagalicaInputContainer.innerHTML = ""
+            inputWord.forEach(elem => {
+                const letter = document.createElement("p")
+                letter.classList.add("slagalica--letter") //change class name for beter style
+                letter.innerText = elem
+                slagalicaInputContainer.appendChild(letter)
+            })
+        }
+
+        const slagalicaLetters = document.createElement("div")
+        slagalicaLetters.classList.add("slagalica-container--letters")
+
+        data.letterComb.forEach(elem => {
+            const letter = document.createElement("p")
+            letter.classList.add("slagalica--letter")
+            letter.innerText = elem
+
+            letter.addEventListener("click",() => {
+                inputWord.push(elem)
+                letter.classList.add("visibility-hidden")
+                renderInputLetters()
+            })
+
+            slagalicaLetters.appendChild(letter)
+        })
+
+        //slagalicaContainer.appendChild(slagalicaLetters)
+
+        const slagalicaStopBtn = document.createElement("div")
+        slagalicaStopBtn.classList.add("slagalica-container--stop-btn")
+        slagalicaStopBtn.innerText = "Stop"
+
+        //slagalicaInput.appendChild(slagalicaStopBtn)
+        slagalicaContainer.append(slagalicaInput,slagalicaLetters,slagalicaStopBtn)
+
+        parent.appendChild(slagalicaContainer)
     }
     mojBroj(){
 
