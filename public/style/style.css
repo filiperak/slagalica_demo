@@ -50,7 +50,8 @@ body {
 .game-option--container,
 .game-option--score,
 .score-board > p,
-.slagalica--letter {
+.slagalica--letter,
+.slagalica-container--stop-btn {
   font-size: 20px;
   padding: 15px;
   text-align: center;
@@ -62,7 +63,9 @@ body {
 .game-option--container,
 .game-option--score,
 .sore-board--player-score,
-.slagalica--letter{
+.slagalica--letter,
+.slagalica--letter--small,
+.slagalica-container--stop-btn{
   /* score board */
   background-color: var(--ligth-primary);
   color: var(--dark-blue);
@@ -183,7 +186,8 @@ body {
 }
 .game-option--container:hover,
 .geme-option--container:active,
-.slagalica--letter:hover {
+.slagalica--letter:hover,
+.slagalica-container--stop-btn:hover {
   background-color: var(--dark-primary);
 }
 .game-option--container,
@@ -206,7 +210,7 @@ body {
   cursor: default;
 }
 .slagalica-container {
-  border: 1px solid var(--dark-blue);
+  /* border: 1px solid var(--dark-blue); */
   margin: auto 0  ;
 }
 .slagalica-container--input {
@@ -228,10 +232,10 @@ body {
   visibility: hidden;
 }
 .slagalica-container--input-container{
-  height: 60px;
-  border: 1px solid red;
+text-align: center;
+  /* height: 43px; */
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
 }
 .slagalica-container--input-line{
   height: 3px;
@@ -240,4 +244,14 @@ body {
   height: 3px;
   border-radius: var(--border-radious);
   margin-top: 5px;
+}
+.slagalica--letter--small{
+  font-size: 20px;
+  margin: 2px;
+  padding: 6px;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+  border-radius: var(--border-radious);
+  cursor: default;
 }

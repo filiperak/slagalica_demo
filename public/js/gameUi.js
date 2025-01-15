@@ -187,14 +187,6 @@ export class GameUi{
 
         const slagalicaInputContainer = document.createElement("div")
         slagalicaInputContainer.classList.add("slagalica-container--input-container")
-        // inputWord.forEach(elem => {
-        //     const letter = document.createElement("p")
-        //     letter.classList.add("slagalica--input-letter")
-        //     letter.innerText = elem
-        //     slagalicaInputContainer.appendChild(letter)
-        // })
-
-
 
         const slagalicaInputLine = document.createElement("div")
         slagalicaInputLine.classList.add("slagalica-container--input-line")
@@ -205,7 +197,7 @@ export class GameUi{
             slagalicaInputContainer.innerHTML = ""
             inputWord.forEach(elem => {
                 const letter = document.createElement("p")
-                letter.classList.add("slagalica--letter") //change class name for beter style
+                letter.classList.add("slagalica--letter--small") //change class name for beter style
                 letter.innerText = elem
                 slagalicaInputContainer.appendChild(letter)
             })
