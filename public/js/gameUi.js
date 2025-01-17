@@ -178,6 +178,7 @@ export class GameUi{
     slagalica(data,parent){
 
         const inputWord = []
+        const letters = ["A","B","C","Č","Ć","D","Dž","Đ","E","F","G","H","I","J","K","L","Lj","M","N","Nj","O","P","R","S","Š","T","U","V","Z","Ž"]
 
         const slagalicaContainer = document.createElement("div")
         slagalicaContainer.classList.add("slagalica-container")
@@ -193,6 +194,14 @@ export class GameUi{
         slagalicaInput.append(slagalicaInputContainer,slagalicaInputLine)
         //slagalicaContainer.appendChild(slagalicaInput)  
 
+        const checkWordBtn = document.createElement("div")
+        checkWordBtn.classList.add("slagalica-container--check-btn")
+        checkWordBtn.innerText = "Proveri Reč"
+
+        const submitWordBtn = document.createElement("div")
+        submitWordBtn.classList.add("slagalica-container--submit-btn")
+        submitWordBtn.innerText = "Potvrdi"
+
         const renderInputLetters = () => {
             slagalicaInputContainer.innerHTML = ""
             inputWord.forEach(elem => {
@@ -206,28 +215,53 @@ export class GameUi{
         const slagalicaLetters = document.createElement("div")
         slagalicaLetters.classList.add("slagalica-container--letters")
 
-        data.letterComb.forEach(elem => {
+        const intervals = [];
+
+        for(let i =  0; i < 12; i++){
             const letter = document.createElement("p")
             letter.classList.add("slagalica--letter")
-            letter.innerText = elem
+            const interval = setInterval(() => {
+                const randomIndex = Math.floor(Math.random() * letters.length)
+                letter.innerText = letters[randomIndex]
+            },100)
+            intervals.push(interval);
+            slagalicaLetters.appendChild(letter)    
+        }
 
-            letter.addEventListener("click",() => {
-                inputWord.push(elem)
-                letter.classList.add("visibility-hidden")
-                renderInputLetters()
+        const createLetters = () => {
+            data.letterComb.forEach(elem => {
+                const letter = document.createElement("p")
+                letter.classList.add("slagalica--letter")
+                letter.innerText = elem
+    
+                letter.addEventListener("click",() => {
+                    inputWord.push(elem)
+                    letter.classList.add("visibility-hidden")
+                    renderInputLetters()
+                })
+    
+                slagalicaLetters.appendChild(letter)
             })
-
-            slagalicaLetters.appendChild(letter)
-        })
-
-        //slagalicaContainer.appendChild(slagalicaLetters)
+    
+            slagalicaContainer.appendChild(slagalicaLetters)
+        }
 
         const slagalicaStopBtn = document.createElement("div")
         slagalicaStopBtn.classList.add("slagalica-container--stop-btn")
         slagalicaStopBtn.innerText = "Stop"
+        slagalicaStopBtn.addEventListener("click",() => {
+            intervals.forEach(interval => clearInterval(interval));
+            this.removeElement(slagalicaLetters)
+            slagalicaContainer.removeChild(slagalicaStopBtn)
+            createLetters();
+            slagalicaContainer.append(checkWordBtn,submitWordBtn)
+        })
 
-        //slagalicaInput.appendChild(slagalicaStopBtn)
         slagalicaContainer.append(slagalicaInput,slagalicaLetters,slagalicaStopBtn)
+
+        checkWordBtn.addEventListener("click",() => {
+            this.drawPoopup("test1312",() => {})
+        })
 
         parent.appendChild(slagalicaContainer)
     }
@@ -268,5 +302,28 @@ export class GameUi{
             const [currentPlayer] = this._players.splice(currentPlayerIndex, 1);
             this._players.unshift(currentPlayer);
         }
+    }
+    drawPoopup(text,callback){
+        const popup = document.createElement("div")
+        popup.classList.add("popup-container")
+
+        const popupMessage = document.createElement("div")
+        popupMessage.classList.add("popup-container--message")
+
+        const popupText = document.createElement("p")
+        popupMessage.innerText = text
+
+        const popupBtn = document.createElement("div")
+        popupBtn.classList.add("popup-container--btn")
+        popupBtn.innerText = "OK"
+
+        popupBtn.addEventListener("click",() => {
+            callback()
+            this._element.removeChild(popup)
+        })
+
+        popupMessage.append(popupText,popupBtn)
+        popup.appendChild(popupMessage)
+        this._element.appendChild(popup)
     }
 }
