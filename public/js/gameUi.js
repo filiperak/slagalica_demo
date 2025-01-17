@@ -189,10 +189,17 @@ export class GameUi{
         const slagalicaInputContainer = document.createElement("div")
         slagalicaInputContainer.classList.add("slagalica-container--input-container")
 
+        const clearBtn = document.createElement("div")
+        clearBtn.classList.add("slagalica-container--clear-btn")
+        clearBtn.innerText = "Obriši"
+        slagalicaInputContainer.appendChild(clearBtn)
+
         const slagalicaInputLine = document.createElement("div")
         slagalicaInputLine.classList.add("slagalica-container--input-line")
         slagalicaInput.append(slagalicaInputContainer,slagalicaInputLine)
         //slagalicaContainer.appendChild(slagalicaInput)  
+
+
 
         const checkWordBtn = document.createElement("div")
         checkWordBtn.classList.add("slagalica-container--check-btn")
@@ -204,6 +211,7 @@ export class GameUi{
 
         const renderInputLetters = () => {
             slagalicaInputContainer.innerHTML = ""
+            slagalicaInputContainer.appendChild(clearBtn);
             inputWord.forEach(elem => {
                 const letter = document.createElement("p")
                 letter.classList.add("slagalica--letter--small") //change class name for beter style
@@ -254,6 +262,7 @@ export class GameUi{
             this.removeElement(slagalicaLetters)
             slagalicaContainer.removeChild(slagalicaStopBtn)
             createLetters();
+            // slagalicaInputContainer.appendChild(clearBtn)
             slagalicaContainer.append(checkWordBtn,submitWordBtn)
         })
 

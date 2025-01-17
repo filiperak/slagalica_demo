@@ -69,7 +69,7 @@ export class Game {
         const getRandomLongWord = (arr) => {
             while(true){
                 const word = arr[Math.floor(Math.random() * arr.length)]
-                if(word.length > 8){
+                if(word.length > 8 && word.length < 13){
                     return word
                 }
             }
@@ -78,11 +78,11 @@ export class Game {
         const shuffle = (arr) => arr.sort(() => Math.random() - 0.5)    
         
         const wordCombination = () => {
-            //const maxLen = 12
+            const maxLen = 12
             const word = getRandomLongWord(srDictCapital)
             const letterComb = []
             letterComb.push(word.split(""))
-            for(let i = word.length; i < 13; i++){
+            for(let i = word.length; i < maxLen; i++){
                 letterComb.push(getRandowLetter(letters))
             }
             return {word,letterComb:shuffle(letterComb.flat())}

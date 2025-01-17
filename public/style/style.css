@@ -74,7 +74,8 @@ body {
 .slagalica--letter--small,
 .slagalica-container--stop-btn,
 .slagalica-container--check-btn
-.slagalica-container--submit-btn{
+.slagalica-container--submit-btn
+.slagalica-container--clear-btn{
   /* score board */
   background-color: var(--ligth-primary);
   color: var(--dark-blue);
@@ -202,7 +203,8 @@ body {
 .slagalica--letter:hover,
 .slagalica-container--stop-btn:hover,
 .slagalica-container--check-btn:hover,
-.slagalica-container--submit-btn:hover {
+.slagalica-container--submit-btn:hover,
+.slagalica-container--clear-btn:hover {
   background-color: var(--dark-primary);
 }
 .game-option--container,
@@ -260,7 +262,8 @@ text-align: center;
   border-radius: var(--border-radious);
   margin-top: 5px;
 }
-.slagalica--letter--small{
+.slagalica--letter--small,
+.slagalica-container--clear-btn{
   font-size: 20px;
   margin: 2px;
   padding: 6px;
@@ -278,4 +281,14 @@ text-align: center;
   color: var(--dark-blue);
   box-shadow: var(--box-shadow);
   margin: 10px 0;
+}
+.slagalica-container--clear-btn{
+  /* margin-left: auto; */
+  position: absolute;
+  right: 0;
+  background-color: var(--ligth-primary);
+  color: var(--dark-blue);
+  box-shadow: var(--box-shadow);
+  cursor: pointer;
+  /* top: 10px; */
 }

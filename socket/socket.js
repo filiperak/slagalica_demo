@@ -89,8 +89,8 @@ const handleSocket = (io) => {
         //     }
         // })
 
-        socket.on("disconnect", () => {
-            console.log(socket.id, "DISCONNECTED");
+        socket.on("disconnect", (reason) => {
+            console.log(socket.id, "DISCONNECTED",reason);
         
             for (const gameId in games) {
                 const game = games[gameId];
