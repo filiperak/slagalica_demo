@@ -192,7 +192,21 @@ export class GameUi{
         const clearBtn = document.createElement("div")
         clearBtn.classList.add("slagalica-container--clear-btn")
         clearBtn.innerText = "Obriši"
-        slagalicaInputContainer.appendChild(clearBtn)
+        //slagalicaInputContainer.appendChild(clearBtn)
+
+        clearBtn.addEventListener("click", () => {
+            if (inputWord.length > 0) {
+                const lastLetterId = inputWord[inputWord.length - 1].id;
+                const lastLetter = document.getElementById(lastLetterId);
+                console.log(lastLetter);
+                if (lastLetter) {
+                    lastLetter.classList.remove("visibility-hidden");
+                    
+                }
+                inputWord.pop();
+                renderInputLetters();
+            }
+        });    
 
         const slagalicaInputLine = document.createElement("div")
         slagalicaInputLine.classList.add("slagalica-container--input-line")
@@ -211,11 +225,15 @@ export class GameUi{
 
         const renderInputLetters = () => {
             slagalicaInputContainer.innerHTML = ""
-            slagalicaInputContainer.appendChild(clearBtn);
+            if(inputWord.length !== 0){
+                slagalicaInputContainer.appendChild(clearBtn);
+                
+            }
+            //slagalicaInputContainer.appendChild(clearBtn);
             inputWord.forEach(elem => {
                 const letter = document.createElement("p")
                 letter.classList.add("slagalica--letter--small") //change class name for beter style
-                letter.innerText = elem
+                letter.innerText = elem.letter
                 slagalicaInputContainer.appendChild(letter)
             })
         }
@@ -237,13 +255,15 @@ export class GameUi{
         }
 
         const createLetters = () => {
-            data.letterComb.forEach(elem => {
+            data.letterComb.forEach((elem,ind) => {
                 const letter = document.createElement("p")
                 letter.classList.add("slagalica--letter")
+                const letterId = `letter-${ind}`;
+                letter.setAttribute("id",letterId)
                 letter.innerText = elem
     
                 letter.addEventListener("click",() => {
-                    inputWord.push(elem)
+                    inputWord.push({letter:elem,id:letterId})
                     letter.classList.add("visibility-hidden")
                     renderInputLetters()
                 })
