@@ -253,6 +253,7 @@ text-align: center;
   /* height: 43px; */
   display: flex;
   justify-content: center;
+  flex: 1;
 }
 .slagalica-container--input-line{
   height: 3px;
@@ -284,11 +285,16 @@ text-align: center;
 }
 .slagalica-container--clear-btn{
   /* margin-left: auto; */
-  position: absolute;
-  right: 0;
+    /* position: absolute;
+    right: 0; */
   background-color: var(--ligth-primary);
   color: var(--dark-blue);
   box-shadow: var(--box-shadow);
   cursor: pointer;
   /* top: 10px; */
+}
+.slagalica-container--input-container--main{
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
 }

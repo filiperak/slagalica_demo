@@ -186,17 +186,21 @@ export class GameUi{
         const slagalicaInput = document.createElement("div")
         slagalicaInput.classList.add("slagalica-container--input")
 
+        const slagalicaInputContainerMain = document.createElement("div")
+        slagalicaInputContainerMain.classList.add("slagalica-container--input-container--main")        
+
         const slagalicaInputContainer = document.createElement("div")
         slagalicaInputContainer.classList.add("slagalica-container--input-container")
 
         const clearBtn = document.createElement("div")
         clearBtn.classList.add("slagalica-container--clear-btn")
         clearBtn.innerText = "Obriši"
-        slagalicaInputContainer.appendChild(clearBtn)
+        slagalicaInputContainerMain.appendChild(clearBtn)
 
         const slagalicaInputLine = document.createElement("div")
         slagalicaInputLine.classList.add("slagalica-container--input-line")
-        slagalicaInput.append(slagalicaInputContainer,slagalicaInputLine)
+        slagalicaInputContainerMain.appendChild(slagalicaInputContainer)
+        slagalicaInput.append(slagalicaInputContainerMain,slagalicaInputLine)
         //slagalicaContainer.appendChild(slagalicaInput)  
 
 
@@ -211,7 +215,7 @@ export class GameUi{
 
         const renderInputLetters = () => {
             slagalicaInputContainer.innerHTML = ""
-            slagalicaInputContainer.appendChild(clearBtn);
+            //slagalicaInputContainer.appendChild(clearBtn);//OVDE
             inputWord.forEach(elem => {
                 const letter = document.createElement("p")
                 letter.classList.add("slagalica--letter--small") //change class name for beter style
