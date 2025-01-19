@@ -250,7 +250,7 @@ body {
 }
 .slagalica-container--input-container{
 text-align: center;
-  /* height: 43px; */
+  height: 40px;
   display: flex;
   justify-content: center;
 }

@@ -194,19 +194,26 @@ export class GameUi{
         clearBtn.innerText = "Obriši"
         //slagalicaInputContainer.appendChild(clearBtn)
 
-        clearBtn.addEventListener("click", () => {
+        const deleteLastLetter = () => {
             if (inputWord.length > 0) {
                 const lastLetterId = inputWord[inputWord.length - 1].id;
                 const lastLetter = document.getElementById(lastLetterId);
-                console.log(lastLetter);
                 if (lastLetter) {
                     lastLetter.classList.remove("visibility-hidden");
-                    
                 }
                 inputWord.pop();
                 renderInputLetters();
             }
-        });    
+        }
+
+        clearBtn.addEventListener("click", () => deleteLastLetter());    
+        document.addEventListener("keydown", (e) => {
+            console.log(e.keyCode);
+            if(e.keyCode === 8){
+                deleteLastLetter()
+            }
+            
+        })
 
         const slagalicaInputLine = document.createElement("div")
         slagalicaInputLine.classList.add("slagalica-container--input-line")
@@ -274,16 +281,24 @@ export class GameUi{
             slagalicaContainer.appendChild(slagalicaLetters)
         }
 
-        const slagalicaStopBtn = document.createElement("div")
-        slagalicaStopBtn.classList.add("slagalica-container--stop-btn")
-        slagalicaStopBtn.innerText = "Stop"
-        slagalicaStopBtn.addEventListener("click",() => {
+        const stopLetters = () => {
             intervals.forEach(interval => clearInterval(interval));
             this.removeElement(slagalicaLetters)
             slagalicaContainer.removeChild(slagalicaStopBtn)
             createLetters();
             // slagalicaInputContainer.appendChild(clearBtn)
             slagalicaContainer.append(checkWordBtn,submitWordBtn)
+        }
+
+        const slagalicaStopBtn = document.createElement("div")
+        slagalicaStopBtn.classList.add("slagalica-container--stop-btn")
+        slagalicaStopBtn.innerText = "Stop"
+        slagalicaStopBtn.addEventListener("click",() => stopLetters())
+
+        document.addEventListener("keydown", (e) => {
+            if(e.keyCode === 32){
+                stopLetters()
+            }
         })
 
         slagalicaContainer.append(slagalicaInput,slagalicaLetters,slagalicaStopBtn)
