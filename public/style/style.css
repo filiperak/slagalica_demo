@@ -133,13 +133,19 @@ body {
   z-index: 100;
   border-radius: var(--border-radious);
   font-size: 1.5rem;
+  color: var(--dark-blue);
+}
+.loading-modal-message :nth-child(2){
+  font-size: 2rem;
+  margin: 10px 0;
+  color: var(--dark-blue);
 }
 .loading-modal-message > button,
 .popup-container--btn {
   background-color: var(--dark-blue);
   border: 0;
   font-family: "Rubik", sans-serif;
-  margin-top: 30px;
+  margin-top: 10px;
   outline: none;
   color: var(--dark-primary);
   cursor: pointer;
@@ -238,7 +244,7 @@ body {
   grid-template-columns: repeat(6, 1fr);
   grid-template-rows: repeat(2, auto);
   gap: 10px;
-  margin: 30px 0;
+  margin: 20px 0 30px;
 }
 .slagalica--letter {
   font-weight: 600;
@@ -291,4 +297,10 @@ text-align: center;
   box-shadow: var(--box-shadow);
   cursor: pointer;
   /* top: 10px; */
+}
+.slagalica-container--word-validator{
+  margin-top: 8px;
+  font-size: 0.9rem;
+  height: 16px;
+  font-weight: 600;
 }

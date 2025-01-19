@@ -15,6 +15,9 @@ export class GameUi{
         //add request to fetch game data
         this._socket.emit("requestPlayerData",this._gameId)
         this._socket.on("playersState",data => {
+
+            this._players = data.players
+            this.reversePlayerIndex()
             
             const menu = document.createElement("div")
             menu.classList.add("game-menu")
@@ -67,9 +70,9 @@ export class GameUi{
 
                 
                 //promeni ovu u pravu datu iz socket paketa
-                const playerIndex = data.players.findIndex(player => player.id === this._socket.id)
+                const playerIndex = this._players.findIndex(player => player.id === this._socket.id)
                 if(playerIndex !== -1){
-                    const player = data.players[playerIndex]
+                    const player = this._players[playerIndex]
                     if(player.score.games[gameKey].opend){
                         gameOptionName.classList.add("game-opened")
                     }else{
@@ -105,6 +108,13 @@ export class GameUi{
             menu.appendChild(exitBtn)
             
             this._element.appendChild(menu)
+        })
+        this._socket.on("scoreSubmited",score => {            
+            const text = `Osvojili ste ${score.data} poena`
+            this.drawPoopup(text,() => {
+                console.log(' created');
+                
+            })
         })
 
     }
@@ -191,11 +201,17 @@ export class GameUi{
 
         const clearBtn = document.createElement("div")
         clearBtn.classList.add("slagalica-container--clear-btn")
+        clearBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>'
         clearBtn.innerText = "Obriši"
         //slagalicaInputContainer.appendChild(clearBtn)
 
+        const wordValidatorDiv = document.createElement("div")
+        wordValidatorDiv.classList.add("slagalica-container--word-validator")
+       // wordValidatorDiv.innerText = "Reč nije validna"
+
         const deleteLastLetter = () => {
             if (inputWord.length > 0) {
+                wordValidatorDiv.innerText = ""
                 const lastLetterId = inputWord[inputWord.length - 1].id;
                 const lastLetter = document.getElementById(lastLetterId);
                 if (lastLetter) {
@@ -233,6 +249,7 @@ export class GameUi{
         const renderInputLetters = () => {
             slagalicaInputContainer.innerHTML = ""
             if(inputWord.length !== 0){
+                clearBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>'
                 slagalicaInputContainer.appendChild(clearBtn);
                 
             }
@@ -270,6 +287,7 @@ export class GameUi{
                 letter.innerText = elem
     
                 letter.addEventListener("click",() => {
+                    wordValidatorDiv.innerText = ""
                     inputWord.push({letter:elem,id:letterId})
                     letter.classList.add("visibility-hidden")
                     renderInputLetters()
@@ -301,11 +319,35 @@ export class GameUi{
             }
         })
 
-        slagalicaContainer.append(slagalicaInput,slagalicaLetters,slagalicaStopBtn)
+        slagalicaContainer.append(slagalicaInput,wordValidatorDiv,slagalicaLetters,slagalicaStopBtn)
 
         checkWordBtn.addEventListener("click",() => {
-            this.drawPoopup("test1312",() => {})
+            // this.drawPoopup("test1312",() => {})
+            const word = inputWord.map(elem => elem.letter).join("")
+            console.log(word);
+            this._socket.emit("checkWord",{gameId:this._gameId,word})  
+            wordValidatorDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin-pulse"></i>';
         })
+        this._socket.on("wordCheckResult",data => {
+            // wordValidatorDiv.innerHTML = ""
+            if(data){
+                if(data.validated){
+                    wordValidatorDiv.innerText = "👋Reč je prihvaćena"
+                    wordValidatorDiv.style.color = "#00ff00"
+                }else{
+                    wordValidatorDiv.innerText = "❌Reč nije prihvaćena"
+                    wordValidatorDiv.style.color = "red"
+                }
+            }
+            
+        })
+
+        submitWordBtn.addEventListener("click",() => {
+            const word = inputWord.map(elem => elem.letter).join("")
+            console.log(word);
+            this._socket.emit("sendSlagalicaScore",{gameId:this._gameId,word})  
+        })
+        
 
         parent.appendChild(slagalicaContainer)
     }
@@ -339,6 +381,9 @@ export class GameUi{
                 elem.removeChild(elem.firstChild)
             }
         }
+    }
+    removeParent(child){
+        document.body.removeChild(child)
     }
     reversePlayerIndex() {
         const currentPlayerIndex = this._players.findIndex(player => player.id === this._socket.id);

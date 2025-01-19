@@ -64,6 +64,17 @@ export class Game {
             }
         })
     }
+    addScore(gameKey,playerId,score){        
+        this.players.forEach(player => {
+            if(player.id === playerId){
+                
+                player.score.games[gameKey].score = score
+               console.log(this.players[0].score.games[gameKey]);
+               console.log(this.players[1].score.games[gameKey]);
+               
+            }
+        })
+    }
     createSlagalica(){
         const letters = ["A","B","C","Č","Ć","D","Đ","E","F","G","H","I","J","K","L","LJ","M","N","NJ","O","P","R","S","Š","T","U","V","Z","Ž"]
         const getRandomLongWord = (arr) => {
@@ -92,6 +103,6 @@ export class Game {
     validateSlagalica(str) {
         const isValid = srDictCapital.includes(str);
         const score = isValid ? str.length * 2 : 0; 
-        return { validate: isValid, score };
+        return { validated: isValid, score };
     }
 }

@@ -52,7 +52,7 @@ joinGame.addEventListener("click",() => {
 
 
 socket.on("notification",(data) => {
-    alert(data.text)
+    //alert(data.text)
 })
 
 socket.on("startGame",({game}) => {

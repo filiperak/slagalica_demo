@@ -79,7 +79,30 @@ const handleSocket = (io) => {
                 currentGame.handleOpendGame(gameKey,playerId)
                 //new code 1st atempt
                 //io.to(currentGame.gameId).emit("gameData",currentGame.gameState[gameKey])
-                io.emit("gameData",currentGame.gameState[gameKey])
+                socket.emit("gameData",currentGame.gameState[gameKey])
+            }
+        })
+
+        //SLAGALICA VALIDATE SCORES
+        socket.on("checkWord",({gameId,word}) => {
+            const game = games[gameId]
+            if(game){
+                const validatedWord = game.validateSlagalica(word)
+                socket.emit("wordCheckResult",validatedWord)
+            }
+        })
+
+        socket.on("sendSlagalicaScore",({gameId,word}) => {
+            const game = games[gameId]
+            if(game){
+                const validatedWord = game.validateSlagalica(word)
+                game.addScore("slagalica",socket.id,validatedWord.score)
+                console.log("SUBMITTED SLAGALICA SCORE,", validatedWord.score, validatedWord);
+                
+                
+                socket.emit("scoreSubmited",{data:validatedWord.score})
+            }else {
+                console.error(`Game with id: ${gameId} not found`);
             }
         })
 
