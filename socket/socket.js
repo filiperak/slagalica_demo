@@ -77,9 +77,7 @@ const handleSocket = (io) => {
             const currentGame = games[gameId]
             if(currentGame){
                 currentGame.handleOpendGame(gameKey,playerId)
-                //new code 1st atempt
-                //io.to(currentGame.gameId).emit("gameData",currentGame.gameState[gameKey])
-                io.emit("gameData",currentGame.gameState[gameKey])
+                socket.emit("gameData",currentGame.gameState[gameKey])
             }
         })
 
