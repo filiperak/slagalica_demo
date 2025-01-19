@@ -1,4 +1,4 @@
-import { capitalizeAfterSpaces } from "./util/helperFunctions.js"
+import { capitalizeAfterSpaces, removeAllEventListeners } from "./util/helperFunctions.js"
 
 export class GameUi{
     constructor(element,players,gameId,socket){
@@ -10,7 +10,11 @@ export class GameUi{
     }
 
     createGameMenu(){
-        console.log(this._players);
+
+        //remove socket evetnt to prevent multyple events ocureing at the same time
+        this._socket.off("playersState");
+        this._socket.off("gameData");
+        this._socket.off("scoreSubmited");
         
         //add request to fetch game data
         this._socket.emit("requestPlayerData",this._gameId)
@@ -346,6 +350,7 @@ export class GameUi{
             const word = inputWord.map(elem => elem.letter).join("")
             console.log(word);
             this._socket.emit("sendSlagalicaScore",{gameId:this._gameId,word})  
+            removeAllEventListeners(slagalicaContainer)
         })
         
 
