@@ -183,16 +183,17 @@ export class GameUi{
             case "asocijacije":
                 this.asocijacije()
                 break
-            default:
-                console.log("game not found")
-        }
-
-        return gameContainer
-    }
+                default:
+                    console.log("game not found")
+                }
+                
+                return gameContainer
+            }
     slagalica(data,parent){
-
+        
         const inputWord = []
         const letters = ["A","B","C","Č","Ć","D","Dž","Đ","E","F","G","H","I","J","K","L","Lj","M","N","Nj","O","P","R","S","Š","T","U","V","Z","Ž"]
+        const intervals = [];
 
         const slagalicaContainer = document.createElement("div")
         slagalicaContainer.classList.add("slagalica-container")
@@ -207,13 +208,57 @@ export class GameUi{
         clearBtn.classList.add("slagalica-container--clear-btn")
         clearBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>'
         clearBtn.innerText = "Obriši"
-        //slagalicaInputContainer.appendChild(clearBtn)
-
+        
         const wordValidatorDiv = document.createElement("div")
         wordValidatorDiv.classList.add("slagalica-container--word-validator")
-       // wordValidatorDiv.innerText = "Reč nije validna"
+        
+        const slagalicaInputLine = document.createElement("div")
+        slagalicaInputLine.classList.add("slagalica-container--input-line")
+        slagalicaInput.append(slagalicaInputContainer,slagalicaInputLine)
+       
+        const checkWordBtn = document.createElement("div")
+        checkWordBtn.classList.add("slagalica-container--check-btn")
+       checkWordBtn.innerText = "Proveri Reč"
+       
+       const submitWordBtn = document.createElement("div")
+       submitWordBtn.classList.add("slagalica-container--submit-btn")
+       submitWordBtn.innerText = "Potvrdi"
+       
+       const slagalicaLetters = document.createElement("div")
+       slagalicaLetters.classList.add("slagalica-container--letters")
+       
+       const slagalicaStopBtn = document.createElement("div")
+       slagalicaStopBtn.classList.add("slagalica-container--stop-btn")
+       slagalicaStopBtn.innerText = "Stop"
+       
+       for(let i =  0; i < 12; i++){
+           const letter = document.createElement("p")
+           letter.classList.add("slagalica--letter")
+           const interval = setInterval(() => {
+               const randomIndex = Math.floor(Math.random() * letters.length)
+               letter.innerText = letters[randomIndex]
+           },100)
+           intervals.push(interval);
+           slagalicaLetters.appendChild(letter)    
+       }
 
-        const deleteLastLetter = () => {
+       const renderInputLetters = () => {
+           slagalicaInputContainer.innerHTML = ""
+           if(inputWord.length !== 0){
+               clearBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>'
+               slagalicaInputContainer.appendChild(clearBtn);
+               
+           }
+           //slagalicaInputContainer.appendChild(clearBtn);
+           inputWord.forEach(elem => {
+               const letter = document.createElement("p")
+               letter.classList.add("slagalica--letter--small") //change class name for beter style
+               letter.innerText = elem.letter
+               slagalicaInputContainer.appendChild(letter)
+           })
+       }
+
+       const deleteLastLetter = () => {
             if (inputWord.length > 0) {
                 wordValidatorDiv.innerText = ""
                 const lastLetterId = inputWord[inputWord.length - 1].id;
@@ -224,62 +269,6 @@ export class GameUi{
                 inputWord.pop();
                 renderInputLetters();
             }
-        }
-
-        clearBtn.addEventListener("click", () => deleteLastLetter());    
-        document.addEventListener("keydown", (e) => {
-            console.log(e.keyCode);
-            if(e.keyCode === 8){
-                deleteLastLetter()
-            }
-            
-        })
-
-        const slagalicaInputLine = document.createElement("div")
-        slagalicaInputLine.classList.add("slagalica-container--input-line")
-        slagalicaInput.append(slagalicaInputContainer,slagalicaInputLine)
-        //slagalicaContainer.appendChild(slagalicaInput)  
-
-
-
-        const checkWordBtn = document.createElement("div")
-        checkWordBtn.classList.add("slagalica-container--check-btn")
-        checkWordBtn.innerText = "Proveri Reč"
-
-        const submitWordBtn = document.createElement("div")
-        submitWordBtn.classList.add("slagalica-container--submit-btn")
-        submitWordBtn.innerText = "Potvrdi"
-
-        const renderInputLetters = () => {
-            slagalicaInputContainer.innerHTML = ""
-            if(inputWord.length !== 0){
-                clearBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>'
-                slagalicaInputContainer.appendChild(clearBtn);
-                
-            }
-            //slagalicaInputContainer.appendChild(clearBtn);
-            inputWord.forEach(elem => {
-                const letter = document.createElement("p")
-                letter.classList.add("slagalica--letter--small") //change class name for beter style
-                letter.innerText = elem.letter
-                slagalicaInputContainer.appendChild(letter)
-            })
-        }
-
-        const slagalicaLetters = document.createElement("div")
-        slagalicaLetters.classList.add("slagalica-container--letters")
-
-        const intervals = [];
-
-        for(let i =  0; i < 12; i++){
-            const letter = document.createElement("p")
-            letter.classList.add("slagalica--letter")
-            const interval = setInterval(() => {
-                const randomIndex = Math.floor(Math.random() * letters.length)
-                letter.innerText = letters[randomIndex]
-            },100)
-            intervals.push(interval);
-            slagalicaLetters.appendChild(letter)    
         }
 
         const createLetters = () => {
@@ -308,32 +297,57 @@ export class GameUi{
             this.removeElement(slagalicaLetters)
             slagalicaContainer.removeChild(slagalicaStopBtn)
             createLetters();
-            // slagalicaInputContainer.appendChild(clearBtn)
+            document.body.removeEventListener("keydown",stopLettersBody)
             slagalicaContainer.append(checkWordBtn,submitWordBtn)
         }
 
-        const slagalicaStopBtn = document.createElement("div")
-        slagalicaStopBtn.classList.add("slagalica-container--stop-btn")
-        slagalicaStopBtn.innerText = "Stop"
-        slagalicaStopBtn.addEventListener("click",() => stopLetters())
-
-        document.addEventListener("keydown", (e) => {
-            if(e.keyCode === 32){
+        const stopLettersBody = (e) => { 
+            if(e.keyCode == 32){
                 stopLetters()
-            }
-        })
+                document.body.removeEventListener("keydown", stopLettersBody)
+            }    
+        };
 
-        slagalicaContainer.append(slagalicaInput,wordValidatorDiv,slagalicaLetters,slagalicaStopBtn)
-
-        checkWordBtn.addEventListener("click",() => {
-            // this.drawPoopup("test1312",() => {})
+        const submitWord = () => {
             const word = inputWord.map(elem => elem.letter).join("")
             console.log(word);
-            this._socket.emit("checkWord",{gameId:this._gameId,word})  
-            wordValidatorDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin-pulse"></i>';
-        })
+            this._socket.emit("sendSlagalicaScore",{gameId:this._gameId,word})  
+            removeAllEventListeners(slagalicaContainer)
+            document.body.removeEventListener("keydown", handleKeyDown)
+        }
+
+        const handleKeyDown = (e) => {
+            console.log(e.keyCode);
+            
+            switch(e.keyCode){
+                case 8:
+                    deleteLastLetter()
+                    break
+                // case 32:
+                //     stopLetters()
+                //     break
+                case 13:
+                    submitWord()
+                default:
+                    break
+            }
+        }        
+
+        document.body.addEventListener("keydown",  handleKeyDown)
+        document.body.addEventListener("keydown",  stopLettersBody)
+        slagalicaStopBtn.addEventListener("click",stopLetters)
+        clearBtn.addEventListener("click",deleteLastLetter);
+        submitWordBtn.addEventListener("click", submitWord)
+                    
+                    
+        checkWordBtn.addEventListener("click",() => {
+                const word = inputWord.map(elem => elem.letter).join("")
+                console.log(word);
+                this._socket.emit("checkWord",{gameId:this._gameId,word})  
+                wordValidatorDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin-pulse"></i>';
+            })
+
         this._socket.on("wordCheckResult",data => {
-            // wordValidatorDiv.innerHTML = ""
             if(data){
                 if(data.validated){
                     wordValidatorDiv.innerText = "👋Reč je prihvaćena"
@@ -345,15 +359,10 @@ export class GameUi{
             }
             
         })
-
-        submitWordBtn.addEventListener("click",() => {
-            const word = inputWord.map(elem => elem.letter).join("")
-            console.log(word);
-            this._socket.emit("sendSlagalicaScore",{gameId:this._gameId,word})  
-            removeAllEventListeners(slagalicaContainer)
-        })
+                        
         
 
+        slagalicaContainer.append(slagalicaInput,wordValidatorDiv,slagalicaLetters,slagalicaStopBtn)
         parent.appendChild(slagalicaContainer)
     }
     mojBroj(){
