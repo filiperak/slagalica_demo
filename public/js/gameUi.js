@@ -1,4 +1,5 @@
 import { capitalizeAfterSpaces, removeAllEventListeners } from "./util/helperFunctions.js"
+import { keyCodeToLetterMap } from "./util/keyCodes.js"
 
 export class GameUi{
     constructor(element,players,gameId,socket){
@@ -39,7 +40,7 @@ export class GameUi{
             //exit button -- leave game
             const exitBtn = document.createElement("div")
             exitBtn.classList.add("game-menu--exit-btn")
-            exitBtn.innerText = "Leave"
+            exitBtn.innerText = "Napusti igru"
             exitBtn.addEventListener("click",() => {
                 this._socket.emit("leaveGame")
                 this.removeEveryElement()
@@ -194,6 +195,7 @@ export class GameUi{
         const inputWord = []
         const letters = ["A","B","C","Č","Ć","D","Dž","Đ","E","F","G","H","I","J","K","L","Lj","M","N","Nj","O","P","R","S","Š","T","U","V","Z","Ž"]
         const intervals = [];
+        const letterOptions = []
 
         const slagalicaContainer = document.createElement("div")
         slagalicaContainer.classList.add("slagalica-container")
@@ -218,18 +220,18 @@ export class GameUi{
        
         const checkWordBtn = document.createElement("div")
         checkWordBtn.classList.add("slagalica-container--check-btn")
-       checkWordBtn.innerText = "Proveri Reč"
-       
-       const submitWordBtn = document.createElement("div")
-       submitWordBtn.classList.add("slagalica-container--submit-btn")
-       submitWordBtn.innerText = "Potvrdi"
-       
-       const slagalicaLetters = document.createElement("div")
-       slagalicaLetters.classList.add("slagalica-container--letters")
-       
-       const slagalicaStopBtn = document.createElement("div")
-       slagalicaStopBtn.classList.add("slagalica-container--stop-btn")
-       slagalicaStopBtn.innerText = "Stop"
+        checkWordBtn.innerText = "Proveri Reč"
+        
+        const submitWordBtn = document.createElement("div")
+        submitWordBtn.classList.add("slagalica-container--submit-btn")
+        submitWordBtn.innerText = "Potvrdi"
+        
+        const slagalicaLetters = document.createElement("div")
+        slagalicaLetters.classList.add("slagalica-container--letters")
+        
+        const slagalicaStopBtn = document.createElement("div")
+        slagalicaStopBtn.classList.add("slagalica-container--stop-btn")
+        slagalicaStopBtn.innerText = "Stop"
        
        for(let i =  0; i < 12; i++){
            const letter = document.createElement("p")
@@ -249,10 +251,9 @@ export class GameUi{
                slagalicaInputContainer.appendChild(clearBtn);
                
            }
-           //slagalicaInputContainer.appendChild(clearBtn);
            inputWord.forEach(elem => {
                const letter = document.createElement("p")
-               letter.classList.add("slagalica--letter--small") //change class name for beter style
+               letter.classList.add("slagalica--letter--small")
                letter.innerText = elem.letter
                slagalicaInputContainer.appendChild(letter)
            })
@@ -278,6 +279,7 @@ export class GameUi{
                 const letterId = `letter-${ind}`;
                 letter.setAttribute("id",letterId)
                 letter.innerText = elem
+                letterOptions.push(elem)
     
                 letter.addEventListener("click",() => {
                     wordValidatorDiv.innerText = ""
@@ -314,6 +316,7 @@ export class GameUi{
             this._socket.emit("sendSlagalicaScore",{gameId:this._gameId,word})  
             removeAllEventListeners(slagalicaContainer)
             document.body.removeEventListener("keydown", handleKeyDown)
+            document.body.removeEventListener("keyup",handleKeyUpLetter)
         }
 
         const handleKeyDown = (e) => {
@@ -323,16 +326,29 @@ export class GameUi{
                 case 8:
                     deleteLastLetter()
                     break
-                // case 32:
-                //     stopLetters()
-                //     break
                 case 13:
                     submitWord()
                 default:
                     break
             }
-        }        
+        }       
+        
+        const handleKeyUpLetter = (e) => {
+            const letter = keyCodeToLetterMap[e.keyCode];
+            if (letter && data.letterComb.includes(letter)) {
+                const letterElements = Array.from(document.querySelectorAll(`.slagalica--letter`));
+                const letterElement = letterElements.find(el => el.innerText === letter && !el.classList.contains("visibility-hidden"));
+                if (letterElement) {
+                    const letterId = letterElement.getAttribute("id");
+                    wordValidatorDiv.innerText = "";
+                    inputWord.push({ letter, id: letterId });
+                    letterElement.classList.add("visibility-hidden");
+                    renderInputLetters();
+                }
+            }
+        };
 
+        document.body.addEventListener("keyup",handleKeyUpLetter)
         document.body.addEventListener("keydown",  handleKeyDown)
         document.body.addEventListener("keydown",  stopLettersBody)
         slagalicaStopBtn.addEventListener("click",stopLetters)
@@ -359,8 +375,6 @@ export class GameUi{
             }
             
         })
-                        
-        
 
         slagalicaContainer.append(slagalicaInput,wordValidatorDiv,slagalicaLetters,slagalicaStopBtn)
         parent.appendChild(slagalicaContainer)

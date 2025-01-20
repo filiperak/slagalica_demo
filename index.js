@@ -4,6 +4,7 @@ import path from "path"
 import dotenv from "dotenv"
 import { fileURLToPath } from "url"
 import handleSocket from "./socket/socket.js";
+import cors from "cors"
 
 
 dotenv.config()
@@ -13,6 +14,7 @@ const __dirname = path.dirname(__filename)
 const PORT = process.env.PORT || 3500
 
 const app = express()
+app.use(cors())
 app.use(express.static(path.join(__dirname,"public")))
 
 const expressServer = app.listen(PORT,() => {
