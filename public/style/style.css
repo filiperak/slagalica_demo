@@ -168,6 +168,21 @@ body {
 .game-container {
   z-index: 2;
 }
+.game-container > header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.game-container--clock{
+  border-radius: var(--border-radious);
+  background-color: var(--dark-blue);
+  color: var(--dark-primary);
+  padding: 8px;
+  text-align: center;
+}
+.game-container--clock >span{
+  margin-left: 10px;
+}
 .game-menu--header {
   display: flex;
   justify-content: space-between;

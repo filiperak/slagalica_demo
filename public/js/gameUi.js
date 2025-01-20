@@ -148,13 +148,29 @@ export class GameUi{
         gameContainer.classList.add("game-container")
 
         const gameContainerHeader = document.createElement("header")
+
         const backButton = document.createElement("div")
         backButton.classList.add("game-container--back-btn")
         backButton.innerText = "\u2190 Back"
-        gameContainerHeader.appendChild(backButton)
+        
+
+        //time functions
+        const time = 90
+        // const startTimer = () => {
+        //     setInterval(() => {
+        //         time -= 1
+        //     },10 * 100)
+        // }
+        // startTimer()
+ 
+        const clock = document.createElement("div")
+        clock.classList.add("game-container--clock")
+        clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`
+        
+        gameContainerHeader.append(backButton,clock)
+        ///////////////////////////////////////////
 
         const header = document.createElement("h1")
-
         header.innerText = capitalizeAfterSpaces(game)
 
 
