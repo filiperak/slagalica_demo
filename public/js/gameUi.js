@@ -170,7 +170,14 @@ export class GameUi{
         const updateClock = () => {
             time -= 1;
             clock.querySelector("span").innerText = time;
+            if(time < 16){
+                clock.innerHTML = ''
+                clock.style.backgroundColor = "red"
+                clock.innerHTML = `<i class="fa-regular fa-clock fa-beat-fade"></i><span>${time}</span>`
+
+            }
             if (time <= 0) {
+                clock.innerHTML = `<i class="fa-regular fa-clock"></i><span>${time}</span>`
                 clearInterval(timerInterval);
                 if(gameEndCallback){
                     gameEndCallback()
@@ -341,7 +348,6 @@ export class GameUi{
 
         const submitWord = () => {
             const word = inputWord.map(elem => elem.letter).join("")
-            console.log(word);
             this._socket.emit("sendSlagalicaScore",{gameId:this._gameId,word})  
             stopTimer()
             removeAllEventListeners(slagalicaContainer)
@@ -412,7 +418,9 @@ export class GameUi{
         parent.appendChild(slagalicaContainer)
         if(time < 1){
             submitWord()
-            return
+            this.removeEveryElement()
+            this.createGameMenu()
+            //jeftiono rešenje da bi se izbegao bug, EL se nnebrišu ako vreme isteknt a sad te samo izbaci iz igre i vrati u meni
         }
     }
     mojBroj(){
