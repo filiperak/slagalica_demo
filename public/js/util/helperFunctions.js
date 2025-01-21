@@ -28,6 +28,8 @@ export const capitalizeAfterSpaces = (str) => {
   }
   
 export const removeAllEventListeners = (container) => {
-    const newContainer = container.cloneNode(true);
-    container.parentNode.replaceChild(newContainer, container);
-}
+    if (container && container.parentNode) {
+        const newContainer = container.cloneNode(true);
+        container.parentNode.replaceChild(newContainer, container);
+    }
+};
