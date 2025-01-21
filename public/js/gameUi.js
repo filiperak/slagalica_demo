@@ -240,7 +240,9 @@ export class GameUi{
         
         const slagalicaInputLine = document.createElement("div")
         slagalicaInputLine.classList.add("slagalica-container--input-line")
-        slagalicaInput.append(slagalicaInputContainer,slagalicaInputLine)
+        slagalicaInput.append(slagalicaInputContainer)
+
+        if(time > 0) slagalicaInput.append(slagalicaInputLine)
        
         const checkWordBtn = document.createElement("div")
         checkWordBtn.classList.add("slagalica-container--check-btn")
@@ -360,6 +362,18 @@ export class GameUi{
                     break
             }
         }       
+
+        const wordCheckResultHandler = (data) => {
+            if (data) {
+                if (data.validated) {
+                    wordValidatorDiv.innerText = "👋Reč je prihvaćena";
+                    wordValidatorDiv.style.color = "#00ff00";
+                } else {
+                    wordValidatorDiv.innerText = "❌Reč nije prihvaćena";
+                    wordValidatorDiv.style.color = "red";
+                }
+            }
+        };
         
         const handleKeyUpLetter = (e) => {
             const letter = keyCodeToLetterMap[e.keyCode];
@@ -391,20 +405,10 @@ export class GameUi{
                 wordValidatorDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin-pulse"></i>';
             })
 
-        this._socket.on("wordCheckResult",data => {
-            if(data){
-                if(data.validated){
-                    wordValidatorDiv.innerText = "👋Reč je prihvaćena"
-                    wordValidatorDiv.style.color = "#00ff00"
-                }else{
-                    wordValidatorDiv.innerText = "❌Reč nije prihvaćena"
-                    wordValidatorDiv.style.color = "red"
-                }
-            }
-            
-        })
+        this._socket.on("wordCheckResult",wordCheckResultHandler)
 
-        slagalicaContainer.append(slagalicaInput,wordValidatorDiv,slagalicaLetters,slagalicaStopBtn)
+        slagalicaContainer.append(slagalicaInput,wordValidatorDiv,slagalicaLetters)
+        if(time > 0) slagalicaContainer.append(slagalicaStopBtn)
         parent.appendChild(slagalicaContainer)
         if(time < 1){
             submitWord()
