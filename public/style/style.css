@@ -179,6 +179,7 @@ body {
   color: var(--dark-primary);
   padding: 8px;
   text-align: center;
+  width: 72px;
 }
 .game-container--clock >span{
   margin-left: 10px;

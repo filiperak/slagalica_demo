@@ -152,20 +152,32 @@ export class GameUi{
         const backButton = document.createElement("div")
         backButton.classList.add("game-container--back-btn")
         backButton.innerText = "\u2190 Back"
+        backButton.addEventListener("click",() => {
+            clearInterval(timerInterval);
+            this.removeEveryElement()
+            this.createGameMenu()
+        })
         
 
         //time functions
-        const time = 90
-        // const startTimer = () => {
-        //     setInterval(() => {
-        //         time -= 1
-        //     },10 * 100)
-        // }
-        // startTimer()
- 
+        let time = 10
         const clock = document.createElement("div")
         clock.classList.add("game-container--clock")
         clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`
+        
+        let gameEndCallback;
+
+        const updateClock = () => {
+            time -= 1;
+            clock.querySelector("span").innerText = time;
+            if (time <= 0) {
+                clearInterval(timerInterval);
+                if(gameEndCallback){
+                    gameEndCallback()
+                }
+            }
+        };
+        const timerInterval = setInterval(updateClock, 1000);
         
         gameContainerHeader.append(backButton,clock)
         ///////////////////////////////////////////
@@ -176,14 +188,10 @@ export class GameUi{
 
         gameContainer.append(gameContainerHeader,header)
 
-        backButton.addEventListener("click",() => {
-            this.removeEveryElement()
-            this.createGameMenu()
-        })
-
         switch(game){
             case "slagalica":
-                this.slagalica(data,gameContainer)
+                gameEndCallback = () => this.slagalica(data, gameContainer, () => clearInterval(timerInterval), time);
+                this.slagalica(data,gameContainer,() => clearInterval(timerInterval),time)
                 break
             case "moj broj":
                 this.mojBroj()
@@ -206,8 +214,8 @@ export class GameUi{
                 
                 return gameContainer
             }
-    slagalica(data,parent){
-        
+    slagalica(data,parent,stopTimer,time){
+
         const inputWord = []
         const letters = ["A","B","C","Č","Ć","D","Dž","Đ","E","F","G","H","I","J","K","L","Lj","M","N","Nj","O","P","R","S","Š","T","U","V","Z","Ž"]
         const intervals = [];
@@ -249,16 +257,19 @@ export class GameUi{
         slagalicaStopBtn.classList.add("slagalica-container--stop-btn")
         slagalicaStopBtn.innerText = "Stop"
        
-       for(let i =  0; i < 12; i++){
-           const letter = document.createElement("p")
-           letter.classList.add("slagalica--letter")
-           const interval = setInterval(() => {
-               const randomIndex = Math.floor(Math.random() * letters.length)
-               letter.innerText = letters[randomIndex]
-           },100)
-           intervals.push(interval);
-           slagalicaLetters.appendChild(letter)    
-       }
+        if(time > 0){
+            for(let i =  0; i < 12; i++){
+                const letter = document.createElement("p")
+                letter.classList.add("slagalica--letter")
+                const interval = setInterval(() => {
+                    const randomIndex = Math.floor(Math.random() * letters.length)
+                    letter.innerText = letters[randomIndex]
+                },100)
+                intervals.push(interval);
+                slagalicaLetters.appendChild(letter)    
+            }
+
+        }
 
        const renderInputLetters = () => {
            slagalicaInputContainer.innerHTML = ""
@@ -330,6 +341,7 @@ export class GameUi{
             const word = inputWord.map(elem => elem.letter).join("")
             console.log(word);
             this._socket.emit("sendSlagalicaScore",{gameId:this._gameId,word})  
+            stopTimer()
             removeAllEventListeners(slagalicaContainer)
             document.body.removeEventListener("keydown", handleKeyDown)
             document.body.removeEventListener("keyup",handleKeyUpLetter)
@@ -394,6 +406,10 @@ export class GameUi{
 
         slagalicaContainer.append(slagalicaInput,wordValidatorDiv,slagalicaLetters,slagalicaStopBtn)
         parent.appendChild(slagalicaContainer)
+        if(time < 1){
+            submitWord()
+            return
+        }
     }
     mojBroj(){
 
