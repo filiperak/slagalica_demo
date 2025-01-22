@@ -320,3 +320,34 @@ text-align: center;
   height: 16px;
   font-weight: 600;
 }
+
+/* /////////////////SKOCKO STYLES */
+/* Add this CSS to your stylesheet */
+
+ .skocko-container {
+
+}
+
+.skocko-card-container {
+  display: contents; /* Use contents to allow the cards to be direct children of the grid */
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 6 equal columns */
+  gap: 10px;
+}
+
+.skocko-card {
+  background-color: #f0f0f0; /* Adjust the background color as needed */
+  border: 1px solid #ccc; /* Adjust the border as needed */
+  padding: 20px; /* Adjust the padding as needed */
+  text-align: center; /* Center the text */
+  font-size: 1.5em; /* Adjust the font size as needed */
+}
+
+.skocko-score-display {
+  grid-column: span 2; /* Make the score display span 2 columns */
+  background-color: #e0e0e0; /* Adjust the background color as needed */
+  border: 1px solid #bbb; /* Adjust the border as needed */
+  padding: 20px; /* Adjust the padding as needed */
+  text-align: center; /* Center the text */
+  font-size: 1.5em; /* Adjust the font size as needed */
+}
