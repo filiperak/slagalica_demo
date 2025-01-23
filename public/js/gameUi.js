@@ -219,8 +219,8 @@ export class GameUi {
       case "spojnice":
         this.spojnice();
         break;
-      case "skocko":
-        this.skocko();
+      case "skočko":
+        this.skocko(data, gameContainer);
         break;
       case "ko zna zna":
         this.koZnaZna();
@@ -478,7 +478,15 @@ export class GameUi {
   }
   mojBroj() {}
   spojnice() {}
-  skocko() {
+  skocko(data, parent) {
+    const imagePaths = [
+      "../../assets/caro.png",
+      "../../assets/spades.png",
+      "../../assets/herz.png",
+      "../../assets/owl_logo.png",
+      "../../assets/star.png",
+      "../../assets/tref.png",
+    ];
     const skockoContainer = document.createElement("section");
     skockoContainer.classList.add("skocko-container");
 
@@ -489,19 +497,42 @@ export class GameUi {
       for (let i = 0; i < 4; i++) {
         const card = document.createElement("div");
         card.classList.add("skocko-card");
-        card.innerText = C;
+        card.innerText = '  ';
 
         cardContainer.appendChild(card);
       }
 
       const scoreDisplay = document.createElement("aside");
       scoreDisplay.classList.add("skocko-score-display");
-      scoreDisplay = innerText = "result";
+      scoreDisplay.innerText = "result";
       cardContainer.appendChild(scoreDisplay);
       skockoContainer.append(cardContainer);
     };
     createBoard();
-    this._element.append(skockoContainer);
+    createBoard();
+    createBoard();
+    createBoard();
+    createBoard();
+    createBoard();
+
+    const createCardOptions = () => {
+      const cardOptionMenu = document.createElement("section");
+      cardOptionMenu.classList.add("skocko-card-option-menu");
+
+      imagePaths.forEach((elem, index) => {
+        const inputCard = document.createElement("div");
+        inputCard.classList.add("skocko-input-card");
+        const img = document.createElement("img");
+        img.setAttribute("src", elem);
+        inputCard.appendChild(img);
+
+        cardOptionMenu.appendChild(inputCard);
+      });
+      skockoContainer.appendChild(cardOptionMenu)
+    };
+    createCardOptions();
+
+    parent.append(skockoContainer);
   }
   koZnaZna() {}
   asocijacije() {}
