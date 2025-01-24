@@ -489,6 +489,7 @@ export class GameUi {
     ];
     const cardIdList = []
     let clickCounter = 0
+    let cardComb = []
 
     const skockoContainer = document.createElement("section");
     skockoContainer.classList.add("skocko-container");
@@ -510,13 +511,18 @@ export class GameUi {
       
             const scoreDisplay = document.createElement("aside");
             scoreDisplay.classList.add("skocko-score-display");
-            scoreDisplay.innerText = "result";
+            // scoreDisplay.innerText = "result";
+            for(let i = 0; i < 4; i++){
+                const scoreCircle = document.createElement("div")
+                scoreCircle.classList.add("score-circle")
+                scoreCircle.setAttribute("id",`skocko_score_circle_${i}`)
+                scoreDisplay.appendChild(scoreCircle)
+            }
             cardContainer.appendChild(scoreDisplay);
             skockoContainer.append(cardContainer);
         }
     };
-    createBoard();
-
+    
     const handleCardAdd = (index) => {
         console.log(index,clickCounter);
         
@@ -525,13 +531,16 @@ export class GameUi {
         element.classList.add("skocko-input-card")
         element.classList.toggle("skocko-card");
         clickCounter ++
+        cardComb.push(index)
+        checkScore()
+
     }
 
     const createCardOptions = () => {
-      const cardOptionMenu = document.createElement("section");
-      cardOptionMenu.classList.add("skocko-card-option-menu");
+        const cardOptionMenu = document.createElement("section");
+        cardOptionMenu.classList.add("skocko-card-option-menu");
 
-      imagePaths.forEach((elem, index) => {
+        imagePaths.forEach((elem, index) => {
         const inputCard = document.createElement("div");
         inputCard.classList.add("skocko-input-card");
         const img = document.createElement("img");
@@ -539,11 +548,20 @@ export class GameUi {
         inputCard.appendChild(img);
 
         inputCard.addEventListener("click",() => handleCardAdd(index))
-
+        
         cardOptionMenu.appendChild(inputCard);
       });
       skockoContainer.appendChild(cardOptionMenu)
     };
+
+    const checkScore = () => {
+        if(clickCounter % 4 === 0){
+            console.log(cardComb);
+            cardComb = []
+        }
+    }
+
+    createBoard();
     createCardOptions();
 
     parent.append(skockoContainer);

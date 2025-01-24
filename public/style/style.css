@@ -357,6 +357,9 @@ text-align: center;
 .skocko-score-display {
   grid-column: span 2; 
   background-color: var(--dark-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
 }
 .skocko-card-option-menu {
 
@@ -381,3 +384,10 @@ text-align: center;
   height: 20px;
   width: 20px;
 }  */
+
+.score-circle{
+  border-radius: 50%;
+  height: 23px;
+  width: 23px;
+  background-color: var(--ligth-primary);
+}
