@@ -478,42 +478,54 @@ export class GameUi {
   }
   mojBroj() {}
   spojnice() {}
-  skocko(data, parent) {
-    const imagePaths = [
-      "../../assets/caro.png",
-      "../../assets/spades.png",
+  skocko(data, parent,stopTimer,time) {
+      const imagePaths = [
+          "../../assets/tref.png",
+          "../../assets/owl_logo.png",
+       "../../assets/caro.png",
+        "../../assets/spades.png",
       "../../assets/herz.png",
-      "../../assets/owl_logo.png",
       "../../assets/star.png",
-      "../../assets/tref.png",
     ];
+    const cardIdList = []
+    let clickCounter = 0
+
     const skockoContainer = document.createElement("section");
     skockoContainer.classList.add("skocko-container");
 
     const createBoard = () => {
-      const cardContainer = document.createElement("aside");
-      cardContainer.classList.add("skocko-card-container");
-
-      for (let i = 0; i < 4; i++) {
-        const card = document.createElement("div");
-        card.classList.add("skocko-card");
-        card.innerText = '  ';
-
-        cardContainer.appendChild(card);
-      }
-
-      const scoreDisplay = document.createElement("aside");
-      scoreDisplay.classList.add("skocko-score-display");
-      scoreDisplay.innerText = "result";
-      cardContainer.appendChild(scoreDisplay);
-      skockoContainer.append(cardContainer);
+        for(let i = 0; i < 6; i++){
+            const cardContainer = document.createElement("aside");
+            cardContainer.classList.add("skocko-card-container");
+      
+            for (let j = 0; j < 4; j++) {
+              const card = document.createElement("div");
+              card.classList.add("skocko-card");
+              card.setAttribute("id",`skocko_${i}${j}`)
+              cardIdList.push(`skocko_${i}${j}`)
+              card.innerText = '  ';
+      
+              cardContainer.appendChild(card);
+            }
+      
+            const scoreDisplay = document.createElement("aside");
+            scoreDisplay.classList.add("skocko-score-display");
+            scoreDisplay.innerText = "result";
+            cardContainer.appendChild(scoreDisplay);
+            skockoContainer.append(cardContainer);
+        }
     };
     createBoard();
-    createBoard();
-    createBoard();
-    createBoard();
-    createBoard();
-    createBoard();
+
+    const handleCardAdd = (index) => {
+        console.log(index,clickCounter);
+        
+        const element = document.getElementById(`${cardIdList[clickCounter]}`)        
+        element.innerHTML = `<img src="${imagePaths[index]}"/>`
+        element.classList.add("skocko-input-card")
+        element.classList.toggle("skocko-card");
+        clickCounter ++
+    }
 
     const createCardOptions = () => {
       const cardOptionMenu = document.createElement("section");
@@ -525,6 +537,8 @@ export class GameUi {
         const img = document.createElement("img");
         img.setAttribute("src", elem);
         inputCard.appendChild(img);
+
+        inputCard.addEventListener("click",() => handleCardAdd(index))
 
         cardOptionMenu.appendChild(inputCard);
       });
