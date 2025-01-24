@@ -11,9 +11,7 @@ export class Game {
             spojnice: {
                 
             },
-            skocko: {
-                
-            },
+            skocko: this.createSkocko(),
             koZnaZna: {
                 
             },
@@ -104,5 +102,34 @@ export class Game {
         const isValid = srDictCapital.includes(str);
         const score = isValid ? str.length * 2 : 0; 
         return { validated: isValid, score };
+    }
+    createSkocko(){
+        const skockoComb = []
+        const createRandIndex = () => Math.floor(Math.random () *6)
+        for(let i = 0; i < 4; i++){
+            skockoComb.push(createRandIndex())
+        }
+        return skockoComb
+    }
+    validateSkocko(inputComb){
+        const correctComb = this.gameState.skocko
+        let correctNumbers = 0
+        let correctPositions = 0
+
+        const correctCombCopy = [...correctComb]
+
+        inputComb.forEach((num,index) => {
+            if(num === correctComb[index]){
+                correctPositions ++
+                correctCombCopy[index] = null
+            }
+        })
+        inputComb.forEach((num,index) => {
+            if(num !== correctComb[index] && correctCombCopy,includes(num)){
+                correctNumbers ++
+                correctCombCopy[correctCombCopy.indexOf(num)] == null
+            }
+        })
+        return {correctNumbers,correctPositions}
     }
 }

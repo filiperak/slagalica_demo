@@ -511,7 +511,6 @@ export class GameUi {
       
             const scoreDisplay = document.createElement("aside");
             scoreDisplay.classList.add("skocko-score-display");
-            // scoreDisplay.innerText = "result";
             for(let i = 0; i < 4; i++){
                 const scoreCircle = document.createElement("div")
                 scoreCircle.classList.add("score-circle")
@@ -558,6 +557,7 @@ export class GameUi {
         if(clickCounter % 4 === 0){
             console.log(cardComb);
             cardComb = []
+            
         }
     }
 
