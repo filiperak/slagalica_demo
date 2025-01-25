@@ -490,6 +490,7 @@ export class GameUi {
     const cardIdList = []
     let clickCounter = 0
     let cardComb = []
+    let rowCounter = 0;
 
     const skockoContainer = document.createElement("section");
     skockoContainer.classList.add("skocko-container");
@@ -511,10 +512,11 @@ export class GameUi {
       
             const scoreDisplay = document.createElement("aside");
             scoreDisplay.classList.add("skocko-score-display");
-            for(let i = 0; i < 4; i++){
+            for(let k = 0; k < 4; k++){
                 const scoreCircle = document.createElement("div")
-                scoreCircle.classList.add("score-circle")
-                scoreCircle.setAttribute("id",`skocko_score_circle_${i}`)
+                scoreCircle.classList.add("score-circle", `score-circle_${i}`);
+
+                scoreCircle.setAttribute("id",`skocko_score_circle_${k}`)
                 scoreDisplay.appendChild(scoreCircle)
             }
             cardContainer.appendChild(scoreDisplay);
@@ -552,14 +554,42 @@ export class GameUi {
       });
       skockoContainer.appendChild(cardOptionMenu)
     };
+    
+    this._socket.on("skockoCheckResult",data => {
+      console.log(cardComb,data);
+      //oboji u zuto/crveno
+      const resultCircles = document.querySelectorAll(`.score-circle_${rowCounter -1}`)
+      let positionCount = data.correctPositions;
+      let numberCount = data.correctNumbers;
+      // console.log(resultCircles);
+      
 
+      resultCircles.forEach(e => {
+        if (positionCount > 0) {
+          e.style.backgroundColor = "red";
+          positionCount--;
+      }else if (numberCount > 0) {
+          e.style.backgroundColor = "yellow";
+          numberCount--;
+      } else {
+          e.style.backgroundColor = ""
+      }
+      })
+      
+    })
     const checkScore = () => {
         if(clickCounter % 4 === 0){
+          console.log(rowCounter);
+          
             console.log(cardComb);
+            this._socket.emit("checkSkocko",{ gameId: this._gameId, cardComb })
+            
             cardComb = []
+            rowCounter ++
             
         }
     }
+
 
     createBoard();
     createCardOptions();

@@ -105,6 +105,13 @@ const handleSocket = (io) => {
                 console.error(`Game with id: ${gameId} not found`);
             }
         })
+        socket.on("checkSkocko",({gameId,cardComb}) => {
+            const game = games[gameId]
+            if(game){
+                const validateSkocko = game.validateSkocko(cardComb)
+                socket.emit("skockoCheckResult", validateSkocko)
+            }
+        })
 
         // socket.on("requestGame",({gameId,singleGame}) => {
         //     const game = games[gameId]
