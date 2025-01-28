@@ -235,7 +235,7 @@ export class GameUi {
         this.spojnice();
         break;
       case "skočko":
-        this.skocko(data, gameContainer);
+        this.skocko(data, gameContainer,() => clearInterval(timerInterval),time);
         break;
       case "ko zna zna":
         this.koZnaZna();
@@ -508,6 +508,14 @@ export class GameUi {
     let rowCounter = 0;
     let subComb;
 
+    const timerCheckInterval = setInterval(() => {
+      if (time <= 0) {
+          clearInterval(timerCheckInterval);
+          submitScore();
+      }
+      time--;
+    }, 1000);
+
     const skockoContainer = document.createElement("section");
     skockoContainer.classList.add("skocko-container");
 
@@ -542,7 +550,7 @@ export class GameUi {
 
     const handleCardAdd = (index) => {
       const element = document.getElementById(`${cardIdList[clickCounter]}`);
-      element.innerHTML = `<img src="${imagePaths[index]}"/>`;
+      element.innerHTML = `<img src="${imagePaths[index]}"/>`; //PROVERI OVVO
       element.classList.add("skocko-input-card");
       element.classList.toggle("skocko-card");
       clickCounter++;
@@ -551,6 +559,7 @@ export class GameUi {
 
       if (clickCounter === cardIdList.length) {
         submitScore();
+        stopTimer()
       }
     };
 
@@ -603,7 +612,11 @@ export class GameUi {
         gameId: this._gameId,
         cardComb: subComb,
       });
+      stopTimer()
+      removeAllEventListeners(skockoContainer)
     };
+
+    if(time === 0) submitScore()
 
     createBoard();
     createCardOptions();

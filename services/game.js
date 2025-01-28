@@ -118,22 +118,23 @@ export class Game {
         let score = 0
 
         const correctCombCopy = [...correctComb]
-
-        inputComb.forEach((num,index) => {
-            if(num === correctComb[index]){
-                correctPositions ++
-                correctCombCopy[index] = null
-                score += 3
-            }
-        })
-        inputComb.forEach((num,index) => {
-            if(num !== correctComb[index] && correctCombCopy.includes(num)){
-                correctNumbers ++
-                correctCombCopy[correctCombCopy.indexOf(num)] == null
-                score += 3
-            }
-        })
-        if(correctPositions === 4) score = 30
+        if(inputComb){
+            inputComb.forEach((num,index) => {
+                if(num === correctComb[index]){
+                    correctPositions ++
+                    correctCombCopy[index] = null
+                    score += 3
+                }
+            })
+            inputComb.forEach((num,index) => {
+                if(num !== correctComb[index] && correctCombCopy.includes(num)){
+                    correctNumbers ++
+                    correctCombCopy[correctCombCopy.indexOf(num)] == null
+                    score += 3
+                }
+            })
+            if(correctPositions === 4) score = 30
+        }
 
         return {correctNumbers,correctPositions,score}
     }
