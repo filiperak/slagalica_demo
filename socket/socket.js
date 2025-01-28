@@ -100,7 +100,7 @@ const handleSocket = (io) => {
                 console.log("SUBMITTED SLAGALICA SCORE,", validatedWord.score, validatedWord);
                 
                 
-                socket.emit("scoreSubmited",{data:validatedWord.score})
+                socket.emit("scoreSubmitedSlagalica",{data:validatedWord.score})
             }else {
                 console.error(`Game with id: ${gameId} not found`);
             }
@@ -109,7 +109,21 @@ const handleSocket = (io) => {
             const game = games[gameId]
             if(game){
                 const validateSkocko = game.validateSkocko(cardComb)
+                if(validateSkocko.correctPositions === 4){
+                    console.log(validateSkocko);
+                    
+                    game.addScore("skocko",socket.id,validateSkocko.score)
+                    socket.emit("scoreSubmitedSkocko",{data:validateSkocko.score})
+                }
                 socket.emit("skockoCheckResult", validateSkocko)
+            }
+        })
+        socket.on("submitSkocko",({gameId,cardComb}) => {
+            const game = games[gameId]
+            if(game){
+                const validateSkocko = game.validateSkocko(cardComb)
+                game.addScore("skocko",socket.id,validateSkocko.score)                    
+                socket.emit("scoreSubmitedSkocko",{data:validateSkocko.score})
             }
         })
 

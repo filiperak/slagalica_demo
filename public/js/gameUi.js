@@ -18,6 +18,7 @@ export class GameUi {
     this._socket.off("playersState");
     this._socket.off("gameData");
     this._socket.off("scoreSubmited");
+    this._socket.off("scoreSubmitedSkocko");
 
     //add request to fetch game data
     this._socket.emit("requestPlayerData", this._gameId);
@@ -123,12 +124,26 @@ export class GameUi {
 
       this._element.appendChild(menu);
     });
-    this._socket.on("scoreSubmited", (score) => {
-      const text = `Osvojili ste ${score.data} poena`;
+    const popupMessage = (t) => {
+      const text = `Osvojili ste ${t.data} poena`;
       this.drawPoopup(text, () => {
         console.log(" created");
       });
-    });
+    };
+    // this._socket.once("scoreSubmitedSlagalica",  popupMessage);
+    // this._socket.once("scoreSubmitedSkocko", popupMessage);
+    if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
+      this._socket.on("scoreSubmitedSlagalica", popupMessage);
+    }
+    if (!this._socket.hasListeners("scoreSubmitedSkocko")) {
+      this._socket.on("scoreSubmitedSkocko", popupMessage);
+    }
+    // this._socket.on("scoreSubmitedSkocko", (score) => {
+    //   const text = `Osvojili ste ${score.data} poena`;
+    //   this.drawPoopup(text, () => {
+    //     console.log(" created");
+    //   });
+    // });
   }
 
   createScoreBoard() {
@@ -478,118 +493,117 @@ export class GameUi {
   }
   mojBroj() {}
   spojnice() {}
-  skocko(data, parent,stopTimer,time) {
-      const imagePaths = [
-          "../../assets/tref.png",
-          "../../assets/owl_logo.png",
-       "../../assets/caro.png",
-        "../../assets/spades.png",
+  skocko(data, parent, stopTimer, time) {
+    const imagePaths = [
+      "../../assets/tref.png",
+      "../../assets/owl_logo.png",
+      "../../assets/caro.png",
+      "../../assets/spades.png",
       "../../assets/herz.png",
       "../../assets/star.png",
     ];
-    const cardIdList = []
-    let clickCounter = 0
-    let cardComb = []
+    const cardIdList = [];
+    let clickCounter = 0;
+    let cardComb = [];
     let rowCounter = 0;
+    let subComb;
 
     const skockoContainer = document.createElement("section");
     skockoContainer.classList.add("skocko-container");
 
     const createBoard = () => {
-        for(let i = 0; i < 6; i++){
-            const cardContainer = document.createElement("aside");
-            cardContainer.classList.add("skocko-card-container");
-      
-            for (let j = 0; j < 4; j++) {
-              const card = document.createElement("div");
-              card.classList.add("skocko-card");
-              card.setAttribute("id",`skocko_${i}${j}`)
-              cardIdList.push(`skocko_${i}${j}`)
-              card.innerText = '  ';
-      
-              cardContainer.appendChild(card);
-            }
-      
-            const scoreDisplay = document.createElement("aside");
-            scoreDisplay.classList.add("skocko-score-display");
-            for(let k = 0; k < 4; k++){
-                const scoreCircle = document.createElement("div")
-                scoreCircle.classList.add("score-circle", `score-circle_${i}`);
+      for (let i = 0; i < 6; i++) {
+        const cardContainer = document.createElement("aside");
+        cardContainer.classList.add("skocko-card-container");
 
-                scoreCircle.setAttribute("id",`skocko_score_circle_${k}`)
-                scoreDisplay.appendChild(scoreCircle)
-            }
-            cardContainer.appendChild(scoreDisplay);
-            skockoContainer.append(cardContainer);
+        for (let j = 0; j < 4; j++) {
+          const card = document.createElement("div");
+          card.classList.add("skocko-card");
+          card.setAttribute("id", `skocko_${i}${j}`);
+          cardIdList.push(`skocko_${i}${j}`);
+          card.innerText = "  ";
+
+          cardContainer.appendChild(card);
         }
-    };
-    
-    const handleCardAdd = (index) => {
-        console.log(index,clickCounter);
-        
-        const element = document.getElementById(`${cardIdList[clickCounter]}`)        
-        element.innerHTML = `<img src="${imagePaths[index]}"/>`
-        element.classList.add("skocko-input-card")
-        element.classList.toggle("skocko-card");
-        clickCounter ++
-        cardComb.push(index)
-        checkScore()
 
-    }
+        const scoreDisplay = document.createElement("aside");
+        scoreDisplay.classList.add("skocko-score-display");
+        for (let k = 0; k < 4; k++) {
+          const scoreCircle = document.createElement("div");
+          scoreCircle.classList.add("score-circle", `score-circle_${i}`);
+
+          scoreCircle.setAttribute("id", `skocko_score_circle_${k}`);
+          scoreDisplay.appendChild(scoreCircle);
+        }
+        cardContainer.appendChild(scoreDisplay);
+        skockoContainer.append(cardContainer);
+      }
+    };
+
+    const handleCardAdd = (index) => {
+      const element = document.getElementById(`${cardIdList[clickCounter]}`);
+      element.innerHTML = `<img src="${imagePaths[index]}"/>`;
+      element.classList.add("skocko-input-card");
+      element.classList.toggle("skocko-card");
+      clickCounter++;
+      cardComb.push(index);
+      checkScore();
+
+      if (clickCounter === cardIdList.length) {
+        submitScore();
+      }
+    };
 
     const createCardOptions = () => {
-        const cardOptionMenu = document.createElement("section");
-        cardOptionMenu.classList.add("skocko-card-option-menu");
+      const cardOptionMenu = document.createElement("section");
+      cardOptionMenu.classList.add("skocko-card-option-menu");
 
-        imagePaths.forEach((elem, index) => {
+      imagePaths.forEach((elem, index) => {
         const inputCard = document.createElement("div");
         inputCard.classList.add("skocko-input-card");
         const img = document.createElement("img");
         img.setAttribute("src", elem);
         inputCard.appendChild(img);
-
-        inputCard.addEventListener("click",() => handleCardAdd(index))
-        
+        inputCard.addEventListener("click", () => handleCardAdd(index));
         cardOptionMenu.appendChild(inputCard);
       });
-      skockoContainer.appendChild(cardOptionMenu)
+      skockoContainer.appendChild(cardOptionMenu);
     };
-    
-    this._socket.on("skockoCheckResult",data => {
-      console.log(cardComb,data);
-      //oboji u zuto/crveno
-      const resultCircles = document.querySelectorAll(`.score-circle_${rowCounter -1}`)
+
+    this._socket.on("skockoCheckResult", (data) => {
+      const resultCircles = document.querySelectorAll(`.score-circle_${rowCounter - 1}`);
       let positionCount = data.correctPositions;
       let numberCount = data.correctNumbers;
-      // console.log(resultCircles);
-      
 
-      resultCircles.forEach(e => {
+      resultCircles.forEach((e) => {
         if (positionCount > 0) {
           e.style.backgroundColor = "red";
           positionCount--;
-      }else if (numberCount > 0) {
+        } else if (numberCount > 0) {
           e.style.backgroundColor = "yellow";
           numberCount--;
-      } else {
-          e.style.backgroundColor = ""
-      }
-      })
-      
-    })
-    const checkScore = () => {
-        if(clickCounter % 4 === 0){
-          console.log(rowCounter);
-          
-            console.log(cardComb);
-            this._socket.emit("checkSkocko",{ gameId: this._gameId, cardComb })
-            
-            cardComb = []
-            rowCounter ++
-            
+        } else {
+          e.style.backgroundColor = "";
         }
-    }
+      });
+    });
+    const checkScore = () => {
+      if (clickCounter % 4 === 0) {
+        console.log(rowCounter);
+        console.log(cardComb);
+        this._socket.emit("checkSkocko", { gameId: this._gameId, cardComb });
+        subComb = [...cardComb];
+        cardComb = [];
+        rowCounter++;
+      }
+    };
 
+    const submitScore = () => {
+      this._socket.emit("submitSkocko", {
+        gameId: this._gameId,
+        cardComb: subComb,
+      });
+    };
 
     createBoard();
     createCardOptions();

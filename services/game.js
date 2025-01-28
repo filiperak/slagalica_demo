@@ -115,6 +115,7 @@ export class Game {
         const correctComb = this.gameState.skocko
         let correctNumbers = 0
         let correctPositions = 0
+        let score = 0
 
         const correctCombCopy = [...correctComb]
 
@@ -122,14 +123,18 @@ export class Game {
             if(num === correctComb[index]){
                 correctPositions ++
                 correctCombCopy[index] = null
+                score += 3
             }
         })
         inputComb.forEach((num,index) => {
             if(num !== correctComb[index] && correctCombCopy.includes(num)){
                 correctNumbers ++
                 correctCombCopy[correctCombCopy.indexOf(num)] == null
+                score += 3
             }
         })
-        return {correctNumbers,correctPositions}
+        if(correctPositions === 4) score = 30
+
+        return {correctNumbers,correctPositions,score}
     }
 }
