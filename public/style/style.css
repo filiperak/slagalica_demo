@@ -136,6 +136,9 @@ body {
   font-size: 1.5rem;
   color: var(--dark-blue);
 }
+.popup-container--message{
+  padding: 40px 10px;
+}
 .loading-modal-message :nth-child(2){
   font-size: 2rem;
   margin: 10px 0;
@@ -340,7 +343,8 @@ text-align: center;
 
 .skocko-card ,
 .skocko-score-display,
-.skocko-input-card{
+.skocko-input-card,
+.popup-combination-skocko--card{
   font-size: 20px;
   padding: 15px;
   text-align: center;
@@ -349,7 +353,8 @@ text-align: center;
   box-shadow: var(--box-shadow);
 }
 .skocko-card ,
-.skocko-input-card{
+.skocko-input-card,ž
+.popup-container--message{
   background-color: var(--ligth-primary);
   color: var(--dark-blue);
 }
@@ -376,7 +381,8 @@ text-align: center;
   padding: 4.2px 0px;
   cursor: pointer; 
 }
-.skocko-input-card > img{
+.skocko-input-card > img,
+.popup-combination-skocko--card > img{
   height: 40px;
   width: 40px;
 } 
@@ -390,4 +396,21 @@ text-align: center;
   height: 23px;
   width: 23px;
   background-color: var(--ligth-primary);
+}
+
+.popup-combination-skocko > p{
+  font-size: 1rem;
+  margin-top: 5px;
+}
+.popup-combination-skocko > section{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.popup-combination-skocko--card{
+  margin: 4px;
+  background-color: var(--ligth-primary);
+}
+.popup-combination-skocko--card > img {
+  
 }

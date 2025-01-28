@@ -5,12 +5,23 @@ import {
 import { keyCodeToLetterMap } from "./util/keyCodes.js";
 
 export class GameUi {
-  constructor(element, players, gameId, socket) {
+  // constructor(element, players, gameId, socket) {
+  constructor(element, game, socket) {
     this._element = element;
-    this._players = players;
-    this._gameId = gameId;
+    this._players = game.players;
+    this._gameId = game.gameId;
+    this._gameState = game.gameState;
     this._socket = socket;
     this.reversePlayerIndex();
+    this._imgPaths = [
+      "../../assets/tref.png",
+      "../../assets/owl_logo.png",
+      "../../assets/caro.png",
+      "../../assets/spades.png",
+      "../../assets/herz.png",
+      "../../assets/star.png",
+    ];
+
   }
 
   createGameMenu() {
@@ -124,23 +135,56 @@ export class GameUi {
 
       this._element.appendChild(menu);
     });
-    const popupMessage = (t) => {
+    const popupMessageDefault = (t) => {
       const text = `Osvojili ste ${t.data} poena`;
-      this.drawPoopup(text, () => {
-        console.log(" created");
+      this.drawPopup(text, () => {
+         
       });
     };
+
+    const popupMessageSlagalica = (t) => {
+      const text = `Osvojili ste ${t.data} poena`;
+      this.drawPopup(text,(m) => {
+        
+      })
+    }
+
+    const popupMessageSkocko = (t) => {
+      const text = `Osvojili ste ${t.data} poena`;
+      this.drawPopup(text, (popupMessageSkocko) => {
+         const combination = document.createElement("div")
+         combination.classList.add("popup-combination-skocko")
+
+         const p = document.createElement("p")
+         p.innerText = "Tačna kombinacija"
+
+         const skockoCombination = document.createElement("section")
+         
+         this._gameState.skocko.forEach((e,ind) => {
+          const c = document.createElement("div")
+          c.classList.add("popup-combination-skocko--card")
+
+          const img = document.createElement("img")
+          img.setAttribute("src",this._imgPaths[e])
+
+          c.appendChild(img)
+          skockoCombination.appendChild(c)
+         })
+         combination.append(p,skockoCombination)
+         popupMessageSkocko.appendChild(combination)
+      });
+    }
     // this._socket.once("scoreSubmitedSlagalica",  popupMessage);
     // this._socket.once("scoreSubmitedSkocko", popupMessage);
     if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
-      this._socket.on("scoreSubmitedSlagalica", popupMessage);
+      this._socket.on("scoreSubmitedSlagalica", popupMessageDefault);
     }
     if (!this._socket.hasListeners("scoreSubmitedSkocko")) {
-      this._socket.on("scoreSubmitedSkocko", popupMessage);
+      this._socket.on("scoreSubmitedSkocko", popupMessageSkocko);
     }
     // this._socket.on("scoreSubmitedSkocko", (score) => {
     //   const text = `Osvojili ste ${score.data} poena`;
-    //   this.drawPoopup(text, () => {
+    //   this.drawPopup(text, () => {
     //     console.log(" created");
     //   });
     // });
@@ -652,9 +696,10 @@ export class GameUi {
       this._players.unshift(currentPlayer);
     }
   }
-  drawPoopup(text, callback) {
+  drawPopup(text, addElementsCallback) {
     const popup = document.createElement("div");
     popup.classList.add("popup-container");
+    popup.setAttribute("id","popup-game")
 
     const popupMessage = document.createElement("div");
     popupMessage.classList.add("popup-container--message");
@@ -667,9 +712,12 @@ export class GameUi {
     popupBtn.innerText = "OK";
 
     popupBtn.addEventListener("click", () => {
-      callback();
       this._element.removeChild(popup);
     });
+
+    if (addElementsCallback) {
+      addElementsCallback(popupMessage);
+  }
 
     popupMessage.append(popupText, popupBtn);
     popup.appendChild(popupMessage);
