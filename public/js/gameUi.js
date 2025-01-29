@@ -145,7 +145,15 @@ export class GameUi {
     const popupMessageSlagalica = (t) => {
       const text = `Osvojili ste ${t.data} poena`;
       this.drawPopup(text,(m) => {
+        const p1 = document.createElement("p")
+        p1.innerText = "Naša reč:"
         
+        const p2 = document.createElement("p")
+        p2.innerText = this._gameState.slagalica.word
+        p2.style.fontWeight = 600
+        p2.style.fontSize = "1.1rem"
+
+        m.append(p1,p2)
       })
     }
 
@@ -156,7 +164,7 @@ export class GameUi {
          combination.classList.add("popup-combination-skocko")
 
          const p = document.createElement("p")
-         p.innerText = "Tačna kombinacija"
+         p.innerText = "Tačna kombinacija:"
 
          const skockoCombination = document.createElement("section")
          
@@ -177,7 +185,7 @@ export class GameUi {
     // this._socket.once("scoreSubmitedSlagalica",  popupMessage);
     // this._socket.once("scoreSubmitedSkocko", popupMessage);
     if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
-      this._socket.on("scoreSubmitedSlagalica", popupMessageDefault);
+      this._socket.on("scoreSubmitedSlagalica", popupMessageSlagalica);
     }
     if (!this._socket.hasListeners("scoreSubmitedSkocko")) {
       this._socket.on("scoreSubmitedSkocko", popupMessageSkocko);
@@ -538,14 +546,6 @@ export class GameUi {
   mojBroj() {}
   spojnice() {}
   skocko(data, parent, stopTimer, time) {
-    const imagePaths = [
-      "../../assets/tref.png",
-      "../../assets/owl_logo.png",
-      "../../assets/caro.png",
-      "../../assets/spades.png",
-      "../../assets/herz.png",
-      "../../assets/star.png",
-    ];
     const cardIdList = [];
     let clickCounter = 0;
     let cardComb = [];
@@ -594,7 +594,8 @@ export class GameUi {
 
     const handleCardAdd = (index) => {
       const element = document.getElementById(`${cardIdList[clickCounter]}`);
-      element.innerHTML = `<img src="${imagePaths[index]}"/>`; //PROVERI OVVO
+     // element.innerHTML = `<img src="${imagePaths[index]}"/>`; //PROVERI OVVO
+     element.innerHTML = `<img src="${this._imgPaths[index]}"/>`;
       element.classList.add("skocko-input-card");
       element.classList.toggle("skocko-card");
       clickCounter++;
@@ -611,7 +612,7 @@ export class GameUi {
       const cardOptionMenu = document.createElement("section");
       cardOptionMenu.classList.add("skocko-card-option-menu");
 
-      imagePaths.forEach((elem, index) => {
+      this._imgPaths.forEach((elem, index) => {
         const inputCard = document.createElement("div");
         inputCard.classList.add("skocko-input-card");
         const img = document.createElement("img");
@@ -642,8 +643,6 @@ export class GameUi {
     });
     const checkScore = () => {
       if (clickCounter % 4 === 0) {
-        console.log(rowCounter);
-        console.log(cardComb);
         this._socket.emit("checkSkocko", { gameId: this._gameId, cardComb });
         subComb = [...cardComb];
         cardComb = [];
@@ -661,6 +660,11 @@ export class GameUi {
     };
 
     if(time === 0) submitScore()
+        this._socket.on("scoreSubmitedSkocko",() => {          
+        stopTimer()
+        removeAllEventListeners(skockoContainer)
+      });
+    
 
     createBoard();
     createCardOptions();

@@ -129,7 +129,7 @@ export class Game {
             inputComb.forEach((num,index) => {
                 if(num !== correctComb[index] && correctCombCopy.includes(num)){
                     correctNumbers ++
-                    correctCombCopy[correctCombCopy.indexOf(num)] == null
+                    correctCombCopy[correctCombCopy.indexOf(num)] = null
                     score += 3
                 }
             })
