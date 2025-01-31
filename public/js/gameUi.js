@@ -234,7 +234,7 @@ export class GameUi {
     });
 
     //time functions
-    let time = 90;
+    let time = 10;
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
@@ -588,7 +588,8 @@ export class GameUi {
     const handleClick = (e) => {
       // console.log(leftRow, e.target);
 
-      const element = document.getElementById(e.target.id);
+      //const element = document.getElementById(e.target.id);
+      const element = e.target
       element.classList.add("add-dark-bg");
       
       spojnniceIdList[spojnniceIdList.length - 1] === e.target
@@ -632,12 +633,12 @@ export class GameUi {
     console.log(data);
     //create spojnice board and cards
     const createBoard = () => {
+      
       data.set.forEach((elem, index) => {
         const card = document.createElement("div");
         card.classList.add("spojnice-container--card");
         card.classList.add(`spojnica-card-index-${index}`);
         card.setAttribute("id", `spojnice-card-${elem.id}`);
-        card.setAttribute("data-pair-id", elem.id)
         card.innerText = elem.name;
         if (index % 2 === 0) {
           card.addEventListener("click", handleClick);
@@ -648,28 +649,23 @@ export class GameUi {
         spojniceContainerCards.appendChild(card);
       });
       spojniceContainer.append(p, spojniceContainerCards);
-      
     }
     const submit = () => {
       this._socket.emit("submitSpojnice",{
         gameId:this._gameId,
         correctPick
       })
-      console.log("ovdej je sub");
       stopTimer()
-      // const combinedRows = [...leftRow,...rightRow]
-      // combinedRows.forEach((elem) => {
-      //   elem.removeEventListener("click", handleClick);
-      // });
-
     }
     if(pick === 8 || time <= 0){
       submit()
-      console.log("ovdej je 8");
+      removeAllEventListeners(spojniceContainer)
     }else{
       createBoard()
-
     }
+    this._socket.on("scoreSubmitedSpojnice", () => {
+      removeAllEventListeners(spojniceContainer); 
+    });
 
     parent.appendChild(spojniceContainer);
   }

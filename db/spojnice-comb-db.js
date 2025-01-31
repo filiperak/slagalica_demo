@@ -62,4 +62,197 @@ export const spojniceCombDb = [
       { id: 8, name: "Palomo" },
     ],
   },
+  {
+    "title": "POVEŽITE MINISTRE SA NJIHOVIM MINISTARSTVIMA U VLADI MIRKA CVETKOVIĆA",
+    "set": [
+      { "id": 1, "name": "Unutrašnji poslovi" },
+      { "id": 1, "name": "Ivica Dačić" },
+      { "id": 2, "name": "Finansije" },
+      { "id": 2, "name": "Dijana Dragutinović" },
+      { "id": 3, "name": "Ministarstvo pravde" },
+      { "id": 3, "name": "Snežana Malović" },
+      { "id": 4, "name": "Rudarstvo i energetika" },
+      { "id": 4, "name": "Petar Škundrić" },
+      { "id": 5, "name": "Zdravlje" },
+      { "id": 5, "name": "Tomica Milosavljević" },
+      { "id": 6, "name": "Ministar bez portfelja" },
+      { "id": 6, "name": "Sulejman Ugljanin" },
+      { "id": 7, "name": "Kosovo i Metohija" },
+      { "id": 7, "name": "Goran Bogdanović" },
+      { "id": 8, "name": "Infrastruktura" },
+      { "id": 8, "name": "Milutin Mrkonjić" }
+    ]
+  },{
+    "title": "POVEŽITE MINISTRE SA NJIHOVIM MINISTARSTVIMA U VLADI MIRKA CVETKOVIĆA",
+    "set": [
+      { "id": 1, "name": "Unutrašnji poslovi" },
+      { "id": 1, "name": "Ivica Dačić" },
+      { "id": 2, "name": "Finansije" },
+      { "id": 2, "name": "Dijana Dragutinović" },
+      { "id": 3, "name": "Ministarstvo pravde" },
+      { "id": 3, "name": "Snežana Malović" },
+      { "id": 4, "name": "Rudarstvo i energetika" },
+      { "id": 4, "name": "Petar Škundrić" },
+      { "id": 5, "name": "Zdravlje" },
+      { "id": 5, "name": "Tomica Milosavljević" },
+      { "id": 6, "name": "Ministar bez portfelja" },
+      { "id": 6, "name": "Sulejman Ugljanin" },
+      { "id": 7, "name": "Kosovo i Metohija" },
+      { "id": 7, "name": "Goran Bogdanović" },
+      { "id": 8, "name": "Infrastruktura" },
+      { "id": 8, "name": "Milutin Mrkonjić" }
+    ]
+  },
+  {
+    "title": "SPOJITE NOVČANICE SA OSOBAMA ČIJI SE LIKOVI NALAZE NA NJIMA",
+    "set": [
+      { "id": 1, "name": "10 RSD" },
+      { "id": 1, "name": "Vuk Karadžić" },
+      { "id": 2, "name": "1 USD" },
+      { "id": 2, "name": "Džordž Vašington" },
+      { "id": 3, "name": "5000 RSD" },
+      { "id": 3, "name": "Slobodan Jovanović" },
+      { "id": 4, "name": "5 USD" },
+      { "id": 4, "name": "Abraham Linkoln" },
+      { "id": 5, "name": "10 GBP" },
+      { "id": 5, "name": "Čarls Darvin" },
+      { "id": 6, "name": "50 RSD" },
+      { "id": 6, "name": "Stevan Mokranjac" },
+      { "id": 7, "name": "20 USD" },
+      { "id": 7, "name": "Endrju Džekson" },
+      { "id": 8, "name": "200 RSD" },
+      { "id": 8, "name": "Nadežda Petrović" }
+    ]
+  },
+  {
+    "title": "SPOJITE GODINE SA DRŽAVAMA KOJE SU IH UVELE",
+    "set": [
+      { "id": 1, "name": "1968." },
+      { "id": 1, "name": "Italija" },
+      { "id": 2, "name": "2004." },
+      { "id": 2, "name": "Grčka" },
+      { "id": 3, "name": "1964." },
+      { "id": 3, "name": "Španija" },
+      { "id": 4, "name": "1976." },
+      { "id": 4, "name": "Čehoslovačka (Češka)" },
+      { "id": 5, "name": "2000." },
+      { "id": 5, "name": "Francuska" },
+      { "id": 6, "name": "1960." },
+      { "id": 6, "name": "SSSR (Rusija)" },
+      { "id": 7, "name": "1988." },
+      { "id": 7, "name": "Holandija" },
+      { "id": 8, "name": "1992." },
+      { "id": 8, "name": "Danska" }
+    ]
+  },
+  {
+    "title": "SPOJITE BROJEVE SA NJIHOVIM NAJMANJIM ZAJEDNIČKIM SADRŽAOCEM",
+    "set": [
+      { "id": 1, "name": "5 i 3" },
+      { "id": 1, "name": "15" },
+      { "id": 2, "name": "4 i 8" },
+      { "id": 2, "name": "8" },
+      { "id": 3, "name": "2 i 5" },
+      { "id": 3, "name": "10" },
+      { "id": 4, "name": "2 i 9" },
+      { "id": 4, "name": "18" },
+      { "id": 5, "name": "4 i 5" },
+      { "id": 5, "name": "20" },
+      { "id": 6, "name": "6 i 8" },
+      { "id": 6, "name": "24" },
+      { "id": 7, "name": "4 i 6" },
+      { "id": 7, "name": "12" },
+      { "id": 8, "name": "7 i 3" },
+      { "id": 8, "name": "21" }
+    ]
+  },
+  {
+    "title": "SPOJITE POZIVNE BROJEVE SA DRŽAVAMA KOJIMA PRIPADAJU",
+    "set": [
+      { "id": 1, "name": "34" },
+      { "id": 1, "name": "Španija" },
+      { "id": 2, "name": "7" },
+      { "id": 2, "name": "Rusija" },
+      { "id": 3, "name": "44" },
+      { "id": 3, "name": "Engleska" },
+      { "id": 4, "name": "32" },
+      { "id": 4, "name": "Belgija" },
+      { "id": 5, "name": "46" },
+      { "id": 5, "name": "Švedska" },
+      { "id": 6, "name": "359" },
+      { "id": 6, "name": "Bugarska" },
+      { "id": 7, "name": "39" },
+      { "id": 7, "name": "Italija" },
+      { "id": 8, "name": "420" },
+      { "id": 8, "name": "Češka" }
+    ]
+  },
+  {
+    "title": "SPOJITE PROIZVOĐAČE AUTOMOBILA SA NJIHOVIM MODELIMA",
+    "set": [
+      { "id": 1, "name": "Renault" },
+      { "id": 1, "name": "Espace" },
+      { "id": 2, "name": "Opel" },
+      { "id": 2, "name": "Insignia" },
+      { "id": 3, "name": "Hyundai" },
+      { "id": 3, "name": "I 30" },
+      { "id": 4, "name": "Fiat" },
+      { "id": 4, "name": "Linea" },
+      { "id": 5, "name": "Honda" },
+      { "id": 5, "name": "Legend" },
+      { "id": 6, "name": "Chevrolet" },
+      { "id": 6, "name": "Orlando" },
+      { "id": 7, "name": "Toyota" },
+      { "id": 7, "name": "Corolla" },
+      { "id": 8, "name": "Peugeot" },
+      { "id": 8, "name": "407" }
+    ]
+  },
+  {
+    "title": "SPOJITE PISCE SA SVOJIM DELIMA",
+    "set": [
+      { "id": 1, "name": "Onore de Balzak" },
+      { "id": 1, "name": "Ljiljan u dolu" },
+      { "id": 2, "name": "Šarl Bodler" },
+      { "id": 2, "name": "Cveće zla" },
+      { "id": 3, "name": "Emile Zola" },
+      { "id": 3, "name": "U ključalom loncu" },
+      { "id": 4, "name": "Dositej Obradović" },
+      { "id": 4, "name": "Ljubezni haralampijr" },
+      { "id": 5, "name": "Antun Gustav Matoš" },
+      { "id": 5, "name": "Oko lobora" },
+      { "id": 6, "name": "Žak Prever" },
+      { "id": 6, "name": "Sunce noći" },
+      { "id": 7, "name": "Stevan Sremac" },
+      { "id": 7, "name": "Ibiš-aga" },
+      { "id": 8, "name": "Aleksandar Puškin" },
+      { "id": 8, "name": "Braća razbojnici" }
+    ]
+  },
+  {
+    "title": "SPOJITE BAJKU SA AUTOROM",
+    "set": [
+      { "id": 1, "name": "Mala sirena" },
+      { "id": 1, "name": "Hans Kristijan Andersen" },
+      { "id": 2, "name": "Pinokio" },
+      { "id": 2, "name": "Karlo Kolodi" },
+      { "id": 3, "name": "Tri praseta" },
+      { "id": 3, "name": "Jozef Jakobs" },
+      { "id": 4, "name": "Zlatokosa" },
+      { "id": 4, "name": "Braća Grim" },
+      { "id": 5, "name": "Crvenkapa" },
+      { "id": 5, "name": "Šarl Pero" },
+      { "id": 6, "name": "Princeza i žabac" },
+      { "id": 6, "name": "Aleksandar Afanasjev" },
+      { "id": 7, "name": "Baš Čelik" },
+      { "id": 7, "name": "Vuk Karadžić" },
+      { "id": 8, "name": "Tri medveda" },
+      { "id": 8, "name": "Robert Souti" }
+    ]
+  },
+    
+  
+    
+  
+  
 ];
