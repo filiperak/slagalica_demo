@@ -126,6 +126,16 @@ const handleSocket = (io) => {
                 socket.emit("scoreSubmitedSkocko",{data:validateSkocko.score})
             }
         })
+        socket.on("submitSpojnice",({gameId,correctPick}) => {
+            const game = games[gameId]
+            console.log(correctPick);
+            
+            if(game){
+                const validateSpojnice = game.validateSpojnice(correctPick)
+                game.addScore("spojnice",socket.id,validateSpojnice)                    
+                socket.emit("scoreSubmitedSpojnice",{data:validateSpojnice})
+            }
+        })
 
         // socket.on("requestGame",({gameId,singleGame}) => {
         //     const game = games[gameId]

@@ -21,7 +21,6 @@ export class GameUi {
       "../../assets/herz.png",
       "../../assets/star.png",
     ];
-
   }
 
   createGameMenu() {
@@ -111,7 +110,7 @@ export class GameUi {
               });
               this._socket.on("gameData", (data) => {
                 this._element.appendChild(this.createGameContainer(game, data));
-                console.log(data);
+                console.log(data, "OVDEEE");
               });
             };
             gameOptionName.addEventListener("click", handleOpenGameClick);
@@ -136,52 +135,53 @@ export class GameUi {
       this._element.appendChild(menu);
     });
     const popupMessageDefault = (t) => {
-      const text = `Osvojili ste ${t.data} poena`;
-      this.drawPopup(text, () => {
-         
-      });
+      let text;
+      t.data > 0 ? text = `🥳Osvojili ste ${t.data} poena🥳`:text = `🤡Osvojili ste ${t.data} poena🤡`;
+      this.drawPopup(text, () => {});
     };
 
     const popupMessageSlagalica = (t) => {
-      const text = `Osvojili ste ${t.data} poena`;
-      this.drawPopup(text,(m) => {
-        const p1 = document.createElement("p")
-        p1.innerText = "Naša reč:"
-        
-        const p2 = document.createElement("p")
-        p2.innerText = this._gameState.slagalica.word
-        p2.style.fontWeight = 600
-        p2.style.fontSize = "1.1rem"
+      // const text = `Osvojili ste ${t.data} poena`;
+      let text;
+      t.data > 0 ? text = `🥳Osvojili ste ${t.data} poena🥳`:text = `🤡Osvojili ste ${t.data} poena🤡`;
+      this.drawPopup(text, (m) => {
+        const p1 = document.createElement("p");
+        p1.innerText = "Naša reč:";
 
-        m.append(p1,p2)
-      })
-    }
+        const p2 = document.createElement("p");
+        p2.innerText = this._gameState.slagalica.word;
+        p2.style.fontWeight = 600;
+        p2.style.fontSize = "1.1rem";
+
+        m.append(p1, p2);
+      });
+    };
 
     const popupMessageSkocko = (t) => {
       const text = `Osvojili ste ${t.data} poena`;
       this.drawPopup(text, (popupMessageSkocko) => {
-         const combination = document.createElement("div")
-         combination.classList.add("popup-combination-skocko")
+        const combination = document.createElement("div");
+        combination.classList.add("popup-combination-skocko");
 
-         const p = document.createElement("p")
-         p.innerText = "Tačna kombinacija:"
+        const p = document.createElement("p");
+        p.innerText = "Tačna kombinacija:";
 
-         const skockoCombination = document.createElement("section")
-         
-         this._gameState.skocko.forEach((e,ind) => {
-          const c = document.createElement("div")
-          c.classList.add("popup-combination-skocko--card")
+        const skockoCombination = document.createElement("section");
 
-          const img = document.createElement("img")
-          img.setAttribute("src",this._imgPaths[e])
+        this._gameState.skocko.forEach((e, ind) => {
+          const c = document.createElement("div");
+          c.classList.add("popup-combination-skocko--card");
 
-          c.appendChild(img)
-          skockoCombination.appendChild(c)
-         })
-         combination.append(p,skockoCombination)
-         popupMessageSkocko.appendChild(combination)
+          const img = document.createElement("img");
+          img.setAttribute("src", this._imgPaths[e]);
+
+          c.appendChild(img);
+          skockoCombination.appendChild(c);
+        });
+        combination.append(p, skockoCombination);
+        popupMessageSkocko.appendChild(combination);
       });
-    }
+    };
     // this._socket.once("scoreSubmitedSlagalica",  popupMessage);
     // this._socket.once("scoreSubmitedSkocko", popupMessage);
     if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
@@ -196,6 +196,9 @@ export class GameUi {
     //     console.log(" created");
     //   });
     // });
+    if (!this._socket.hasListeners("scoreSubmitedSpojnice")) {
+      this._socket.on("scoreSubmitedSpojnice", popupMessageDefault);
+    }
   }
 
   createScoreBoard() {
@@ -284,10 +287,34 @@ export class GameUi {
         this.mojBroj();
         break;
       case "spojnice":
-        this.spojnice();
+        gameEndCallback = () =>
+          this.spojnice(
+            data,
+            gameContainer,
+            () => clearInterval(timerInterval),
+            time
+          );
+        this.spojnice(
+          data,
+          gameContainer,
+          () => clearInterval(timerInterval),
+          time
+        );
         break;
       case "skočko":
-        this.skocko(data, gameContainer,() => clearInterval(timerInterval),time);
+        gameEndCallback = () =>
+          this.skocko(
+            data,
+            gameContainer,
+            () => clearInterval(timerInterval),
+            time
+          );
+        this.skocko(
+          data,
+          gameContainer,
+          () => clearInterval(timerInterval),
+          time
+        );
         break;
       case "ko zna zna":
         this.koZnaZna();
@@ -466,8 +493,6 @@ export class GameUi {
     };
 
     const handleKeyDown = (e) => {
-      console.log(e.keyCode);
-
       switch (e.keyCode) {
         case 8:
           deleteLastLetter();
@@ -544,21 +569,127 @@ export class GameUi {
     }
   }
   mojBroj() {}
-  spojnice() {}
+  spojnice(data, parent, stopTimer, time) {
+    //variables
+    let spojnniceIdList = [];
+    let leftRow = [];
+    let rightRow = [];
+    let pick = 0;
+    let correctPick = 0;
+
+    //Create dom elements
+    const spojniceContainer = document.createElement("div");
+    spojniceContainer.classList.add("spojnice-container");
+    const p = document.createElement("p");
+    p.innerText = data.title;
+    const spojniceContainerCards = document.createElement("div");
+    spojniceContainerCards.classList.add("spojnice-container--cards");
+
+    const handleClick = (e) => {
+      // console.log(leftRow, e.target);
+
+      const element = document.getElementById(e.target.id);
+      element.classList.add("add-dark-bg");
+      
+      spojnniceIdList[spojnniceIdList.length - 1] === e.target
+        ? spojnniceIdList.pop()
+        : spojnniceIdList.push(e.target);
+      if (spojnniceIdList.length === 2) {
+        leftRow = leftRow.filter((elem) => elem !== spojnniceIdList[0]);
+        rightRow = rightRow.filter((elem) => elem !== spojnniceIdList[1]);
+        if (spojnniceIdList[0].id === spojnniceIdList[1].id) {
+          spojnniceIdList[0].style.backgroundColor = "green";
+          spojnniceIdList[1].style.backgroundColor = "green";
+          correctPick ++
+        } else {
+          spojnniceIdList[0].style.backgroundColor = "red";
+          spojnniceIdList[1].style.backgroundColor = "red";
+        }
+        spojnniceIdList[0].removeEventListener("click", handleClick);
+        spojnniceIdList[1].removeEventListener("click", handleClick);
+        spojnniceIdList = [];
+        pick ++
+        if(pick === 8) submit()
+        console.log(pick);
+        
+
+        rightRow.forEach((elem) => {
+          elem.removeEventListener("click", handleClick);
+        });
+        leftRow.forEach((elem) => {
+          elem.addEventListener("click", handleClick);
+        });
+      } else {
+        rightRow.forEach((elem) => {
+          elem.addEventListener("click", handleClick);
+        });
+        leftRow.forEach((elem) => {
+          elem.removeEventListener("click", handleClick);
+        });
+      }
+    };
+
+    console.log(data);
+    //create spojnice board and cards
+    const createBoard = () => {
+      data.set.forEach((elem, index) => {
+        const card = document.createElement("div");
+        card.classList.add("spojnice-container--card");
+        card.classList.add(`spojnica-card-index-${index}`);
+        card.setAttribute("id", `spojnice-card-${elem.id}`);
+        card.setAttribute("data-pair-id", elem.id)
+        card.innerText = elem.name;
+        if (index % 2 === 0) {
+          card.addEventListener("click", handleClick);
+          leftRow.push(card);
+        } else {
+          rightRow.push(card);
+        }
+        spojniceContainerCards.appendChild(card);
+      });
+      spojniceContainer.append(p, spojniceContainerCards);
+      
+    }
+    const submit = () => {
+      this._socket.emit("submitSpojnice",{
+        gameId:this._gameId,
+        correctPick
+      })
+      console.log("ovdej je sub");
+      stopTimer()
+      // const combinedRows = [...leftRow,...rightRow]
+      // combinedRows.forEach((elem) => {
+      //   elem.removeEventListener("click", handleClick);
+      // });
+
+    }
+    if(pick === 8 || time <= 0){
+      submit()
+      console.log("ovdej je 8");
+    }else{
+      createBoard()
+
+    }
+
+    parent.appendChild(spojniceContainer);
+  }
   skocko(data, parent, stopTimer, time) {
     const cardIdList = [];
     let clickCounter = 0;
     let cardComb = [];
     let rowCounter = 0;
     let subComb;
+    let sub = false;
 
-    const timerCheckInterval = setInterval(() => {
-      if (time <= 0) {
-          clearInterval(timerCheckInterval);
-          submitScore();
-      }
-      time--;
-    }, 1000);
+    // const timerCheckInterval = setInterval(() => {
+    //   if (time <= 0) {
+    //     clearInterval(timerCheckInterval);
+    //     if (!sub) {
+    //       submitScore();
+    //     }
+    //   }
+    //   time--;
+    // }, 1000);
 
     const skockoContainer = document.createElement("section");
     skockoContainer.classList.add("skocko-container");
@@ -594,8 +725,8 @@ export class GameUi {
 
     const handleCardAdd = (index) => {
       const element = document.getElementById(`${cardIdList[clickCounter]}`);
-     // element.innerHTML = `<img src="${imagePaths[index]}"/>`; //PROVERI OVVO
-     element.innerHTML = `<img src="${this._imgPaths[index]}"/>`;
+      // element.innerHTML = `<img src="${imagePaths[index]}"/>`; //PROVERI OVVO
+      element.innerHTML = `<img src="${this._imgPaths[index]}"/>`;
       element.classList.add("skocko-input-card");
       element.classList.toggle("skocko-card");
       clickCounter++;
@@ -604,7 +735,7 @@ export class GameUi {
 
       if (clickCounter === cardIdList.length) {
         submitScore();
-        stopTimer()
+        stopTimer();
       }
     };
 
@@ -625,7 +756,9 @@ export class GameUi {
     };
 
     this._socket.on("skockoCheckResult", (data) => {
-      const resultCircles = document.querySelectorAll(`.score-circle_${rowCounter - 1}`);
+      const resultCircles = document.querySelectorAll(
+        `.score-circle_${rowCounter - 1}`
+      );
       let positionCount = data.correctPositions;
       let numberCount = data.correctNumbers;
 
@@ -655,19 +788,24 @@ export class GameUi {
         gameId: this._gameId,
         cardComb: subComb,
       });
-      stopTimer()
-      removeAllEventListeners(skockoContainer)
+      stopTimer();
+      removeAllEventListeners(skockoContainer);
+      sub = true;
     };
 
-    if(time === 0) submitScore()
-        this._socket.on("scoreSubmitedSkocko",() => {          
-        stopTimer()
-        removeAllEventListeners(skockoContainer)
-      });
-    
-
-    createBoard();
-    createCardOptions();
+    this._socket.on("scoreSubmitedSkocko", () => {
+      stopTimer();
+      removeAllEventListeners(skockoContainer);
+      sub = true;
+    });
+    if (time <= 0) {
+      if (!sub) {
+        submitScore();
+      }
+    } else {
+      createBoard();
+      createCardOptions();
+    }
 
     parent.append(skockoContainer);
   }
@@ -703,7 +841,7 @@ export class GameUi {
   drawPopup(text, addElementsCallback) {
     const popup = document.createElement("div");
     popup.classList.add("popup-container");
-    popup.setAttribute("id","popup-game")
+    popup.setAttribute("id", "popup-game");
 
     const popupMessage = document.createElement("div");
     popupMessage.classList.add("popup-container--message");
@@ -721,7 +859,7 @@ export class GameUi {
 
     if (addElementsCallback) {
       addElementsCallback(popupMessage);
-  }
+    }
 
     popupMessage.append(popupText, popupBtn);
     popup.appendChild(popupMessage);

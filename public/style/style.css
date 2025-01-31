@@ -59,6 +59,7 @@ body {
 .slagalica-container--stop-btn,
 .slagalica-container--check-btn ,
 .slagalica-container--submit-btn,
+.spojnice-container--card,
 .popup-container--btn{
   font-size: 20px;
   padding: 15px;
@@ -76,7 +77,8 @@ body {
 .slagalica-container--stop-btn,
 .slagalica-container--check-btn
 .slagalica-container--submit-btn
-.slagalica-container--clear-btn{
+.slagalica-container--clear-btn,
+.spojnice-container--card{
   /* score board */
   background-color: var(--ligth-primary);
   color: var(--dark-blue);
@@ -230,7 +232,8 @@ body {
 .slagalica-container--stop-btn:hover,
 .slagalica-container--check-btn:hover,
 .slagalica-container--submit-btn:hover,
-.slagalica-container--clear-btn:hover {
+.slagalica-container--clear-btn:hover,
+.spojnice-container--card:hover{
   background-color: var(--dark-primary);
 }
 .game-option--container,
@@ -358,6 +361,9 @@ text-align: center;
   background-color: var(--ligth-primary);
   color: var(--dark-blue);
 }
+.skocko-input-card:hover {
+  background-color: var(--dark-primary);
+}
 
 .skocko-score-display {
   grid-column: span 2; 
@@ -413,4 +419,23 @@ text-align: center;
 }
 .popup-combination-skocko--card > img {
   
+}
+.spojnice-container > p{
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--dark-blue);
+  margin: 8px 0;
+}
+.spojnice-container--cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 10px;
+}
+.spojnice-container--card{
+  /* flex:0.5; */
+  cursor: pointer;
+  
+}
+.add-dark-bg{
+  background-color: var(--dark-primary);
 }

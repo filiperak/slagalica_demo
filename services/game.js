@@ -1,4 +1,5 @@
 import {srDictCapital} from "../db/sr-latin-capital-dict.js"
+import { spojniceCombDb } from "../db/spojnice-comb-db.js";
 export class Game {
     constructor(gameId) {
         this.gameId = gameId;
@@ -8,9 +9,7 @@ export class Game {
             mojBroj: {
                 
             },
-            spojnice: {
-                
-            },
+            spojnice: this.createSpojnice(),
             skocko: this.createSkocko(),
             koZnaZna: {
                 
@@ -137,5 +136,60 @@ export class Game {
         }
 
         return {correctNumbers,correctPositions,score}
+    }
+    // createSpojnice() {
+    //     const randomSpojnica = spojniceCombDb[Math.floor(Math.random() * spojniceCombDb.length)];
+    //     const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
+    //     return {
+    //         title: randomSpojnica.title,
+    //         set: shuffle(randomSpojnica.set)
+    //     };
+    // }
+    createSpojnice() {
+        const randomSpojnica = spojniceCombDb[Math.floor(Math.random() * spojniceCombDb.length)];
+        const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
+    
+        const firstElementsWithIds = [];
+        const seenIds = new Set();
+        const remainingElements = [];
+    
+        randomSpojnica.set.forEach(elem => {
+            if (elem.id && !seenIds.has(elem.id)) {
+                firstElementsWithIds.push(elem);
+                seenIds.add(elem.id);
+            } else {
+                remainingElements.push(elem);
+            }
+        });
+    
+        const shuffledRemainingElements = shuffle(remainingElements);
+    
+        const resultSet = [];
+        const specifiedIndices = [0, 2, 4, 6, 8, 10,12,14];
+        let remainingIndex = 0;
+    
+        specifiedIndices.forEach((index, i) => {
+            if (i < firstElementsWithIds.length) {
+                resultSet[index] = firstElementsWithIds[i];
+            }
+        });
+    
+        for (let i = 0; i < resultSet.length; i++) {
+            if (!resultSet[i]) {
+                resultSet[i] = shuffledRemainingElements[remainingIndex++];
+            }
+        }
+    
+        while (remainingIndex < shuffledRemainingElements.length) {
+            resultSet.push(shuffledRemainingElements[remainingIndex++]);
+        }
+    
+        return {
+            title: randomSpojnica.title,
+            set: resultSet
+        };
+    }
+    validateSpojnice(d){
+        return d * 4
     }
 }
