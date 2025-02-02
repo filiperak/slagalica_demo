@@ -60,9 +60,12 @@ body {
 .slagalica-container--check-btn ,
 .slagalica-container--submit-btn,
 .spojnice-container--card,
-.popup-container--btn{
+.popup-container--btn,
+.koznazna-container--card{
   font-size: 20px;
-  padding: 15px;
+  font-weight: 600  ;
+  /* padding: 15px; */
+  padding: 25px;
   text-align: center;
   border: none;
   border-radius: var(--border-radious);
@@ -78,7 +81,8 @@ body {
 .slagalica-container--check-btn
 .slagalica-container--submit-btn
 .slagalica-container--clear-btn,
-.spojnice-container--card{
+.spojnice-container--card,
+.koznazna-container--card{
   /* score board */
   background-color: var(--ligth-primary);
   color: var(--dark-blue);
@@ -233,7 +237,8 @@ body {
 .slagalica-container--check-btn:hover,
 .slagalica-container--submit-btn:hover,
 .slagalica-container--clear-btn:hover,
-.spojnice-container--card:hover{
+.spojnice-container--card:hover,
+.koznazna-container--card:hover{
   background-color: var(--dark-primary);
 }
 .game-option--container,
@@ -438,4 +443,30 @@ text-align: center;
 }
 .add-dark-bg{
   background-color: var(--dark-primary);
+}
+.koznazna-container{
+  display: flex;
+  flex-direction: column;
+}
+.koznazna-container--options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 10px;
+  bottom: 15px;
+}
+
+@media (max-width: 470px) {
+  .koznazna-container--options {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, auto);
+    /* position: static; */
+  }
+}
+.koznazna-container--card{
+  cursor: pointer;
+  overflow:hidden;
+}
+.koznazna-container >p {
+  margin: 100px 0;
+  font-weight: 500;
 }

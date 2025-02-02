@@ -1,5 +1,6 @@
 import {srDictCapital} from "../db/sr-latin-capital-dict.js"
 import { spojniceCombDb } from "../db/spojnice-comb-db.js";
+import { initialize } from "@paunovic/questionnaire";
 export class Game {
     constructor(gameId) {
         this.gameId = gameId;
@@ -11,9 +12,7 @@ export class Game {
             },
             spojnice: this.createSpojnice(),
             skocko: this.createSkocko(),
-            koZnaZna: {
-                
-            },
+            koZnaZna: this.createKoznazna(),
             asocijacije: {
                 
             }
@@ -65,7 +64,7 @@ export class Game {
         this.players.forEach(player => {
             if(player.id === playerId){
                 
-                player.score.games[gameKey].score = score
+                player.score.games[gameKey].score += score
                console.log(this.players[0].score.games[gameKey]);
                console.log(this.players[1].score.games[gameKey]);
                
@@ -191,5 +190,12 @@ export class Game {
     }
     validateSpojnice(d){
         return d * 4
+    }
+    createKoznazna(){
+        const QUESTIONNAIRE = initialize(); 
+        const Q4 = QUESTIONNAIRE.questions({ howMany: 10, wrong: 2 });
+        console.log(Q4);
+        
+        return Q4
     }
 }

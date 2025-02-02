@@ -128,7 +128,6 @@ const handleSocket = (io) => {
         })
         socket.on("submitSpojnice",({gameId,correctPick}) => {
             const game = games[gameId]
-            console.log(correctPick);
             
             if(game){
                 const validateSpojnice = game.validateSpojnice(correctPick)
@@ -136,6 +135,26 @@ const handleSocket = (io) => {
                 socket.emit("scoreSubmitedSpojnice",{data:validateSpojnice})
             }
         })
+        socket.on("submitkoznazna",({gameId,points}) => {
+            const game = games[gameId]
+            
+            if(game){
+                game.addScore("koZnaZna",socket.id,points)    
+                const player = game.getPlayer(socket.id)            
+                                    
+                socket.emit("addScoreKoznazna",{data:player.score.games.koZnaZna.score})
+            }
+        })
+        socket.on("endKoznazna",({gameId}) => {
+            const game = games[gameId]
+            if(game){
+                const player = game.getPlayer(socket.id)
+                console.log(player.score.games.koZnaZna.score);
+                           
+                socket.emit("scoreSubmitedKoznazna",{data:player.score.games.koZnaZna.score})
+            }
+        })
+
 
         // socket.on("requestGame",({gameId,singleGame}) => {
         //     const game = games[gameId]

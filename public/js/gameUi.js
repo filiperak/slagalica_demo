@@ -136,14 +136,23 @@ export class GameUi {
     });
     const popupMessageDefault = (t) => {
       let text;
-      t.data > 0 ? text = `🥳Osvojili ste ${t.data} poena🥳`:text = `🤡Osvojili ste ${t.data} poena🤡`;
+      console.log(t);
+      if (t) {
+        t.data > 0
+          ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
+          : (text = `🤡Osvojili ste ${t.data} poena🤡`);
+      } else {
+        text = `🤡Osvojili ste 0 poena🤡`;
+      }
       this.drawPopup(text, () => {});
     };
 
     const popupMessageSlagalica = (t) => {
       // const text = `Osvojili ste ${t.data} poena`;
       let text;
-      t.data > 0 ? text = `🥳Osvojili ste ${t.data} poena🥳`:text = `🤡Osvojili ste ${t.data} poena🤡`;
+      t.data > 0
+        ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
+        : (text = `🤡Osvojili ste ${t.data} poena🤡`);
       this.drawPopup(text, (m) => {
         const p1 = document.createElement("p");
         p1.innerText = "Naša reč:";
@@ -199,6 +208,9 @@ export class GameUi {
     if (!this._socket.hasListeners("scoreSubmitedSpojnice")) {
       this._socket.on("scoreSubmitedSpojnice", popupMessageDefault);
     }
+    if (!this._socket.hasListeners("scoreSubmitedKoznazna")) {
+      this._socket.on("scoreSubmitedKoznazna", popupMessageDefault);
+    }
   }
 
   createScoreBoard() {
@@ -234,7 +246,7 @@ export class GameUi {
     });
 
     //time functions
-    let time = 10;
+    let time = 5;
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
@@ -317,7 +329,19 @@ export class GameUi {
         );
         break;
       case "ko zna zna":
-        this.koZnaZna();
+        gameEndCallback = () =>
+          this.koZnaZna(
+            data,
+            gameContainer,
+            () => clearInterval(timerInterval),
+            time
+          );
+        this.koZnaZna(
+          data,
+          gameContainer,
+          () => clearInterval(timerInterval),
+          time
+        );
         break;
       case "asocijacije":
         this.asocijacije();
@@ -589,9 +613,9 @@ export class GameUi {
       // console.log(leftRow, e.target);
 
       //const element = document.getElementById(e.target.id);
-      const element = e.target
+      const element = e.target;
       element.classList.add("add-dark-bg");
-      
+
       spojnniceIdList[spojnniceIdList.length - 1] === e.target
         ? spojnniceIdList.pop()
         : spojnniceIdList.push(e.target);
@@ -601,7 +625,7 @@ export class GameUi {
         if (spojnniceIdList[0].id === spojnniceIdList[1].id) {
           spojnniceIdList[0].style.backgroundColor = "green";
           spojnniceIdList[1].style.backgroundColor = "green";
-          correctPick ++
+          correctPick++;
         } else {
           spojnniceIdList[0].style.backgroundColor = "red";
           spojnniceIdList[1].style.backgroundColor = "red";
@@ -609,10 +633,9 @@ export class GameUi {
         spojnniceIdList[0].removeEventListener("click", handleClick);
         spojnniceIdList[1].removeEventListener("click", handleClick);
         spojnniceIdList = [];
-        pick ++
-        if(pick === 8) submit()
+        pick++;
+        if (pick === 8) submit();
         console.log(pick);
-        
 
         rightRow.forEach((elem) => {
           elem.removeEventListener("click", handleClick);
@@ -633,7 +656,6 @@ export class GameUi {
     console.log(data);
     //create spojnice board and cards
     const createBoard = () => {
-      
       data.set.forEach((elem, index) => {
         const card = document.createElement("div");
         card.classList.add("spojnice-container--card");
@@ -649,22 +671,22 @@ export class GameUi {
         spojniceContainerCards.appendChild(card);
       });
       spojniceContainer.append(p, spojniceContainerCards);
-    }
+    };
     const submit = () => {
-      this._socket.emit("submitSpojnice",{
-        gameId:this._gameId,
-        correctPick
-      })
-      stopTimer()
-    }
-    if(pick === 8 || time <= 0){
-      submit()
-      removeAllEventListeners(spojniceContainer)
-    }else{
-      createBoard()
+      this._socket.emit("submitSpojnice", {
+        gameId: this._gameId,
+        correctPick,
+      });
+      stopTimer();
+    };
+    if (pick === 8 || time <= 0) {
+      submit();
+      removeAllEventListeners(spojniceContainer);
+    } else {
+      createBoard();
     }
     this._socket.on("scoreSubmitedSpojnice", () => {
-      removeAllEventListeners(spojniceContainer); 
+      removeAllEventListeners(spojniceContainer);
     });
 
     parent.appendChild(spojniceContainer);
@@ -805,7 +827,99 @@ export class GameUi {
 
     parent.append(skockoContainer);
   }
-  koZnaZna() {}
+  koZnaZna(data, parent, stopTimer, time) {
+    let qCounter = 0;
+    let correctAwnser = 0;
+    const koznaznaContainer = document.createElement("div");
+    koznaznaContainer.classList.add("koznazna-container");
+    const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
+
+    const renderQuestion = () => {
+      const options = shuffle([...data[qCounter].wrong, data[qCounter].answer]);
+
+      const p = document.createElement("p");
+      p.innerText = data[qCounter].question;
+
+      // const s = document.createElement("p")
+      // s.innerText = correctAwnser
+
+      const optionsContainer = document.createElement("div");
+      optionsContainer.classList.add("koznazna-container--options");
+
+      options.forEach((elem, index) => {
+        const d = document.createElement("div");
+        d.classList.add("koznazna-container--card");
+        d.innerText = elem;
+        optionsContainer.appendChild(d);
+        d.addEventListener("click", handleClick);
+      });
+      const n = document.createElement("div");
+      n.classList.add("koznazna-container--card");
+      n.innerText = "NE ZNAM";
+      n.addEventListener("click", handleNext);
+
+      optionsContainer.appendChild(n);
+      koznaznaContainer.append(p, optionsContainer);
+    };
+    const handleNext = (e) => {
+      e.target.classList.add("add-dark-bg");
+
+      setTimeout(() => {
+        qCounter++;
+        this.removeElement(koznaznaContainer);
+        if (qCounter < data.length) {
+          renderQuestion();
+        } else {
+          console.log("Quiz finished");
+          stopTimer();
+          this._socket.emit("endKoznazna", { gameId: this._gameId });
+        }
+      }, 1000);
+    };
+    const handleClick = (e) => {
+      console.log(e.target.innerText);
+      e.target.classList.add("add-dark-bg");
+
+      setTimeout(() => {
+        if (e.target.innerText === data[qCounter].answer) {
+          e.target.style.backgroundColor = "green";
+          // correctAwnser ++;
+          this._socket.emit("submitkoznazna", {
+            gameId: this._gameId,
+            points: 3,
+          });
+        } else {
+          e.target.style.backgroundColor = "red";
+        }
+
+        setTimeout(() => {
+          qCounter++;
+          this.removeElement(koznaznaContainer);
+          if (qCounter < data.length) {
+            renderQuestion();
+          } else {
+            console.log("Quiz finished");
+            stopTimer();
+            this._socket.emit("endKoznazna", { gameId: this._gameId });
+          }
+        }, 1000);
+      }, 1000);
+    };
+    this._socket.on("addScoreKoznazna", (data) => {
+      correctAwnser += data.data;
+      console.log(data);
+    });
+    if (time <= 0) {
+      //finish game
+      console.log("time end");
+
+      this._socket.emit("endKoznazna", { gameId: this._gameId });
+      removeAllEventListeners(koznaznaContainer);
+    } else {
+      renderQuestion();
+    }
+    parent.append(koznaznaContainer);
+  }
   asocijacije() {}
 
   removeEveryElement() {
