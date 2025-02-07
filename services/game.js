@@ -1,6 +1,7 @@
 import {srDictCapital} from "../db/sr-latin-capital-dict.js"
 import { spojniceCombDb } from "../db/spojnice-comb-db.js";
 import { initialize } from "@paunovic/questionnaire";
+import { asocijacijeDB } from "../db/asocijacije-db.js";
 export class Game {
     constructor(gameId) {
         this.gameId = gameId;
@@ -13,9 +14,7 @@ export class Game {
             spojnice: this.createSpojnice(),
             skocko: this.createSkocko(),
             koZnaZna: this.createKoznazna(),
-            asocijacije: {
-                
-            }
+            asocijacije:this.createAsocijacije()
         };
         this.gameCompleted = false;
     }
@@ -197,5 +196,15 @@ export class Game {
         console.log(Q4);
         
         return Q4
+    }
+    createAsocijacije(){
+
+        
+        const randomAsocijacija = asocijacijeDB[Math.floor(Math.random() * asocijacijeDB.length)];
+        console.log(randomAsocijacija);
+        
+        return {
+            asocijacija:randomAsocijacija
+        };
     }
 }

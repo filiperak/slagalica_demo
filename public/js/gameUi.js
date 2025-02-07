@@ -247,7 +247,7 @@ export class GameUi {
     });
 
     //time functions
-    let time = 5;
+    let time = 90;
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
@@ -345,7 +345,10 @@ export class GameUi {
         );
         break;
       case "asocijacije":
-        this.asocijacije();
+        this.asocijacije(data,
+          gameContainer,
+          () => clearInterval(timerInterval),
+          time);
         break;
       default:
         console.log("game not found");
@@ -930,7 +933,6 @@ export class GameUi {
         clearInterval(timerCheckInterval);
         if (!sub) {
           stopTimer();
-
           this._socket.emit("endKoznazna", { gameId: this._gameId });
           sub = true;
         }
@@ -939,7 +941,52 @@ export class GameUi {
       newTime--;
     }, 1000);
   }
-  asocijacije() {}
+  asocijacije(data, parent, stopTimer, time) {
+    console.log(data);
+    console.log(data.asocijacija);
+
+    
+    const asocijacijeContainer = document.createElement("div");
+    asocijacijeContainer.classList.add("asocijacije-container");
+
+    const createBoard = () => {
+      const board = document.createElement("div")
+      board.classList.add("asocijacije-board")
+
+      data.asocijacija.columns.forEach((elem,index) => {
+        if(index === 2){
+          const resultInput = document.createElement("input")
+          resultInput.classList.add("asocijacije-result-input")
+          // resultInput.classList.add("asocijacije-input")
+          board.appendChild(resultInput)
+        }
+        const column = document.createElement("span")
+        column.classList.add("asocijacije-column")
+        
+        if(index > 1){
+          const i = document.createElement("input")
+          i.classList.add("asocijacije-input")
+          column.appendChild(i)
+        }
+        elem.pojmovi.forEach((e, i) => {
+          const card = document.createElement("div")
+          card.classList.add("asocijacije-card")
+          card.setAttribute("id", `asocijacije-card-${index}${i}`)
+          card.innerText = e
+          column.appendChild(card)
+        })
+        if(index < 2){
+          const i = document.createElement("input")
+          i.classList.add("asocijacije-input")
+          column.appendChild(i)
+        }
+        board.appendChild(column)
+      })
+      asocijacijeContainer.appendChild(board)
+    }
+    createBoard()
+    parent.append(asocijacijeContainer);
+  }
 
   removeEveryElement() {
     if (this._element.firstChild) {

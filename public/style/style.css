@@ -221,6 +221,10 @@ body {
 .game-container--back-btn:hover {
   background-color: var(--dark-brown);
 }
+.game-menu--exit-btn{
+  padding: 15px;
+  font-weight: 500;
+}
 .game-options {
   gap: 10px;
 }
@@ -248,7 +252,7 @@ body {
 }
 .game-option--score,
 .sore-board--player-score {
-  min-width: 55px;
+  min-width: 80px;
 }
 
 .game-container--back-btn {
@@ -352,7 +356,8 @@ text-align: center;
 .skocko-card ,
 .skocko-score-display,
 .skocko-input-card,
-.popup-combination-skocko--card{
+.popup-combination-skocko--card,
+.asocijacije-card{
   font-size: 20px;
   padding: 15px;
   text-align: center;
@@ -361,8 +366,9 @@ text-align: center;
   box-shadow: var(--box-shadow);
 }
 .skocko-card ,
-.skocko-input-card,ž
-.popup-container--message{
+.skocko-input-card,
+.popup-container--message,
+.asocijacije-card{
   background-color: var(--ligth-primary);
   color: var(--dark-blue);
 }
@@ -470,3 +476,46 @@ text-align: center;
   margin: 100px 0;
   font-weight: 500;
 }
+/* .asocijacije-board{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+} */
+.asocijacije-board{
+
+}
+.asocijacije-column{
+  width: 45%;
+  /* border: 1px solid red; */
+  margin: 4px;
+  display: inline-block;
+}
+.asocijacije-result-input{
+  width: 90%;
+}
+.asocijacije-card{
+  margin:10px 0
+}
+.asocijacije-input,.asocijacije-result-input{
+  font-weight: 600  ;
+  padding: 15px;
+  text-align: center;
+  border: none;
+  border-radius: var(--border-radious);
+  outline: none;
+  background-color: var(--dark-primary);
+}
+.asocijacije-result-input{
+
+}
+.asocijacije-input{
+  width: 100%;
+}
+
+
+/*  font-size: 20px;
+  padding: 15px;
+  text-align: center;
+  border: none;
+  border-radius: var(--border-radious);
+  box-shadow: var(--box-shadow); */
