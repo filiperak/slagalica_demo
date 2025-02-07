@@ -139,7 +139,9 @@ const handleSocket = (io) => {
             const game = games[gameId]
             
             if(game){
-                game.addScore("koZnaZna",socket.id,points)    
+                const numericPoints = Number(points);
+
+                game.addScore("koZnaZna",socket.id,numericPoints)    
                 const player = game.getPlayer(socket.id)            
                                     
                 socket.emit("addScoreKoznazna",{data:player.score.games.koZnaZna.score})

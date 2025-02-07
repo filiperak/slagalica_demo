@@ -29,6 +29,7 @@ export class GameUi {
     this._socket.off("gameData");
     this._socket.off("scoreSubmited");
     this._socket.off("scoreSubmitedSkocko");
+    this._socket.off("scoreSubmitedKoznazna");
 
     //add request to fetch game data
     this._socket.emit("requestPlayerData", this._gameId);
@@ -329,13 +330,13 @@ export class GameUi {
         );
         break;
       case "ko zna zna":
-        gameEndCallback = () =>
-          this.koZnaZna(
-            data,
-            gameContainer,
-            () => clearInterval(timerInterval),
-            time
-          );
+        // gameEndCallback = () =>
+        //   this.koZnaZna(
+        //     data,
+        //     gameContainer,
+        //     () => clearInterval(timerInterval),
+        //     time
+        //   );
         this.koZnaZna(
           data,
           gameContainer,
@@ -829,6 +830,7 @@ export class GameUi {
   }
   koZnaZna(data, parent, stopTimer, time) {
     let qCounter = 0;
+    let sub = false;
     let correctAwnser = 0;
     const koznaznaContainer = document.createElement("div");
     koznaznaContainer.classList.add("koznazna-container");
@@ -840,9 +842,6 @@ export class GameUi {
       const p = document.createElement("p");
       p.innerText = data[qCounter].question;
 
-      // const s = document.createElement("p")
-      // s.innerText = correctAwnser
-
       const optionsContainer = document.createElement("div");
       optionsContainer.classList.add("koznazna-container--options");
 
@@ -850,13 +849,15 @@ export class GameUi {
         const d = document.createElement("div");
         d.classList.add("koznazna-container--card");
         d.innerText = elem;
+        if (time > 0) {
+          d.addEventListener("click", handleClick);
+        }
         optionsContainer.appendChild(d);
-        d.addEventListener("click", handleClick);
       });
       const n = document.createElement("div");
       n.classList.add("koznazna-container--card");
       n.innerText = "NE ZNAM";
-      n.addEventListener("click", handleNext);
+      if (time > 0) n.addEventListener("click", handleNext);
 
       optionsContainer.appendChild(n);
       koznaznaContainer.append(p, optionsContainer);
@@ -871,8 +872,11 @@ export class GameUi {
           renderQuestion();
         } else {
           console.log("Quiz finished");
-          stopTimer();
-          this._socket.emit("endKoznazna", { gameId: this._gameId });
+          if (!sub) {
+            stopTimer();
+            this._socket.emit("endKoznazna", { gameId: this._gameId });
+            sub = true;
+          }
         }
       }, 1000);
     };
@@ -883,13 +887,16 @@ export class GameUi {
       setTimeout(() => {
         if (e.target.innerText === data[qCounter].answer) {
           e.target.style.backgroundColor = "green";
-          // correctAwnser ++;
           this._socket.emit("submitkoznazna", {
             gameId: this._gameId,
             points: 3,
           });
         } else {
           e.target.style.backgroundColor = "red";
+          this._socket.emit("submitkoznazna", {
+            gameId: this._gameId,
+            points: -1,
+          });
         }
 
         setTimeout(() => {
@@ -899,8 +906,11 @@ export class GameUi {
             renderQuestion();
           } else {
             console.log("Quiz finished");
-            stopTimer();
-            this._socket.emit("endKoznazna", { gameId: this._gameId });
+            if (!sub) {
+              stopTimer();
+              this._socket.emit("endKoznazna", { gameId: this._gameId });
+              sub = true;
+            }
           }
         }, 1000);
       }, 1000);
@@ -909,16 +919,25 @@ export class GameUi {
       correctAwnser += data.data;
       console.log(data);
     });
-    if (time <= 0) {
-      //finish game
-      console.log("time end");
 
-      this._socket.emit("endKoznazna", { gameId: this._gameId });
-      removeAllEventListeners(koznaznaContainer);
-    } else {
-      renderQuestion();
-    }
+    let newTime = time
+    if (newTime > 0) renderQuestion()
     parent.append(koznaznaContainer);
+
+
+    const timerCheckInterval = setInterval(() => {
+      if (newTime <= 0 && !sub) {
+        clearInterval(timerCheckInterval);
+        if (!sub) {
+          stopTimer();
+
+          this._socket.emit("endKoznazna", { gameId: this._gameId });
+          sub = true;
+        }
+        removeAllEventListeners(koznaznaContainer);
+      }
+      newTime--;
+    }, 1000);
   }
   asocijacije() {}
 
