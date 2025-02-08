@@ -3,6 +3,7 @@ import {
   removeAllEventListeners,
 } from "./util/helperFunctions.js";
 import { keyCodeToLetterMap } from "./util/keyCodes.js";
+import { BLUE_BUTTON_BACKGROUND, GREEN_BUTTON_BACKGROUND, RED_BUTTON_BACKGROUND, YELLOW_BUTTON_BACKGROUND } from "./util/styleConstants.js";
 
 export class GameUi {
   // constructor(element, players, gameId, socket) {
@@ -30,6 +31,7 @@ export class GameUi {
     this._socket.off("scoreSubmited");
     this._socket.off("scoreSubmitedSkocko");
     this._socket.off("scoreSubmitedKoznazna");
+    this._socket.off("scoreSubmitedAsocijacije");
 
     //add request to fetch game data
     this._socket.emit("requestPlayerData", this._gameId);
@@ -212,6 +214,9 @@ export class GameUi {
     if (!this._socket.hasListeners("scoreSubmitedKoznazna")) {
       this._socket.on("scoreSubmitedKoznazna", popupMessageDefault);
     }
+    if (!this._socket.hasListeners("scoreSubmitedAsocijacije")) {
+      this._socket.on("scoreSubmitedAsocijacije", popupMessageDefault);
+    }
   }
 
   createScoreBoard() {
@@ -247,7 +252,7 @@ export class GameUi {
     });
 
     //time functions
-    let time = 90;
+    let time = 7;
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
@@ -945,45 +950,161 @@ export class GameUi {
     console.log(data);
     console.log(data.asocijacija);
 
-    
+
+    const indexMap = {1: "A", 2: "B", 3: "C", 4: "D"}
+    let points = 0;
+    let sub = false;
+    let newTime = time
+
     const asocijacijeContainer = document.createElement("div");
     asocijacijeContainer.classList.add("asocijacije-container");
+
+    const resultInput = document.createElement("input")
+    resultInput.classList.add("asocijacije-result-input")
+    resultInput.placeholder = "Konačno rešenje"
+    resultInput.readOnly = true
+    resultInput.style.textTransform = "uppercase"
+
+    const handleMainInputInput = (e) => {
+      e.preventDefault()
+      if(e.keyCode === 13){
+        console.log('submit asocijacije');
+        
+        if(resultInput.value && resultInput.value.toUpperCase() === data.asocijacija.konačnoRešenje){
+          resultInput.style.background = GREEN_BUTTON_BACKGROUND
+          resultInput.readOnly = true
+          points = 30
+
+          const cards = document.querySelectorAll(".asocijacije-card")
+          const inputs = document.querySelectorAll(".asocijacije-input")
+          
+          for(let i = 0; i < data.asocijacija.columns.length; i++){
+            for(let j = 0; j < data.asocijacija.columns[i].pojmovi.length; j++){
+                cards[i * 4 + j].innerText = data.asocijacija.columns[i].pojmovi[j]
+                cards[i * 4 + j].style.background = GREEN_BUTTON_BACKGROUND
+                cards[i * 4 + j].classList.add("asocijacije-card--clicked")
+                inputs[i].readOnly = true
+                inputs[i].value = data.asocijacija.columns[i].rešenje
+                inputs[i].style.background = GREEN_BUTTON_BACKGROUND
+            }
+          }
+          submit()
+        }else{
+          resultInput.style.background = RED_BUTTON_BACKGROUND
+          resultInput.style.color = "#fff"
+          setTimeout(() => {
+            resultInput.style.background = ""
+            resultInput.style.color = ""
+            resultInput.value = ""
+          },500)
+        }
+      }
+    }
+    resultInput.addEventListener("keyup", handleMainInputInput)
+
+
+    const createInput = (index,elem) => {
+      const inp = document.createElement("input")
+      inp.classList.add("asocijacije-input")
+      inp.setAttribute("id", `asocijacije-input-${index}`)
+      inp.placeholder = `Rešenje kolone ${indexMap[index +1]}`
+      inp.readOnly = true
+      inp.style.textTransform = "uppercase"
+      inp.addEventListener("keyup", (e) => {
+        if(e.keyCode === 13){
+          console.log(e.keyCode);
+          
+          e.preventDefault()
+          const word = e.target.value.toUpperCase()
+          if(word && word === data.asocijacija.columns[index].rešenje){
+            console.log(word, data.asocijacija.columns[index].rešenje);
+            
+            inp.style.background = GREEN_BUTTON_BACKGROUND
+            const cards = document.querySelectorAll(`[cardRow="asocijacije-card-${index}"]`)
+            cards.forEach((card,i) => {
+              setTimeout(() =>{
+                card.innerText = data.asocijacija.columns[index].pojmovi[i]
+                card.style.background = GREEN_BUTTON_BACKGROUND
+                card.classList.add("asocijacije-card--clicked")
+                
+              }, i * 50)
+            })
+            inp.readOnly = true
+            resultInput.readOnly = false
+            points += 5
+          }else{
+            inp.style.background = RED_BUTTON_BACKGROUND
+            inp.style.color = "#fff"
+            setTimeout(() => {
+              inp.style.background = ""
+              inp.style.color = ""
+              inp.value = ""
+            },500)
+          }
+        }
+      })
+      elem.appendChild(inp)
+    }
 
     const createBoard = () => {
       const board = document.createElement("div")
       board.classList.add("asocijacije-board")
 
       data.asocijacija.columns.forEach((elem,index) => {
-        if(index === 2){
-          const resultInput = document.createElement("input")
-          resultInput.classList.add("asocijacije-result-input")
-          // resultInput.classList.add("asocijacije-input")
-          board.appendChild(resultInput)
-        }
+        if(index === 2) board.appendChild(resultInput)
+
         const column = document.createElement("span")
         column.classList.add("asocijacije-column")
         
-        if(index > 1){
-          const i = document.createElement("input")
-          i.classList.add("asocijacije-input")
-          column.appendChild(i)
-        }
+        if(index > 1)createInput(index,column)
+
         elem.pojmovi.forEach((e, i) => {
           const card = document.createElement("div")
           card.classList.add("asocijacije-card")
-          card.setAttribute("id", `asocijacije-card-${index}${i}`)
-          card.innerText = e
+          card.setAttribute("cardRow", `asocijacije-card-${index}`)
+          card.innerText = `${indexMap[index+1]}${i+1}`
+
+          card.addEventListener("click",(event) => {
+            if(card.classList.contains("asocijacije-card--clicked")) return
+            event.preventDefault()
+            card.innerText = e
+            card.style.background = BLUE_BUTTON_BACKGROUND
+            card.classList.add("asocijacije-card--clicked")
+            const input = document.querySelector(`#asocijacije-input-${index}`)
+            input.readOnly = false
+          })
           column.appendChild(card)
         })
-        if(index < 2){
-          const i = document.createElement("input")
-          i.classList.add("asocijacije-input")
-          column.appendChild(i)
-        }
+        if(index < 2) createInput(index,column)
         board.appendChild(column)
       })
       asocijacijeContainer.appendChild(board)
     }
+
+    const submit = () => {
+      clearInterval(timerCheckInterval);
+      if (!sub) {
+        stopTimer();
+        this._socket.emit("submitAsocijacije", {gameId: this._gameId, points})
+        sub = true;
+      }
+      resultInput.readOnly = true
+      const inputs = document.querySelectorAll(".asocijacije-input")
+      inputs.forEach((input) => {
+        input.readOnly = true
+      })
+      removeAllEventListeners(asocijacijeContainer);
+    }
+
+    const timerCheckInterval = setInterval(() => {
+      newTime--;
+      if (newTime <= 0){
+        submit()
+        console.log("submit asocijacije"); 
+      }
+    }, 1000);
+
+
     createBoard()
     parent.append(asocijacijeContainer);
   }

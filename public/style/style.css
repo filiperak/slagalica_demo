@@ -494,7 +494,9 @@ text-align: center;
   width: 90%;
 }
 .asocijacije-card{
-  margin:10px 0
+  margin:10px 0;
+  cursor:pointer;
+  font-weight: 400;
 }
 .asocijacije-input,.asocijacije-result-input{
   font-weight: 600  ;

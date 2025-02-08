@@ -156,6 +156,19 @@ const handleSocket = (io) => {
                 socket.emit("scoreSubmitedKoznazna",{data:player.score.games.koZnaZna.score})
             }
         })
+        socket.on("submitAsocijacije",({gameId,points}) => {
+            const game = games[gameId]
+            console.log("aso",points);
+            
+            
+            if(game){
+                const numericPoints = Number(points);
+                game.addScore("asocijacije",socket.id,numericPoints)    
+                const player = game.getPlayer(socket.id)            
+                                    
+                socket.emit("scoreSubmitedAsocijacije",{data:player.score.games.asocijacije.score})
+            }
+        })
 
 
         // socket.on("requestGame",({gameId,singleGame}) => {
