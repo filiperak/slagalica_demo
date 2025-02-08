@@ -285,6 +285,7 @@ body {
 .slagalica--letter {
   font-weight: 600;
   cursor: pointer;
+  padding: 18px;
 }
 
 .visibility-hidden {
@@ -585,10 +586,10 @@ body {
 }
 .slagalica-container{}
 
-@media (min-width: 470px) {
+@media (min-width: 520px) {
 
   .moj-broj-container--numbers,
-.moj-broj-container--operators {
+  .moj-broj-container--operators {
   display: flex; 
   justify-content: space-between;
   align-items: center;

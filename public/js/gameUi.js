@@ -614,6 +614,7 @@ export class GameUi {
     const firstRow = data.numbers.slice(0,6)
     const secondRow = data.numbers.slice(6,8)
     const operators = ["+","-","*","/","(",")"]
+    const intervals = []
 
     const mojBrojContainer = document.createElement("div");
     mojBrojContainer.classList.add("moj-broj-container");
@@ -643,19 +644,21 @@ export class GameUi {
     const inputContainer = document.createElement("div");
     inputContainer.classList.add("moj-broj-container--input-container");
 
-
     const tartgetNumber = document.createElement("div");
     tartgetNumber.classList.add("moj-broj-container--target-number");
-    setInterval(() => {
+
+    const interval1 = setInterval(() => {
       tartgetNumber.innerText  = Math.floor(Math.random() * 900) + 99
     },100)
+    intervals.push(interval1)
 
     firstRow.forEach((elem,index) => {
       const number = document.createElement("div");
       number.classList.add("moj-broj-container--number");
-      setInterval(() => {
+      const interval2 = setInterval(() => {
         number.innerText = Math.floor(Math.random() * 8) + 1
       },100)
+      intervals.push(interval2)
       number.innerText = elem;
       n2.appendChild(number);
     })
@@ -665,9 +668,10 @@ export class GameUi {
       const number = document.createElement("div");
       number.classList.add("moj-broj-container--number");
       const randomNumbers = [10, 15, 20, 25, 50];
-      setInterval(() => {
+      const interval3 = setInterval(() => {
       number.innerText = randomNumbers[Math.floor(Math.random() * randomNumbers.length)];
       }, 100);
+      intervals.push(interval3);
       number.innerText = elem;
       n3.appendChild(number);
     });
@@ -686,13 +690,20 @@ export class GameUi {
     // deleteBtn.innerText = "Obriši";
     deleteBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>';
 
+    const stopNumbers = () => {
+      intervals.forEach((interval) => clearInterval(interval))
+      tartgetNumber.innerText = data.target
+      const e = document.querySelectorAll(".moj-broj-container--number")
+      e.forEach((elem,index) => elem.innerText = data.numbers[index])
+      stopSubmitBtn.removeEventListener("click", stopNumbers)
+
+    }
+
+    stopSubmitBtn.addEventListener("click", stopNumbers)
+
     oc1.append(oc2,deleteBtn)
-
     c.append(inpLine,n1,oc1,stopSubmitBtn)
-
     mojBrojContainer.append(tartgetNumber,c)
-
-
     parent.appendChild(mojBrojContainer)
   }
   spojnice(data, parent, stopTimer, time) {
