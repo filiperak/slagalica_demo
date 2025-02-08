@@ -137,70 +137,70 @@ export class GameUi {
 
       this._element.appendChild(menu);
     });
-    const popupMessageDefault = (t) => {
-      let text;
-      console.log(t);
-      if (t) {
-        t.data > 0
-          ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
-          : (text = `🤡Osvojili ste ${t.data} poena🤡`);
-      } else {
-        text = `🤡Osvojili ste 0 poena🤡`;
-      }
-      this.drawPopup(text, () => {});
-    };
+    // const popupMessageDefault = (t) => {
+    //   let text;
+    //   console.log(t);
+    //   if (t) {
+    //     t.data > 0
+    //       ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
+    //       : (text = `🤡Osvojili ste ${t.data} poena🤡`);
+    //   } else {
+    //     text = `🤡Osvojili ste 0 poena🤡`;
+    //   }
+    //   this.drawPopup(text, () => {});
+    // };
 
-    const popupMessageSlagalica = (t) => {
-      // const text = `Osvojili ste ${t.data} poena`;
-      let text;
-      t.data > 0
-        ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
-        : (text = `🤡Osvojili ste ${t.data} poena🤡`);
-      this.drawPopup(text, (m) => {
-        const p1 = document.createElement("p");
-        p1.innerText = "Naša reč:";
+    // const popupMessageSlagalica = (t) => {
+    //   // const text = `Osvojili ste ${t.data} poena`;
+    //   let text;
+    //   t.data > 0
+    //     ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
+    //     : (text = `🤡Osvojili ste ${t.data} poena🤡`);
+    //   this.drawPopup(text, (m) => {
+    //     const p1 = document.createElement("p");
+    //     p1.innerText = "Naša reč:";
 
-        const p2 = document.createElement("p");
-        p2.innerText = this._gameState.slagalica.word;
-        p2.style.fontWeight = 600;
-        p2.style.fontSize = "1.1rem";
+    //     const p2 = document.createElement("p");
+    //     p2.innerText = this._gameState.slagalica.word;
+    //     p2.style.fontWeight = 600;
+    //     p2.style.fontSize = "1.1rem";
 
-        m.append(p1, p2);
-      });
-    };
+    //     m.append(p1, p2);
+    //   });
+    // };
 
-    const popupMessageSkocko = (t) => {
-      const text = `Osvojili ste ${t.data} poena`;
-      this.drawPopup(text, (popupMessageSkocko) => {
-        const combination = document.createElement("div");
-        combination.classList.add("popup-combination-skocko");
+    // const popupMessageSkocko = (t) => {
+    //   const text = `Osvojili ste ${t.data} poena`;
+    //   this.drawPopup(text, (popupMessageSkocko) => {
+    //     const combination = document.createElement("div");
+    //     combination.classList.add("popup-combination-skocko");
 
-        const p = document.createElement("p");
-        p.innerText = "Tačna kombinacija:";
+    //     const p = document.createElement("p");
+    //     p.innerText = "Tačna kombinacija:";
 
-        const skockoCombination = document.createElement("section");
+    //     const skockoCombination = document.createElement("section");
 
-        this._gameState.skocko.forEach((e, ind) => {
-          const c = document.createElement("div");
-          c.classList.add("popup-combination-skocko--card");
+    //     this._gameState.skocko.forEach((e, ind) => {
+    //       const c = document.createElement("div");
+    //       c.classList.add("popup-combination-skocko--card");
 
-          const img = document.createElement("img");
-          img.setAttribute("src", this._imgPaths[e]);
+    //       const img = document.createElement("img");
+    //       img.setAttribute("src", this._imgPaths[e]);
 
-          c.appendChild(img);
-          skockoCombination.appendChild(c);
-        });
-        combination.append(p, skockoCombination);
-        popupMessageSkocko.appendChild(combination);
-      });
-    };
+    //       c.appendChild(img);
+    //       skockoCombination.appendChild(c);
+    //     });
+    //     combination.append(p, skockoCombination);
+    //     popupMessageSkocko.appendChild(combination);
+    //   });
+    // };
     // this._socket.once("scoreSubmitedSlagalica",  popupMessage);
     // this._socket.once("scoreSubmitedSkocko", popupMessage);
-    if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
-      this._socket.on("scoreSubmitedSlagalica", popupMessageSlagalica);
-    }
+    // if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
+    //   this._socket.on("scoreSubmitedSlagalica", popupMessageSlagalica);
+    // }
     if (!this._socket.hasListeners("scoreSubmitedSkocko")) {
-      this._socket.on("scoreSubmitedSkocko", popupMessageSkocko);
+      this._socket.on("scoreSubmitedSkocko", this.popupMessageSkocko);
     }
     // this._socket.on("scoreSubmitedSkocko", (score) => {
     //   const text = `Osvojili ste ${score.data} poena`;
@@ -209,14 +209,14 @@ export class GameUi {
     //   });
     // });
     if (!this._socket.hasListeners("scoreSubmitedSpojnice")) {
-      this._socket.on("scoreSubmitedSpojnice", popupMessageDefault);
+      this._socket.on("scoreSubmitedSpojnice", this.popupMessageDefault);
     }
-    if (!this._socket.hasListeners("scoreSubmitedKoznazna")) {
-      this._socket.on("scoreSubmitedKoznazna", popupMessageDefault);
-    }
-    if (!this._socket.hasListeners("scoreSubmitedAsocijacije")) {
-      this._socket.on("scoreSubmitedAsocijacije", popupMessageDefault);
-    }
+    // if (!this._socket.hasListeners("scoreSubmitedKoznazna")) {
+    //   this._socket.on("scoreSubmitedKoznazna", this.popupMessageDefault);
+    // }
+    // if (!this._socket.hasListeners("scoreSubmitedAsocijacije")) {
+    //   this._socket.on("scoreSubmitedAsocijacije", popupMessageDefault);
+    // }
   }
 
   createScoreBoard() {
@@ -600,6 +600,9 @@ export class GameUi {
       this.createGameMenu();
       //jeftiono rešenje da bi se izbegao bug, EL se nnebrišu ako vreme isteknt a sad te samo izbaci iz igre i vrati u meni
     }
+    if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
+      this._socket.on("scoreSubmitedSlagalica", this.popupMessageSlagalica);
+    }
   }
   mojBroj() {}
   spojnice(data, parent, stopTimer, time) {
@@ -930,6 +933,10 @@ export class GameUi {
 
     let newTime = time
     if (newTime > 0) renderQuestion()
+
+    if (!this._socket.hasListeners("scoreSubmitedKoznazna")) {
+      this._socket.on("scoreSubmitedKoznazna", this.popupMessageDefault);
+    }
     parent.append(koznaznaContainer);
 
 
@@ -1106,6 +1113,10 @@ export class GameUi {
 
 
     createBoard()
+
+    if (!this._socket.hasListeners("scoreSubmitedAsocijacije")) {
+      this._socket.on("scoreSubmitedAsocijacije", this.popupMessageDefault);
+    }
     parent.append(asocijacijeContainer);
   }
 
@@ -1162,4 +1173,59 @@ export class GameUi {
     popup.appendChild(popupMessage);
     this._element.appendChild(popup);
   }
+  popupMessageDefault = (t) => {
+    let text;
+    console.log(t);
+    if (t) {
+      t.data > 0
+        ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
+        : (text = `🤡Osvojili ste ${t.data} poena🤡`);
+    } else {
+      text = `🤡Osvojili ste 0 poena🤡`;
+    }
+    this.drawPopup(text, () => {});
+  };
+  popupMessageSlagalica = (t) => {
+    // const text = `Osvojili ste ${t.data} poena`;
+    let text;
+    t.data > 0
+      ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
+      : (text = `🤡Osvojili ste ${t.data} poena🤡`);
+    this.drawPopup(text, (m) => {
+      const p1 = document.createElement("p");
+      p1.innerText = "Naša reč:";
+
+      const p2 = document.createElement("p");
+      p2.innerText = this._gameState.slagalica.word;
+      p2.style.fontWeight = 600;
+      p2.style.fontSize = "1.1rem";
+
+      m.append(p1, p2);
+    });
+  };
+  popupMessageSkocko = (t) => {
+    const text = `Osvojili ste ${t.data} poena`;
+    this.drawPopup(text, (popupMessageSkocko) => {
+      const combination = document.createElement("div");
+      combination.classList.add("popup-combination-skocko");
+
+      const p = document.createElement("p");
+      p.innerText = "Tačna kombinacija:";
+
+      const skockoCombination = document.createElement("section");
+
+      this._gameState.skocko.forEach((e, ind) => {
+        const c = document.createElement("div");
+        c.classList.add("popup-combination-skocko--card");
+
+        const img = document.createElement("img");
+        img.setAttribute("src", this._imgPaths[e]);
+
+        c.appendChild(img);
+        skockoCombination.appendChild(c);
+      });
+      combination.append(p, skockoCombination);
+      popupMessageSkocko.appendChild(combination);
+    });
+  };
 }
