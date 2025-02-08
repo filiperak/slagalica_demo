@@ -618,6 +618,9 @@ export class GameUi {
     const mojBrojContainer = document.createElement("div");
     mojBrojContainer.classList.add("moj-broj-container");
 
+    const c = document.createElement("div");
+    c.classList.add("moj-broj-container--container");
+
     const n1 = document.createElement("div");
     n1.classList.add("moj-broj-container--numbers");
 
@@ -633,6 +636,12 @@ export class GameUi {
     const stopSubmitBtn = document.createElement("div");
     stopSubmitBtn.classList.add("moj-broj-container--stop-submit-btn");
     stopSubmitBtn.innerText = "Stop";
+
+    const inpLine = document.createElement("div");
+    inpLine.classList.add("moj-broj-container--input-line");
+
+    const inputContainer = document.createElement("div");
+    inputContainer.classList.add("moj-broj-container--input-container");
 
 
     const tartgetNumber = document.createElement("div");
@@ -679,7 +688,9 @@ export class GameUi {
 
     oc1.append(oc2,deleteBtn)
 
-    mojBrojContainer.append(tartgetNumber,n1,oc1,stopSubmitBtn)
+    c.append(inpLine,n1,oc1,stopSubmitBtn)
+
+    mojBrojContainer.append(tartgetNumber,c)
 
 
     parent.appendChild(mojBrojContainer)

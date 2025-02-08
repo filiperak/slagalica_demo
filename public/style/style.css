@@ -181,6 +181,7 @@ body {
 }
 .game-container {
   z-index: 2;
+  /* border: 1px solid red; */
 }
 .game-container > header {
   display: flex;
@@ -270,7 +271,7 @@ body {
 }
 .slagalica-container {
   /* border: 1px solid var(--dark-blue); */
-  margin: auto 0;
+  margin-top: auto;
 }
 .slagalica-container--input {
 }
@@ -295,7 +296,8 @@ body {
   display: flex;
   justify-content: center;
 }
-.slagalica-container--input-line {
+.slagalica-container--input-line ,
+.moj-broj-container--input-line{
   height: 3px;
   box-shadow: var(--box-shadow);
   background-color: var(--dark-primary);
@@ -520,15 +522,19 @@ body {
   border-radius: var(--border-radious);
   box-shadow: var(--box-shadow); */
 
-.moj-broj-container {
+.moj-broj-container,
+.koznazna-container {
+  /* position: relative; */
+  height: 100%;
 }
-.moj-broj-container--numbers,
+
+/* .moj-broj-container--numbers,
 .moj-broj-container--operators {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-}
+} */
 .moj-broj-container--first-row,
 .moj-broj-container--second-row,
 .moj-broj-container--operator-chars,
@@ -558,4 +564,34 @@ body {
 .moj-broj-container--target-number {
   font-size: 30px;
   display: inline-block;
+  margin-top: auto;
+}
+
+/* slagalica-container--input-line */
+.moj-broj-container--input-line{
+  margin: 8px 0;
+}
+.moj-broj-container--input-container{
+
+}
+.moj-broj-container--container,
+.koznazna-container--options
+{
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  right: 0;
+  padding: 4px;
+}
+.slagalica-container{}
+
+@media (min-width: 470px) {
+
+  .moj-broj-container--numbers,
+.moj-broj-container--operators {
+  display: flex; 
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
 }
