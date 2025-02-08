@@ -151,7 +151,7 @@ const handleSocket = (io) => {
             const game = games[gameId]
             if(game){
                 const player = game.getPlayer(socket.id)
-                console.log(player.score.games.koZnaZna.score);
+                // console.log(player.score.games.koZnaZna.score);  
                            
                 socket.emit("scoreSubmitedKoznazna",{data:player.score.games.koZnaZna.score})
             }
@@ -165,7 +165,7 @@ const handleSocket = (io) => {
                 const numericPoints = Number(points);
                 game.addScore("asocijacije",socket.id,numericPoints)    
                 const player = game.getPlayer(socket.id)            
-                                    
+                                    //score IS SOMETIMES UNDEFINED
                 socket.emit("scoreSubmitedAsocijacije",{data:player.score.games.asocijacije.score})
             }
         })

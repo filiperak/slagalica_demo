@@ -8,9 +8,7 @@ export class Game {
         this.players = [];
         this.gameState = {
             slagalica: this.createSlagalica(),
-            mojBroj: {
-                
-            },
+            mojBroj: this.createMojBroj(),
             spojnice: this.createSpojnice(),
             skocko: this.createSkocko(),
             koZnaZna: this.createKoznazna(),
@@ -135,14 +133,6 @@ export class Game {
 
         return {correctNumbers,correctPositions,score}
     }
-    // createSpojnice() {
-    //     const randomSpojnica = spojniceCombDb[Math.floor(Math.random() * spojniceCombDb.length)];
-    //     const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
-    //     return {
-    //         title: randomSpojnica.title,
-    //         set: shuffle(randomSpojnica.set)
-    //     };
-    // }
     createSpojnice() {
         const randomSpojnica = spojniceCombDb[Math.floor(Math.random() * spojniceCombDb.length)];
         const shuffle = (arr) => arr.sort(() => Math.random() - 0.5);
@@ -207,4 +197,20 @@ export class Game {
             asocijacija:randomAsocijacija
         };
     }
+    createMojBroj(){
+        const target = Math.floor(Math.random() * 900) + 100;
+
+        const operations = ["+", "-", "*", "/"];
+        const mediumNimbers = [10,15,20]
+        const largeNumbers = [25,50,75,100]
+        const numbers = [];
+        for (let i = 0; i < 6; i++) {
+            numbers.push(Math.floor(Math.random() * 9) + 1);
+        }
+        numbers.push(mediumNimbers[Math.floor(Math.random() * mediumNimbers.length)])
+        numbers.push(largeNumbers[Math.floor(Math.random() * largeNumbers.length)])
+
+        return {target, numbers}
+    }
+
 }

@@ -252,7 +252,7 @@ export class GameUi {
     });
 
     //time functions
-    let time = 10;
+    let time = 90;
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
@@ -302,7 +302,12 @@ export class GameUi {
         );
         break;
       case "moj broj":
-        this.mojBroj();
+        this.mojBroj(
+          data,
+          gameContainer,
+          () => clearInterval(timerInterval),
+          time
+        );
         break;
       case "spojnice":
         gameEndCallback = () =>
@@ -604,7 +609,81 @@ export class GameUi {
       this._socket.on("scoreSubmitedSlagalica", this.popupMessageSlagalica);
     }
   }
-  mojBroj() {}
+  mojBroj(data, parent, stopTimer, time) {
+
+    const firstRow = data.numbers.slice(0,6)
+    const secondRow = data.numbers.slice(6,8)
+    const operators = ["+","-","*","/","(",")"]
+
+    const mojBrojContainer = document.createElement("div");
+    mojBrojContainer.classList.add("moj-broj-container");
+
+    const n1 = document.createElement("div");
+    n1.classList.add("moj-broj-container--numbers");
+
+    const n2 = document.createElement("div");
+    n2.classList.add("moj-broj-container--first-row");
+
+    const n3 = document.createElement("div");
+    n3.classList.add("moj-broj-container--second-row");
+
+    const oc1 = document.createElement("div");
+    oc1.classList.add("moj-broj-container--operators");
+
+    const stopSubmitBtn = document.createElement("div");
+    stopSubmitBtn.classList.add("moj-broj-container--stop-submit-btn");
+    stopSubmitBtn.innerText = "Stop";
+
+
+    const tartgetNumber = document.createElement("div");
+    tartgetNumber.classList.add("moj-broj-container--target-number");
+    setInterval(() => {
+      tartgetNumber.innerText  = Math.floor(Math.random() * 900) + 99
+    },100)
+
+    firstRow.forEach((elem,index) => {
+      const number = document.createElement("div");
+      number.classList.add("moj-broj-container--number");
+      setInterval(() => {
+        number.innerText = Math.floor(Math.random() * 8) + 1
+      },100)
+      number.innerText = elem;
+      n2.appendChild(number);
+    })
+    n1.appendChild(n2)
+
+    secondRow.forEach((elem, index) => {
+      const number = document.createElement("div");
+      number.classList.add("moj-broj-container--number");
+      const randomNumbers = [10, 15, 20, 25, 50];
+      setInterval(() => {
+      number.innerText = randomNumbers[Math.floor(Math.random() * randomNumbers.length)];
+      }, 100);
+      number.innerText = elem;
+      n3.appendChild(number);
+    });
+    n1.appendChild(n3)
+
+    const oc2 = document.createElement("div");
+    oc2.classList.add("moj-broj-container--operator-chars");
+    operators.forEach((elem) => {
+      const operator = document.createElement("div");
+      operator.classList.add("moj-broj-container--operator");
+      operator.innerText = elem;
+      oc2.appendChild(operator);
+    })
+    const deleteBtn = document.createElement("div");
+    deleteBtn.classList.add("moj-broj-container--delete-btn");
+    // deleteBtn.innerText = "Obriši";
+    deleteBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>';
+
+    oc1.append(oc2,deleteBtn)
+
+    mojBrojContainer.append(tartgetNumber,n1,oc1,stopSubmitBtn)
+
+
+    parent.appendChild(mojBrojContainer)
+  }
   spojnice(data, parent, stopTimer, time) {
     //variables
     let spojnniceIdList = [];
