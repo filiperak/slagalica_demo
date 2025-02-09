@@ -615,6 +615,8 @@ export class GameUi {
     const secondRow = data.numbers.slice(6,8)
     const operators = ["+","-","*","/","(",")"]
     const intervals = []
+    const combination = [];
+    let counter = 0;
 
     const mojBrojContainer = document.createElement("div");
     mojBrojContainer.classList.add("moj-broj-container");
@@ -647,6 +649,66 @@ export class GameUi {
     const tartgetNumber = document.createElement("div");
     tartgetNumber.classList.add("moj-broj-container--target-number");
 
+    const deleteBtn = document.createElement("div");
+    deleteBtn.classList.add("moj-broj-container--delete-btn");
+    deleteBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>';
+    
+    const oc2 = document.createElement("div");
+    oc2.classList.add("moj-broj-container--operator-chars");
+
+    const renderCombination = () => {
+      inputContainer.innerHTML = ""
+      inputContainer.innerHTML = combination.join(" ")
+      console.log(combination);
+      
+    }
+    const pushElement = (e) => {
+      const element = e.target.innerHTML      
+      combination.push(element)
+      e.target.classList.add("visibility-hidden")
+      renderCombination()
+      console.log(combination);
+      
+    }
+
+    const pushOperant = (e) => {
+      const element = e.target.innerHTML      
+      combination.push(element)
+      renderCombination()
+    }
+    const removeElement = () => {
+      if (combination.length > 0) {
+         const lastElement = combination.pop();
+         const elements = document.querySelectorAll(`[data-value="${lastElement}"]`); 
+        //const element = document.querySelector(`#mojbroj-e-${combination.length}`);
+         const e = elements[elements.length - 1]; 
+        if (e) {
+          // e.classList.remove("visibility-hidden");
+          // console.log(elements);
+          // console.log(e);
+          // e.classList.remove("visibility-hidden");
+          // if (e.classList.contains("visibility-hidden")) {
+          //   e.classList.remove("visibility-hidden");
+          // }
+          e.classList.toggle("visibility-hidden");
+          
+          
+        }
+        // combination.pop();  
+        renderCombination();
+      }
+    };
+    // const removeElement = () => {
+    //   if (combination.length > 0) {
+    //     const lastElement = combination.pop();
+    //     const e = document.querySelector(`[data-value="${lastElement}"]`); // Select using data attribute
+    //     if (e) {
+    //       e.classList.remove("visibility-hidden");
+    //     }
+    //     renderCombination();
+    //   }
+    // };
+
     const interval1 = setInterval(() => {
       tartgetNumber.innerText  = Math.floor(Math.random() * 900) + 99
     },100)
@@ -655,11 +717,15 @@ export class GameUi {
     firstRow.forEach((elem,index) => {
       const number = document.createElement("div");
       number.classList.add("moj-broj-container--number");
+      // number.setAttribute("id",`mojbroj-e-${counter}`)
+      counter++
+      number.setAttribute("data-value", elem);//ovde
       const interval2 = setInterval(() => {
         number.innerText = Math.floor(Math.random() * 8) + 1
       },100)
       intervals.push(interval2)
       number.innerText = elem;
+      number.addEventListener("click", pushElement);
       n2.appendChild(number);
     })
     n1.appendChild(n2)
@@ -667,42 +733,69 @@ export class GameUi {
     secondRow.forEach((elem, index) => {
       const number = document.createElement("div");
       number.classList.add("moj-broj-container--number");
+      number.setAttribute("data-value", elem);//ovde
+      // number.setAttribute("id",`mojbroj-e-${counter}`)
+      counter++
       const randomNumbers = [10, 15, 20, 25, 50];
       const interval3 = setInterval(() => {
       number.innerText = randomNumbers[Math.floor(Math.random() * randomNumbers.length)];
       }, 100);
       intervals.push(interval3);
       number.innerText = elem;
+      number.addEventListener("click", pushElement);
       n3.appendChild(number);
     });
     n1.appendChild(n3)
 
-    const oc2 = document.createElement("div");
-    oc2.classList.add("moj-broj-container--operator-chars");
     operators.forEach((elem) => {
       const operator = document.createElement("div");
       operator.classList.add("moj-broj-container--operator");
+      // operator.setAttribute("id",`mojbroj-e-${elem}`)
+      operator.setAttribute("data-value", elem); //ovde
+      // operator.setAttribute("id",`mojbroj-e-${counter}`)
+      counter++
       operator.innerText = elem;
+      operator.addEventListener("click",pushOperant);
       oc2.appendChild(operator);
     })
-    const deleteBtn = document.createElement("div");
-    deleteBtn.classList.add("moj-broj-container--delete-btn");
-    // deleteBtn.innerText = "Obriši";
-    deleteBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>';
+
+    deleteBtn.addEventListener("click", removeElement);
+
+    const submit = () => {
+      console.log(combination); 
+    }
 
     const stopNumbers = () => {
       intervals.forEach((interval) => clearInterval(interval))
       tartgetNumber.innerText = data.target
       const e = document.querySelectorAll(".moj-broj-container--number")
-      e.forEach((elem,index) => elem.innerText = data.numbers[index])
+      e.forEach((elem,index) => {
+        elem.innerText = data.numbers[index]
+        elem.setAttribute("id",`mojbroj-e-${data.numbers[index]}`)
+      })
       stopSubmitBtn.removeEventListener("click", stopNumbers)
-
+      stopSubmitBtn.innerText = "Submit"
+      stopSubmitBtn.addEventListener("click",submit)
     }
-
+    const keyDown = (e) => {
+      switch (e.keyCode){
+        case 32:
+          stopNumbers()
+          break;
+        case 8:
+          removeElement()
+          break;
+        case 13:
+          submit()
+          break;
+      }
+    }
+    
     stopSubmitBtn.addEventListener("click", stopNumbers)
 
+    document.body.addEventListener("keydown", keyDown)
     oc1.append(oc2,deleteBtn)
-    c.append(inpLine,n1,oc1,stopSubmitBtn)
+    c.append(inputContainer,inpLine,n1,oc1,stopSubmitBtn)
     mojBrojContainer.append(tartgetNumber,c)
     parent.appendChild(mojBrojContainer)
   }

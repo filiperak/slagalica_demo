@@ -596,3 +596,8 @@ body {
   flex-wrap: wrap;
 }
 }
+.moj-broj-container--input-container{ 
+  font-family: 'Caveat', cursive;
+  font-size: 1.5rem;
+  color: var(--dark-blue);
+}
