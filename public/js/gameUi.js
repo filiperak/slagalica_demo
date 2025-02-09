@@ -616,7 +616,6 @@ export class GameUi {
     const operators = ["+","-","*","/","(",")"]
     const intervals = []
     const combination = [];
-    let counter = 0;
 
     const mojBrojContainer = document.createElement("div");
     mojBrojContainer.classList.add("moj-broj-container");
@@ -678,37 +677,20 @@ export class GameUi {
     }
     const removeElement = () => {
       if (combination.length > 0) {
-         const lastElement = combination.pop();
-         const elements = document.querySelectorAll(`[data-value="${lastElement}"]`); 
-        //const element = document.querySelector(`#mojbroj-e-${combination.length}`);
-         const e = elements[elements.length - 1]; 
-        if (e) {
-          // e.classList.remove("visibility-hidden");
-          // console.log(elements);
-          // console.log(e);
-          // e.classList.remove("visibility-hidden");
-          // if (e.classList.contains("visibility-hidden")) {
-          //   e.classList.remove("visibility-hidden");
-          // }
-          e.classList.toggle("visibility-hidden");
-          
-          
+        const lastElement = combination.pop();
+    
+        const elements = document.querySelectorAll(`[data-value="${lastElement}"]`);
+    
+        for (let i = elements.length - 1; i >= 0; i--) {
+          if (elements[i].classList.contains("visibility-hidden")) {
+            elements[i].classList.remove("visibility-hidden");
+            break;
+          }
         }
-        // combination.pop();  
-        renderCombination();
+    
+        renderCombination(); 
       }
     };
-    // const removeElement = () => {
-    //   if (combination.length > 0) {
-    //     const lastElement = combination.pop();
-    //     const e = document.querySelector(`[data-value="${lastElement}"]`); // Select using data attribute
-    //     if (e) {
-    //       e.classList.remove("visibility-hidden");
-    //     }
-    //     renderCombination();
-    //   }
-    // };
-
     const interval1 = setInterval(() => {
       tartgetNumber.innerText  = Math.floor(Math.random() * 900) + 99
     },100)
@@ -717,8 +699,6 @@ export class GameUi {
     firstRow.forEach((elem,index) => {
       const number = document.createElement("div");
       number.classList.add("moj-broj-container--number");
-      // number.setAttribute("id",`mojbroj-e-${counter}`)
-      counter++
       number.setAttribute("data-value", elem);//ovde
       const interval2 = setInterval(() => {
         number.innerText = Math.floor(Math.random() * 8) + 1
@@ -734,8 +714,6 @@ export class GameUi {
       const number = document.createElement("div");
       number.classList.add("moj-broj-container--number");
       number.setAttribute("data-value", elem);//ovde
-      // number.setAttribute("id",`mojbroj-e-${counter}`)
-      counter++
       const randomNumbers = [10, 15, 20, 25, 50];
       const interval3 = setInterval(() => {
       number.innerText = randomNumbers[Math.floor(Math.random() * randomNumbers.length)];
@@ -750,10 +728,7 @@ export class GameUi {
     operators.forEach((elem) => {
       const operator = document.createElement("div");
       operator.classList.add("moj-broj-container--operator");
-      // operator.setAttribute("id",`mojbroj-e-${elem}`)
       operator.setAttribute("data-value", elem); //ovde
-      // operator.setAttribute("id",`mojbroj-e-${counter}`)
-      counter++
       operator.innerText = elem;
       operator.addEventListener("click",pushOperant);
       oc2.appendChild(operator);
@@ -771,7 +746,6 @@ export class GameUi {
       const e = document.querySelectorAll(".moj-broj-container--number")
       e.forEach((elem,index) => {
         elem.innerText = data.numbers[index]
-        // elem.setAttribute("id",`mojbroj-e-${data.numbers[index]}`)
       })
       stopSubmitBtn.removeEventListener("click", stopNumbers)
       stopSubmitBtn.innerText = "Submit"
