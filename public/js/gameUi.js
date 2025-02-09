@@ -771,7 +771,7 @@ export class GameUi {
       const e = document.querySelectorAll(".moj-broj-container--number")
       e.forEach((elem,index) => {
         elem.innerText = data.numbers[index]
-        elem.setAttribute("id",`mojbroj-e-${data.numbers[index]}`)
+        // elem.setAttribute("id",`mojbroj-e-${data.numbers[index]}`)
       })
       stopSubmitBtn.removeEventListener("click", stopNumbers)
       stopSubmitBtn.innerText = "Submit"
