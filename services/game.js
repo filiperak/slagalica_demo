@@ -38,15 +38,12 @@ export class Game {
         }
         return false; 
     }
-
     removePlayer(id) {
         this.players = this.players.filter((player) => player.id !== id);
     }
-
     getPlayer(id) {
         return this.players.find((player) => player.id === id);
     }
-
     isReady() {
         return this.players.length === 2;
     }
@@ -57,7 +54,7 @@ export class Game {
             }
         })
     }
-    addScore(gameKey,playerId,score){        
+    addScore(gameKey,playerId,score){
         this.players.forEach(player => {
             if(player.id === playerId){
                 
@@ -211,6 +208,35 @@ export class Game {
         numbers.push(largeNumbers[Math.floor(Math.random() * largeNumbers.length)])
 
         return {target, numbers}
+    }
+    validateMojBroj(combination) {
+        const target = this.gameState.mojBroj.target;
+        console.log(combination);
+        
+    
+        let points = 0;
+    
+        const safeEval = (expression) => {
+            try {
+                const result = eval(expression);
+                return result;
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        };
+    
+        const evaluation = safeEval(combination);
+        if (evaluation === target) {
+            points = 30;
+        } else if (Math.abs(target - evaluation) < 5) {
+            points = 20;
+        } else if (Math.abs(target - evaluation) < 10) {
+            points = 10;
+        } else {
+            points = 0;
+        }
+        return points;
     }
 
 }

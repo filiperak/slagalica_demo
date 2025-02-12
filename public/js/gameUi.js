@@ -224,7 +224,6 @@ export class GameUi {
     //   this._socket.on("scoreSubmitedAsocijacije", popupMessageDefault);
     // }
   }
-
   createScoreBoard() {
     //implment scores recived from socket
     const scoreBoard = document.createElement("div");
@@ -241,7 +240,6 @@ export class GameUi {
     });
     return scoreBoard;
   }
-
   createGameContainer(game, data) {
     const gameContainer = document.createElement("div");
     gameContainer.classList.add("game-container");
@@ -624,6 +622,7 @@ export class GameUi {
     const intervals = [];
     const combination = [];
     const nums = [...firstRow, ...secondRow];
+    let newTime = time;
 
     const mojBrojContainer = document.createElement("div");
     mojBrojContainer.classList.add("moj-broj-container");
@@ -761,7 +760,17 @@ export class GameUi {
     deleteBtn.addEventListener("click", removeElement);
 
     const submit = () => {
-      console.log(combination);
+      console.log(combination.join(" "));
+      console.log(combination.join(""));
+      clearInterval(timerCheckInterval);
+
+      this._socket.emit("submitMojBroj", {
+        gameId: this._gameId,
+        combination: combination.join(" "),
+      });
+      stopTimer()
+      stopSubmitBtn.removeEventListener("click", submit);
+      removeAllEventListeners(mojBrojContainer)
     };
 
     const stopNumbers = () => {
@@ -813,6 +822,18 @@ export class GameUi {
         }
       }
     };
+
+    const timerCheckInterval = setInterval(() => {
+      newTime--;
+      if (newTime <= 0) {
+        submit();
+        console.log("submit mojbroj");
+      }
+    }, 1000);
+
+    if (!this._socket.hasListeners("scoreSubmitedMojBroj")) {
+      this._socket.on("scoreSubmitedMojBroj", this.popupMessageDefault);
+    }
 
     document.body.addEventListener("keypress", handleKeyPress);
     stopSubmitBtn.addEventListener("click", stopNumbers);
@@ -1345,7 +1366,6 @@ export class GameUi {
     }
     parent.append(asocijacijeContainer);
   }
-
   removeEveryElement() {
     if (this._element.firstChild) {
       while (this._element.firstChild) {

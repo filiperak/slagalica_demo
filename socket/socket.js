@@ -157,9 +157,7 @@ const handleSocket = (io) => {
             }
         })
         socket.on("submitAsocijacije",({gameId,points}) => {
-            const game = games[gameId]
-            console.log("aso",points);
-            
+            const game = games[gameId]            
             
             if(game){
                 const numericPoints = Number(points);
@@ -169,7 +167,17 @@ const handleSocket = (io) => {
                 socket.emit("scoreSubmitedAsocijacije",{data:player.score.games.asocijacije.score})
             }
         })
-
+        socket.on("submitMojBroj",({gameId,combination}) => {
+            const game = games[gameId]
+            if(game){
+                console.log(combination);
+                
+                const validateMojBroj = game.validateMojBroj(combination)
+                // const player = game.getPlayer(socket.id)            
+                game.addScore("mojBroj",socket.id,validateMojBroj)
+                socket.emit("scoreSubmitedMojBroj",{data:validateMojBroj})
+            }
+        })
 
         // socket.on("requestGame",({gameId,singleGame}) => {
         //     const game = games[gameId]
