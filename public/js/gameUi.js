@@ -623,7 +623,7 @@ export class GameUi {
     const operators = ["+", "-", "*", "/", "(", ")"];
     const intervals = [];
     const combination = [];
-    const nums = [...firstRow,...secondRow];
+    const nums = [...firstRow, ...secondRow];
 
     const mojBrojContainer = document.createElement("div");
     mojBrojContainer.classList.add("moj-broj-container");
@@ -663,38 +663,6 @@ export class GameUi {
     const oc2 = document.createElement("div");
     oc2.classList.add("moj-broj-container--operator-chars");
 
-    // const pushElement = (e) => {
-    //   const element = e.target.innerHTML
-    //   if(combination.length > 0 && ["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(combination[combination.length - 1])){
-    //     return
-    //   }
-    //   combination.push(element)
-    //   e.target.classList.add("visibility-hidden")
-    //   renderCombination()
-    //   // const elements = document.querySelectorAll(".moj-broj-container--number")
-    //   // const operators = document.querySelectorAll(".moj-broj-container--operator")
-    //   // elements.forEach((elem) => {elem.removeEventListener("click",pushElement)})
-    //   // operators.forEach((elem) => {elem.addEventListener("click",pushOperant)})
-    // }
-
-    // const pushOperant = (e) => {
-    //   const element = e.target.innerHTML
-    //   if (combination.length === 0 || ["+","-","*","/"].includes(combination[combination.length - 1])){
-    //     return
-    //   }
-    //   if(["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(combination[combination.length - 1])
-    //     && element === "(" || combination[combination.length - 1] === ")"
-    //     && ["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(element)){
-    //     return
-    //   }
-    //   combination.push(element)
-    //   renderCombination()
-    //   // const operators = document.querySelectorAll(".moj-broj-container--operator")
-    //   // const elements = document.querySelectorAll(".moj-broj-container--number")
-    //   // elements.forEach((elem) => {elem.addEventListener("click",pushElement)})
-    //   // operators.forEach((elem) => {elem.removeEventListener("click",pushOperant)})
-    // }
-
     const renderCombination = () => {
       inputContainer.innerHTML = "";
       inputContainer.innerHTML = combination.join(" ");
@@ -704,16 +672,15 @@ export class GameUi {
       const element = e.target.innerHTML;
 
       const lastElement = combination[combination.length - 1];
-      const isValid = validateAddition(lastElement,element)
-      
-      if(combination.length > 0 && !isValid){
-        return
+      const isValid = validateAddition(lastElement, element);
+
+      if (combination.length > 0 && !isValid) {
+        return;
       }
       combination.push(element);
       e.target.classList.add("visibility-hidden");
       renderCombination();
-      nums.splice(nums.indexOf(element),1)
-
+      nums.splice(nums.indexOf(element), 1);
     };
 
     const pushOperant = (e) => {
@@ -721,8 +688,8 @@ export class GameUi {
       const lastElement = combination[combination.length - 1];
       console.log(lastElement);
 
-      const isValid = validateAddition(lastElement,element)
-      if(isValid){
+      const isValid = validateAddition(lastElement, element);
+      if (isValid) {
         combination.push(element);
         renderCombination();
       }
@@ -739,7 +706,7 @@ export class GameUi {
         for (let i = elements.length - 1; i >= 0; i--) {
           if (elements[i].classList.contains("visibility-hidden")) {
             elements[i].classList.remove("visibility-hidden");
-            nums.push(Number(elements[i].innerText))
+            nums.push(Number(elements[i].innerText));
             break;
           }
         }
@@ -821,22 +788,25 @@ export class GameUi {
           break;
       }
     };
-    
-    const handleKeyPress = (e) => {      
+
+    const handleKeyPress = (e) => {
       const charOptions = [...operators, ...firstRow, ...secondRow];
       const char = numberToLetterMap[e.keyCode];
-      // const element = document.querySelector(`[data-value="${char}"]`);
       const lastElement = combination[combination.length - 1];
-      const isValid = validateAddition(lastElement,char)
+      const isValid = validateAddition(lastElement, char);
 
       if (charOptions.includes(char)) {
         if (nums.includes(Number(char)) && isValid) {
-          const element = document.querySelector(`[data-value="${char}"]`);
-          element.classList.add("visibility-hidden");
-          nums.splice(nums.indexOf(Number(char)), 1);
-          console.log(nums, nums.includes(Number(char)));
-          combination.push(char);
-          renderCombination();
+          const elements = document.querySelectorAll(`[data-value="${char}"]`);
+          for (let i = 0; i < elements.length; i++) {
+            if (!elements[i].classList.contains("visibility-hidden")) {
+              elements[i].classList.add("visibility-hidden");
+              nums.splice(nums.indexOf(Number(char)), 1);
+              combination.push(char);
+              renderCombination();
+              break;
+            }
+          }
         } else if (operators.includes(char) && isValid) {
           combination.push(char);
           renderCombination();
