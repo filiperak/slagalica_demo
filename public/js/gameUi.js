@@ -760,8 +760,6 @@ export class GameUi {
     deleteBtn.addEventListener("click", removeElement);
 
     const submit = () => {
-      console.log(combination.join(" "));
-      console.log(combination.join(""));
       clearInterval(timerCheckInterval);
 
       this._socket.emit("submitMojBroj", {
@@ -832,7 +830,7 @@ export class GameUi {
     }, 1000);
 
     if (!this._socket.hasListeners("scoreSubmitedMojBroj")) {
-      this._socket.on("scoreSubmitedMojBroj", this.popupMessageDefault);
+      this._socket.on("scoreSubmitedMojBroj", this.popupMessageMojBroj);
     }
 
     document.body.addEventListener("keypress", handleKeyPress);
@@ -1474,4 +1472,17 @@ export class GameUi {
       popupMessageSkocko.appendChild(combination);
     });
   };
+  popupMessageMojBroj = (t) => {
+    const text = `Osvojili ste ${t.data} poena`;
+    this.drawPopup(text,(popupMessageMojBroj) => {
+      const combination = document.createElement("div")
+      const p = document.createElement("p");
+      p.innerText = "Tačna kombinacija:";
+      const r = document.createElement("p");
+      r.innerText = this._gameState.mojBroj.solution
+      combination.append(p,r)
+      popupMessageMojBroj.appendChild(combination)
+      
+    })
+  }
 }

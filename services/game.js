@@ -207,7 +207,9 @@ export class Game {
         numbers.push(mediumNimbers[Math.floor(Math.random() * mediumNimbers.length)])
         numbers.push(largeNumbers[Math.floor(Math.random() * largeNumbers.length)])
 
-        return {target, numbers}
+        const solution = this.solveMojBroj(numbers,target)
+
+        return {target, numbers,solution}
     }
     validateMojBroj(combination) {
         const target = this.gameState.mojBroj.target;
@@ -238,5 +240,65 @@ export class Game {
         }
         return points;
     }
-
+    solveMojBroj(numbers, target) {
+        let bestSolution = null;
+        let closestDiff = Infinity;
+    
+        function backtrack(currentNumbers, expressions) {
+            if (currentNumbers.length === 1) {
+                let result = currentNumbers[0];
+                let diff = Math.abs(target - result);
+    
+                if (diff < closestDiff) {
+                    closestDiff = diff;
+                    bestSolution = expressions[0]; // Izraz koji je proizveo rezultat
+                }
+    
+                return;
+            }
+    
+            for (let i = 0; i < currentNumbers.length; i++) {
+                for (let j = i + 1; j < currentNumbers.length; j++) {
+                    let a = currentNumbers[i];
+                    let b = currentNumbers[j];
+    
+                    let nextNumbers = currentNumbers.filter((_, index) => index !== i && index !== j);
+                    let nextExpressions = expressions.filter((_, index) => index !== i && index !== j);
+    
+                    let operations = [
+                        { result: a + b, expr: `(${expressions[i]} + ${expressions[j]})` },
+                        { result: a - b, expr: `(${expressions[i]} - ${expressions[j]})` },
+                        { result: b - a, expr: `(${expressions[j]} - ${expressions[i]})` },
+                        { result: a * b, expr: `(${expressions[i]} * ${expressions[j]})` }
+                    ];
+                    
+                    if (b !== 0 && a % b === 0) {
+                        operations.push({ result: a / b, expr: `(${expressions[i]} / ${expressions[j]})` });
+                    }
+                    if (a !== 0 && b % a === 0) {
+                        operations.push({ result: b / a, expr: `(${expressions[j]} / ${expressions[i]})` });
+                    }
+    
+                    for (let op of operations) {
+                        if (op.result > 0) {
+                            backtrack([...nextNumbers, op.result], [...nextExpressions, op.expr]);
+                        }
+                    }
+                }
+            }
+        }
+    
+        let expressions = numbers.map(num => num.toString());
+        backtrack(numbers, expressions);
+    
+        if (bestSolution) {
+            console.log(`Najbolje rešenje: ${bestSolution} = ${eval(bestSolution)}`);
+            return `${bestSolution} = ${eval(bestSolution)}`
+        } else {
+            console.log("Nema tačnog rešenja.");
+            return "Nema rešenja"
+        }
+    }
+    
+        
 }
