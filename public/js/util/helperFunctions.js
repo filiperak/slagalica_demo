@@ -33,3 +33,14 @@ export const removeAllEventListeners = (container) => {
         container.parentNode.replaceChild(newContainer, container);
     }
 };
+
+export const validateAddition = (prev,curr) => {
+    if (!prev && ["+", "*", "/","-",")"].includes(curr)) return false;
+    if (["+", "*", "/","-"].includes(prev) && ["+", "*", "/","-"].includes(curr))
+      return false;
+    if (!isNaN(prev) && curr === "(") return false;
+    if (prev === ")" && !isNaN(curr)) return false;
+    if(prev === ")" && curr === "(") return false;
+    if (!isNaN(prev) && !isNaN(curr)) return false;
+    return true;
+}

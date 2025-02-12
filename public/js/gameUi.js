@@ -1,9 +1,15 @@
 import {
   capitalizeAfterSpaces,
   removeAllEventListeners,
+  validateAddition,
 } from "./util/helperFunctions.js";
-import { keyCodeToLetterMap } from "./util/keyCodes.js";
-import { BLUE_BUTTON_BACKGROUND, GREEN_BUTTON_BACKGROUND, RED_BUTTON_BACKGROUND, YELLOW_BUTTON_BACKGROUND } from "./util/styleConstants.js";
+import { keyCodeToLetterMap, numberToLetterMap } from "./util/keyCodes.js";
+import {
+  BLUE_BUTTON_BACKGROUND,
+  GREEN_BUTTON_BACKGROUND,
+  RED_BUTTON_BACKGROUND,
+  YELLOW_BUTTON_BACKGROUND,
+} from "./util/styleConstants.js";
 
 export class GameUi {
   // constructor(element, players, gameId, socket) {
@@ -355,10 +361,12 @@ export class GameUi {
         );
         break;
       case "asocijacije":
-        this.asocijacije(data,
+        this.asocijacije(
+          data,
           gameContainer,
           () => clearInterval(timerInterval),
-          time);
+          time
+        );
         break;
       default:
         console.log("game not found");
@@ -610,12 +618,12 @@ export class GameUi {
     }
   }
   mojBroj(data, parent, stopTimer, time) {
-
-    const firstRow = data.numbers.slice(0,6)
-    const secondRow = data.numbers.slice(6,8)
-    const operators = ["+","-","*","/","(",")"]
-    const intervals = []
+    const firstRow = data.numbers.slice(0, 6);
+    const secondRow = data.numbers.slice(6, 8);
+    const operators = ["+", "-", "*", "/", "(", ")"];
+    const intervals = [];
     const combination = [];
+    const nums = [...firstRow,...secondRow];
 
     const mojBrojContainer = document.createElement("div");
     mojBrojContainer.classList.add("moj-broj-container");
@@ -651,127 +659,199 @@ export class GameUi {
     const deleteBtn = document.createElement("div");
     deleteBtn.classList.add("moj-broj-container--delete-btn");
     deleteBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>';
-    
+
     const oc2 = document.createElement("div");
     oc2.classList.add("moj-broj-container--operator-chars");
 
+    // const pushElement = (e) => {
+    //   const element = e.target.innerHTML
+    //   if(combination.length > 0 && ["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(combination[combination.length - 1])){
+    //     return
+    //   }
+    //   combination.push(element)
+    //   e.target.classList.add("visibility-hidden")
+    //   renderCombination()
+    //   // const elements = document.querySelectorAll(".moj-broj-container--number")
+    //   // const operators = document.querySelectorAll(".moj-broj-container--operator")
+    //   // elements.forEach((elem) => {elem.removeEventListener("click",pushElement)})
+    //   // operators.forEach((elem) => {elem.addEventListener("click",pushOperant)})
+    // }
+
+    // const pushOperant = (e) => {
+    //   const element = e.target.innerHTML
+    //   if (combination.length === 0 || ["+","-","*","/"].includes(combination[combination.length - 1])){
+    //     return
+    //   }
+    //   if(["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(combination[combination.length - 1])
+    //     && element === "(" || combination[combination.length - 1] === ")"
+    //     && ["1", "2", "3", "4", "5", "6", "7", "8", "9"].includes(element)){
+    //     return
+    //   }
+    //   combination.push(element)
+    //   renderCombination()
+    //   // const operators = document.querySelectorAll(".moj-broj-container--operator")
+    //   // const elements = document.querySelectorAll(".moj-broj-container--number")
+    //   // elements.forEach((elem) => {elem.addEventListener("click",pushElement)})
+    //   // operators.forEach((elem) => {elem.removeEventListener("click",pushOperant)})
+    // }
+
     const renderCombination = () => {
-      inputContainer.innerHTML = ""
-      inputContainer.innerHTML = combination.join(" ")
-      console.log(combination);
-      
-    }
+      inputContainer.innerHTML = "";
+      inputContainer.innerHTML = combination.join(" ");
+    };
+
     const pushElement = (e) => {
-      const element = e.target.innerHTML      
-      combination.push(element)
-      e.target.classList.add("visibility-hidden")
-      renderCombination()
-      console.log(combination);
+      const element = e.target.innerHTML;
+
+      const lastElement = combination[combination.length - 1];
+      const isValid = validateAddition(lastElement,element)
       
-    }
+      if(combination.length > 0 && !isValid){
+        return
+      }
+      combination.push(element);
+      e.target.classList.add("visibility-hidden");
+      renderCombination();
+      nums.splice(nums.indexOf(element),1)
+
+    };
 
     const pushOperant = (e) => {
-      const element = e.target.innerHTML      
-      combination.push(element)
-      renderCombination()
-    }
+      const element = e.target.innerHTML;
+      const lastElement = combination[combination.length - 1];
+      console.log(lastElement);
+
+      const isValid = validateAddition(lastElement,element)
+      if(isValid){
+        combination.push(element);
+        renderCombination();
+      }
+    };
+
     const removeElement = () => {
       if (combination.length > 0) {
         const lastElement = combination.pop();
-    
-        const elements = document.querySelectorAll(`[data-value="${lastElement}"]`);
-    
+
+        const elements = document.querySelectorAll(
+          `[data-value="${lastElement}"]`
+        );
+
         for (let i = elements.length - 1; i >= 0; i--) {
           if (elements[i].classList.contains("visibility-hidden")) {
             elements[i].classList.remove("visibility-hidden");
+            nums.push(Number(elements[i].innerText))
             break;
           }
         }
-    
-        renderCombination(); 
+
+        renderCombination();
       }
     };
     const interval1 = setInterval(() => {
-      tartgetNumber.innerText  = Math.floor(Math.random() * 900) + 99
-    },100)
-    intervals.push(interval1)
+      tartgetNumber.innerText = Math.floor(Math.random() * 900) + 99;
+    }, 100);
+    intervals.push(interval1);
 
-    firstRow.forEach((elem,index) => {
+    firstRow.forEach((elem, index) => {
       const number = document.createElement("div");
       number.classList.add("moj-broj-container--number");
-      number.setAttribute("data-value", elem);//ovde
+      number.setAttribute("data-value", elem); //ovde
       const interval2 = setInterval(() => {
-        number.innerText = Math.floor(Math.random() * 8) + 1
-      },100)
-      intervals.push(interval2)
+        number.innerText = Math.floor(Math.random() * 8) + 1;
+      }, 100);
+      intervals.push(interval2);
       number.innerText = elem;
       number.addEventListener("click", pushElement);
       n2.appendChild(number);
-    })
-    n1.appendChild(n2)
+    });
+    n1.appendChild(n2);
 
     secondRow.forEach((elem, index) => {
       const number = document.createElement("div");
       number.classList.add("moj-broj-container--number");
-      number.setAttribute("data-value", elem);//ovde
+      number.setAttribute("data-value", elem); //ovde
       const randomNumbers = [10, 15, 20, 25, 50];
       const interval3 = setInterval(() => {
-      number.innerText = randomNumbers[Math.floor(Math.random() * randomNumbers.length)];
+        number.innerText =
+          randomNumbers[Math.floor(Math.random() * randomNumbers.length)];
       }, 100);
       intervals.push(interval3);
       number.innerText = elem;
       number.addEventListener("click", pushElement);
       n3.appendChild(number);
     });
-    n1.appendChild(n3)
+    n1.appendChild(n3);
 
     operators.forEach((elem) => {
       const operator = document.createElement("div");
       operator.classList.add("moj-broj-container--operator");
       operator.setAttribute("data-value", elem); //ovde
       operator.innerText = elem;
-      operator.addEventListener("click",pushOperant);
+      operator.addEventListener("click", pushOperant);
       oc2.appendChild(operator);
-    })
+    });
 
     deleteBtn.addEventListener("click", removeElement);
 
     const submit = () => {
-      console.log(combination); 
-    }
+      console.log(combination);
+    };
 
     const stopNumbers = () => {
-      intervals.forEach((interval) => clearInterval(interval))
-      tartgetNumber.innerText = data.target
-      const e = document.querySelectorAll(".moj-broj-container--number")
-      e.forEach((elem,index) => {
-        elem.innerText = data.numbers[index]
-      })
-      stopSubmitBtn.removeEventListener("click", stopNumbers)
-      stopSubmitBtn.innerText = "Submit"
-      stopSubmitBtn.addEventListener("click",submit)
-    }
+      intervals.forEach((interval) => clearInterval(interval));
+      tartgetNumber.innerText = data.target;
+      const e = document.querySelectorAll(".moj-broj-container--number");
+      e.forEach((elem, index) => {
+        elem.innerText = data.numbers[index];
+      });
+      stopSubmitBtn.removeEventListener("click", stopNumbers);
+      stopSubmitBtn.innerText = "Submit";
+      stopSubmitBtn.addEventListener("click", submit);
+    };
     const keyDown = (e) => {
-      switch (e.keyCode){
+      switch (e.keyCode) {
         case 32:
-          stopNumbers()
+          stopNumbers();
           break;
         case 8:
-          removeElement()
+          removeElement();
           break;
         case 13:
-          submit()
+          submit();
           break;
       }
-    }
+    };
     
-    stopSubmitBtn.addEventListener("click", stopNumbers)
+    const handleKeyPress = (e) => {      
+      const charOptions = [...operators, ...firstRow, ...secondRow];
+      const char = numberToLetterMap[e.keyCode];
+      // const element = document.querySelector(`[data-value="${char}"]`);
+      const lastElement = combination[combination.length - 1];
+      const isValid = validateAddition(lastElement,char)
 
-    document.body.addEventListener("keydown", keyDown)
-    oc1.append(oc2,deleteBtn)
-    c.append(inputContainer,inpLine,n1,oc1,stopSubmitBtn)
-    mojBrojContainer.append(tartgetNumber,c)
-    parent.appendChild(mojBrojContainer)
+      if (charOptions.includes(char)) {
+        if (nums.includes(Number(char)) && isValid) {
+          const element = document.querySelector(`[data-value="${char}"]`);
+          element.classList.add("visibility-hidden");
+          nums.splice(nums.indexOf(Number(char)), 1);
+          console.log(nums, nums.includes(Number(char)));
+          combination.push(char);
+          renderCombination();
+        } else if (operators.includes(char) && isValid) {
+          combination.push(char);
+          renderCombination();
+        }
+      }
+    };
+
+    document.body.addEventListener("keypress", handleKeyPress);
+    stopSubmitBtn.addEventListener("click", stopNumbers);
+
+    document.body.addEventListener("keydown", keyDown);
+    oc1.append(oc2, deleteBtn);
+    c.append(inputContainer, inpLine, n1, oc1, stopSubmitBtn);
+    mojBrojContainer.append(tartgetNumber, c);
+    parent.appendChild(mojBrojContainer);
   }
   spojnice(data, parent, stopTimer, time) {
     //variables
@@ -1099,14 +1179,13 @@ export class GameUi {
       console.log(data);
     });
 
-    let newTime = time
-    if (newTime > 0) renderQuestion()
+    let newTime = time;
+    if (newTime > 0) renderQuestion();
 
     if (!this._socket.hasListeners("scoreSubmitedKoznazna")) {
       this._socket.on("scoreSubmitedKoznazna", this.popupMessageDefault);
     }
     parent.append(koznaznaContainer);
-
 
     const timerCheckInterval = setInterval(() => {
       if (newTime <= 0 && !sub) {
@@ -1125,162 +1204,171 @@ export class GameUi {
     console.log(data);
     console.log(data.asocijacija);
 
-
-    const indexMap = {1: "A", 2: "B", 3: "C", 4: "D"}
+    const indexMap = { 1: "A", 2: "B", 3: "C", 4: "D" };
     let points = 0;
     let sub = false;
-    let newTime = time
+    let newTime = time;
 
     const asocijacijeContainer = document.createElement("div");
     asocijacijeContainer.classList.add("asocijacije-container");
 
-    const resultInput = document.createElement("input")
-    resultInput.classList.add("asocijacije-result-input")
-    resultInput.placeholder = "Konačno rešenje"
-    resultInput.readOnly = true
-    resultInput.style.textTransform = "uppercase"
+    const resultInput = document.createElement("input");
+    resultInput.classList.add("asocijacije-result-input");
+    resultInput.placeholder = "Konačno rešenje";
+    resultInput.readOnly = true;
+    resultInput.style.textTransform = "uppercase";
 
     const handleMainInputInput = (e) => {
-      e.preventDefault()
-      if(e.keyCode === 13){
-        console.log('submit asocijacije');
-        
-        if(resultInput.value && resultInput.value.toUpperCase() === data.asocijacija.konačnoRešenje){
-          resultInput.style.background = GREEN_BUTTON_BACKGROUND
-          resultInput.readOnly = true
-          points = 30
+      e.preventDefault();
+      if (e.keyCode === 13) {
+        console.log("submit asocijacije");
 
-          const cards = document.querySelectorAll(".asocijacije-card")
-          const inputs = document.querySelectorAll(".asocijacije-input")
-          
-          for(let i = 0; i < data.asocijacija.columns.length; i++){
-            for(let j = 0; j < data.asocijacija.columns[i].pojmovi.length; j++){
-                cards[i * 4 + j].innerText = data.asocijacija.columns[i].pojmovi[j]
-                cards[i * 4 + j].style.background = GREEN_BUTTON_BACKGROUND
-                cards[i * 4 + j].classList.add("asocijacije-card--clicked")
-                inputs[i].readOnly = true
-                inputs[i].value = data.asocijacija.columns[i].rešenje
-                inputs[i].style.background = GREEN_BUTTON_BACKGROUND
+        if (
+          resultInput.value &&
+          resultInput.value.toUpperCase() === data.asocijacija.konačnoRešenje
+        ) {
+          resultInput.style.background = GREEN_BUTTON_BACKGROUND;
+          resultInput.readOnly = true;
+          points = 30;
+
+          const cards = document.querySelectorAll(".asocijacije-card");
+          const inputs = document.querySelectorAll(".asocijacije-input");
+
+          for (let i = 0; i < data.asocijacija.columns.length; i++) {
+            for (
+              let j = 0;
+              j < data.asocijacija.columns[i].pojmovi.length;
+              j++
+            ) {
+              cards[i * 4 + j].innerText =
+                data.asocijacija.columns[i].pojmovi[j];
+              cards[i * 4 + j].style.background = GREEN_BUTTON_BACKGROUND;
+              cards[i * 4 + j].classList.add("asocijacije-card--clicked");
+              inputs[i].readOnly = true;
+              inputs[i].value = data.asocijacija.columns[i].rešenje;
+              inputs[i].style.background = GREEN_BUTTON_BACKGROUND;
             }
           }
-          submit()
-        }else{
-          resultInput.style.background = RED_BUTTON_BACKGROUND
-          resultInput.style.color = "#fff"
+          submit();
+        } else {
+          resultInput.style.background = RED_BUTTON_BACKGROUND;
+          resultInput.style.color = "#fff";
           setTimeout(() => {
-            resultInput.style.background = ""
-            resultInput.style.color = ""
-            resultInput.value = ""
-          },500)
+            resultInput.style.background = "";
+            resultInput.style.color = "";
+            resultInput.value = "";
+          }, 500);
         }
       }
-    }
-    resultInput.addEventListener("keyup", handleMainInputInput)
+    };
+    resultInput.addEventListener("keyup", handleMainInputInput);
 
-
-    const createInput = (index,elem) => {
-      const inp = document.createElement("input")
-      inp.classList.add("asocijacije-input")
-      inp.setAttribute("id", `asocijacije-input-${index}`)
-      inp.placeholder = `Rešenje kolone ${indexMap[index +1]}`
-      inp.readOnly = true
-      inp.style.textTransform = "uppercase"
+    const createInput = (index, elem) => {
+      const inp = document.createElement("input");
+      inp.classList.add("asocijacije-input");
+      inp.setAttribute("id", `asocijacije-input-${index}`);
+      inp.placeholder = `Rešenje kolone ${indexMap[index + 1]}`;
+      inp.readOnly = true;
+      inp.style.textTransform = "uppercase";
       inp.addEventListener("keyup", (e) => {
-        if(e.keyCode === 13){
+        if (e.keyCode === 13) {
           console.log(e.keyCode);
-          
-          e.preventDefault()
-          const word = e.target.value.toUpperCase()
-          if(word && word === data.asocijacija.columns[index].rešenje){
+
+          e.preventDefault();
+          const word = e.target.value.toUpperCase();
+          if (word && word === data.asocijacija.columns[index].rešenje) {
             console.log(word, data.asocijacija.columns[index].rešenje);
-            
-            inp.style.background = GREEN_BUTTON_BACKGROUND
-            const cards = document.querySelectorAll(`[cardRow="asocijacije-card-${index}"]`)
-            cards.forEach((card,i) => {
-              setTimeout(() =>{
-                card.innerText = data.asocijacija.columns[index].pojmovi[i]
-                card.style.background = GREEN_BUTTON_BACKGROUND
-                card.classList.add("asocijacije-card--clicked")
-                
-              }, i * 50)
-            })
-            inp.readOnly = true
-            resultInput.readOnly = false
-            points += 5
-          }else{
-            inp.style.background = RED_BUTTON_BACKGROUND
-            inp.style.color = "#fff"
+
+            inp.style.background = GREEN_BUTTON_BACKGROUND;
+            const cards = document.querySelectorAll(
+              `[cardRow="asocijacije-card-${index}"]`
+            );
+            cards.forEach((card, i) => {
+              setTimeout(() => {
+                card.innerText = data.asocijacija.columns[index].pojmovi[i];
+                card.style.background = GREEN_BUTTON_BACKGROUND;
+                card.classList.add("asocijacije-card--clicked");
+              }, i * 50);
+            });
+            inp.readOnly = true;
+            resultInput.readOnly = false;
+            points += 5;
+          } else {
+            inp.style.background = RED_BUTTON_BACKGROUND;
+            inp.style.color = "#fff";
             setTimeout(() => {
-              inp.style.background = ""
-              inp.style.color = ""
-              inp.value = ""
-            },500)
+              inp.style.background = "";
+              inp.style.color = "";
+              inp.value = "";
+            }, 500);
           }
         }
-      })
-      elem.appendChild(inp)
-    }
+      });
+      elem.appendChild(inp);
+    };
 
     const createBoard = () => {
-      const board = document.createElement("div")
-      board.classList.add("asocijacije-board")
+      const board = document.createElement("div");
+      board.classList.add("asocijacije-board");
 
-      data.asocijacija.columns.forEach((elem,index) => {
-        if(index === 2) board.appendChild(resultInput)
+      data.asocijacija.columns.forEach((elem, index) => {
+        if (index === 2) board.appendChild(resultInput);
 
-        const column = document.createElement("span")
-        column.classList.add("asocijacije-column")
-        
-        if(index > 1)createInput(index,column)
+        const column = document.createElement("span");
+        column.classList.add("asocijacije-column");
+
+        if (index > 1) createInput(index, column);
 
         elem.pojmovi.forEach((e, i) => {
-          const card = document.createElement("div")
-          card.classList.add("asocijacije-card")
-          card.setAttribute("cardRow", `asocijacije-card-${index}`)
-          card.innerText = `${indexMap[index+1]}${i+1}`
+          const card = document.createElement("div");
+          card.classList.add("asocijacije-card");
+          card.setAttribute("cardRow", `asocijacije-card-${index}`);
+          card.innerText = `${indexMap[index + 1]}${i + 1}`;
 
-          card.addEventListener("click",(event) => {
-            if(card.classList.contains("asocijacije-card--clicked")) return
-            event.preventDefault()
-            card.innerText = e
-            card.style.background = BLUE_BUTTON_BACKGROUND
-            card.classList.add("asocijacije-card--clicked")
-            const input = document.querySelector(`#asocijacije-input-${index}`)
-            input.readOnly = false
-          })
-          column.appendChild(card)
-        })
-        if(index < 2) createInput(index,column)
-        board.appendChild(column)
-      })
-      asocijacijeContainer.appendChild(board)
-    }
+          card.addEventListener("click", (event) => {
+            if (card.classList.contains("asocijacije-card--clicked")) return;
+            event.preventDefault();
+            card.innerText = e;
+            card.style.background = BLUE_BUTTON_BACKGROUND;
+            card.classList.add("asocijacije-card--clicked");
+            const input = document.querySelector(`#asocijacije-input-${index}`);
+            input.readOnly = false;
+          });
+          column.appendChild(card);
+        });
+        if (index < 2) createInput(index, column);
+        board.appendChild(column);
+      });
+      asocijacijeContainer.appendChild(board);
+    };
 
     const submit = () => {
       clearInterval(timerCheckInterval);
       if (!sub) {
         stopTimer();
-        this._socket.emit("submitAsocijacije", {gameId: this._gameId, points})
+        this._socket.emit("submitAsocijacije", {
+          gameId: this._gameId,
+          points,
+        });
         sub = true;
       }
-      resultInput.readOnly = true
-      const inputs = document.querySelectorAll(".asocijacije-input")
+      resultInput.readOnly = true;
+      const inputs = document.querySelectorAll(".asocijacije-input");
       inputs.forEach((input) => {
-        input.readOnly = true
-      })
+        input.readOnly = true;
+      });
       removeAllEventListeners(asocijacijeContainer);
-    }
+    };
 
     const timerCheckInterval = setInterval(() => {
       newTime--;
-      if (newTime <= 0){
-        submit()
-        console.log("submit asocijacije"); 
+      if (newTime <= 0) {
+        submit();
+        console.log("submit asocijacije");
       }
     }, 1000);
 
-
-    createBoard()
+    createBoard();
 
     if (!this._socket.hasListeners("scoreSubmitedAsocijacije")) {
       this._socket.on("scoreSubmitedAsocijacije", this.popupMessageDefault);
