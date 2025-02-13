@@ -206,9 +206,9 @@ export class GameUi {
     // if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
     //   this._socket.on("scoreSubmitedSlagalica", popupMessageSlagalica);
     // }
-    if (!this._socket.hasListeners("scoreSubmitedSkocko")) {
-      this._socket.on("scoreSubmitedSkocko", this.popupMessageSkocko);
-    }
+    // if (!this._socket.hasListeners("scoreSubmitedSkocko")) {
+    //   this._socket.on("scoreSubmitedSkocko", this.popupMessageSkocko);
+    // }
     // this._socket.on("scoreSubmitedSkocko", (score) => {
     //   const text = `Osvojili ste ${score.data} poena`;
     //   this.drawPopup(text, () => {
@@ -330,13 +330,6 @@ export class GameUi {
         );
         break;
       case "skočko":
-        gameEndCallback = () =>
-          this.skocko(
-            data,
-            gameContainer,
-            () => clearInterval(timerInterval),
-            time
-          );
         this.skocko(
           data,
           gameContainer,
@@ -345,13 +338,6 @@ export class GameUi {
         );
         break;
       case "ko zna zna":
-        // gameEndCallback = () =>
-        //   this.koZnaZna(
-        //     data,
-        //     gameContainer,
-        //     () => clearInterval(timerInterval),
-        //     time
-        //   );
         this.koZnaZna(
           data,
           gameContainer,
@@ -947,18 +933,7 @@ export class GameUi {
     let cardComb = [];
     let rowCounter = 0;
     let subComb;
-    let sub = false;
-    let skip = 0
-
-    // const timerCheckInterval = setInterval(() => {
-    //   if (time <= 0) {
-    //     clearInterval(timerCheckInterval);
-    //     if (!sub) {
-    //       submitScore();
-    //     }
-    //   }
-    //   time--;
-    // }, 1000);
+    let newTime = time
 
     const skockoContainer = document.createElement("section");
     skockoContainer.classList.add("skocko-container");
@@ -992,45 +967,6 @@ export class GameUi {
       }
     };
 
-    // const handleCardRemove = (row, col) => {
-    //   const cardIndex = row * 4 + col;
-    //   if (clickCounter > cardIndex && col !== 3) {
-    //     const cardId = cardIdList[cardIndex];
-    //     const card = document.getElementById(cardId);
-    //     card.innerHTML = " ";
-    //     card.classList.remove("skocko-input-card");
-    //     card.classList.add("skocko-card");
-    //     cardComb.splice(cardComb.indexOf(cardComb[cardIndex % 4]), 1);
-    //     clickCounter -= col+1;
-    //   }
-    // };
-
-    // const handleCardAdd = (index) => {
-    //   // Ensure clickCounter does not exceed array length
-    //   while (clickCounter < cardIdList.length) {
-    //     let element = document.getElementById(`${cardIdList[clickCounter]}`);
-    
-    //     // If an element exists and does not already contain an image, use it
-    //     if (element && !element.querySelector("img")) {
-    //       element.innerHTML = `<img src="${this._imgPaths[index]}" />`;
-    //       element.classList.add("skocko-input-card");
-    //       element.classList.toggle("skocko-card");
-    //       cardComb.push(index);
-    //       clickCounter++; // Only increment when an image is placed
-    //       checkScore();
-    
-    //       // If all cards are filled, trigger the end game functions
-    //       if (clickCounter === cardIdList.length) {
-    //         submitScore();
-    //         stopTimer();
-    //       }
-    //       break; // Exit the loop after adding the image
-    //     } else {
-    //       clickCounter++; // Skip the element if it already has an image
-    //     }
-    //   }
-    // };
-    
     const handleCardAdd = (index) => {
       while (clickCounter < cardIdList.length) {
         let element = document.getElementById(`${cardIdList[clickCounter]}`);
@@ -1120,29 +1056,33 @@ export class GameUi {
     };
 
     const submitScore = () => {
+      clearInterval(timerCheckInterval);
       this._socket.emit("submitSkocko", {
         gameId: this._gameId,
         cardComb: subComb,
       });
       stopTimer();
       removeAllEventListeners(skockoContainer);
-      sub = true;
     };
+    createBoard();
+    createCardOptions();
 
-    this._socket.on("scoreSubmitedSkocko", () => {
-      stopTimer();
-      removeAllEventListeners(skockoContainer);
-      sub = true;
-    });
-    if (time <= 0) {
-      if (!sub) {
-        submitScore();
+  const timerCheckInterval = setInterval(() => {
+    newTime--;
+      if (newTime <= 0) {
+          submitScore();
       }
-    } else {
-      createBoard();
-      createCardOptions();
-    }
+    }, 1000);
 
+    if (!this._socket.hasListeners("scoreSubmitedSkocko")) {
+      this._socket.on("scoreSubmitedSkocko", (d) => {
+        this.popupMessageSkocko(d);
+        clearInterval(timerCheckInterval);
+        stopTimer();
+      removeAllEventListeners(skockoContainer);
+      });
+    }
+    
     parent.append(skockoContainer);
   }
   koZnaZna(data, parent, stopTimer, time) {

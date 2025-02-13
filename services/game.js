@@ -246,7 +246,7 @@ export class Game {
         let closestDiff = Infinity;
         const memo = new Map();
         const startTime = Date.now();
-        const timeLimit = 5000; // 5 seconds
+        const timeLimit = 3000;
     
         function backtrack(currentNumbers, expressions) {
             if (Date.now() - startTime > timeLimit) {
