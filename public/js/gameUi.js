@@ -39,6 +39,7 @@ export class GameUi {
     this._socket.off("scoreSubmitedKoznazna");
     this._socket.off("scoreSubmitedAsocijacije");
     this._socket.off("scoreSubmitedMojBroj");
+    this._socket.off("scoreSubmitedSpojnice");
 
     //add request to fetch game data
     this._socket.emit("requestPlayerData", this._gameId);
@@ -215,9 +216,9 @@ export class GameUi {
     //     console.log(" created");
     //   });
     // });
-    if (!this._socket.hasListeners("scoreSubmitedSpojnice")) {
-      this._socket.on("scoreSubmitedSpojnice", this.popupMessageDefault);
-    }
+    // if (!this._socket.hasListeners("scoreSubmitedSpojnice")) {
+    //   this._socket.on("scoreSubmitedSpojnice", this.popupMessageDefault);
+    // }
     // if (!this._socket.hasListeners("scoreSubmitedKoznazna")) {
     //   this._socket.on("scoreSubmitedKoznazna", this.popupMessageDefault);
     // }
@@ -257,7 +258,7 @@ export class GameUi {
     });
 
     //time functions
-    let time = 90;
+    let time = 10;
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
@@ -315,13 +316,6 @@ export class GameUi {
         );
         break;
       case "spojnice":
-        gameEndCallback = () =>
-          this.spojnice(
-            data,
-            gameContainer,
-            () => clearInterval(timerInterval),
-            time
-          );
         this.spojnice(
           data,
           gameContainer,
@@ -836,6 +830,7 @@ export class GameUi {
     let rightRow = [];
     let pick = 0;
     let correctPick = 0;
+    let newTime = time
 
     //Create dom elements
     const spojniceContainer = document.createElement("div");
@@ -909,22 +904,28 @@ export class GameUi {
       spojniceContainer.append(p, spojniceContainerCards);
     };
     const submit = () => {
+      clearInterval(timerCheckInterval);
+
       this._socket.emit("submitSpojnice", {
         gameId: this._gameId,
         correctPick,
       });
       stopTimer();
-    };
-    if (pick === 8 || time <= 0) {
-      submit();
       removeAllEventListeners(spojniceContainer);
-    } else {
-      createBoard();
-    }
-    this._socket.on("scoreSubmitedSpojnice", () => {
-      removeAllEventListeners(spojniceContainer);
-    });
 
+    };
+    createBoard();
+    if(pick === 8) submit()
+    const timerCheckInterval = setInterval(() => {
+      newTime--;
+      if (newTime <= 0) {
+        submit();
+      }
+    }, 1000);
+
+    if (!this._socket.hasListeners("scoreSubmitedSpojnice")) {
+      this._socket.on("scoreSubmitedSpojnice", this.popupMessageDefault);
+    }
     parent.appendChild(spojniceContainer);
   }
   skocko(data, parent, stopTimer, time) {
