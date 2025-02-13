@@ -257,7 +257,7 @@ export class GameUi {
     });
 
     //time functions
-    let time = 6;
+    let time = 90;
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
@@ -948,6 +948,7 @@ export class GameUi {
     let rowCounter = 0;
     let subComb;
     let sub = false;
+    let skip = 0
 
     // const timerCheckInterval = setInterval(() => {
     //   if (time <= 0) {
@@ -973,7 +974,7 @@ export class GameUi {
           card.setAttribute("id", `skocko_${i}${j}`);
           cardIdList.push(`skocko_${i}${j}`);
           card.innerText = "  ";
-
+          card.addEventListener("click", () => handleCardRemove(i, j));
           cardContainer.appendChild(card);
         }
 
@@ -991,22 +992,89 @@ export class GameUi {
       }
     };
 
-    const handleCardAdd = (index) => {
-      const element = document.getElementById(`${cardIdList[clickCounter]}`);
-      // element.innerHTML = `<img src="${imagePaths[index]}"/>`; //PROVERI OVVO
-      element.innerHTML = `<img src="${this._imgPaths[index]}"/>`;
-      element.classList.add("skocko-input-card");
-      element.classList.toggle("skocko-card");
-      clickCounter++;
-      cardComb.push(index);
-      checkScore();
+    // const handleCardRemove = (row, col) => {
+    //   const cardIndex = row * 4 + col;
+    //   if (clickCounter > cardIndex && col !== 3) {
+    //     const cardId = cardIdList[cardIndex];
+    //     const card = document.getElementById(cardId);
+    //     card.innerHTML = " ";
+    //     card.classList.remove("skocko-input-card");
+    //     card.classList.add("skocko-card");
+    //     cardComb.splice(cardComb.indexOf(cardComb[cardIndex % 4]), 1);
+    //     clickCounter -= col+1;
+    //   }
+    // };
 
-      if (clickCounter === cardIdList.length) {
-        submitScore();
-        stopTimer();
+    // const handleCardAdd = (index) => {
+    //   // Ensure clickCounter does not exceed array length
+    //   while (clickCounter < cardIdList.length) {
+    //     let element = document.getElementById(`${cardIdList[clickCounter]}`);
+    
+    //     // If an element exists and does not already contain an image, use it
+    //     if (element && !element.querySelector("img")) {
+    //       element.innerHTML = `<img src="${this._imgPaths[index]}" />`;
+    //       element.classList.add("skocko-input-card");
+    //       element.classList.toggle("skocko-card");
+    //       cardComb.push(index);
+    //       clickCounter++; // Only increment when an image is placed
+    //       checkScore();
+    
+    //       // If all cards are filled, trigger the end game functions
+    //       if (clickCounter === cardIdList.length) {
+    //         submitScore();
+    //         stopTimer();
+    //       }
+    //       break; // Exit the loop after adding the image
+    //     } else {
+    //       clickCounter++; // Skip the element if it already has an image
+    //     }
+    //   }
+    // };
+    
+    const handleCardAdd = (index) => {
+      while (clickCounter < cardIdList.length) {
+        let element = document.getElementById(`${cardIdList[clickCounter]}`);
+    
+        if (element && !element.querySelector("img")) {
+          element.innerHTML = `<img src="${this._imgPaths[index]}" />`;
+          element.classList.add("skocko-input-card");
+          element.classList.toggle("skocko-card");
+          cardComb.push(index);
+          clickCounter++; 
+          checkScore();
+    
+          if (clickCounter === cardIdList.length) {
+            submitScore();
+            stopTimer();
+          }
+          break; 
+        } else {
+          clickCounter++; 
+        }
       }
     };
-
+    
+    const handleCardRemove = (row, col) => {
+      const cardIndex = row * 4 + col;
+      if (clickCounter > cardIndex && col !== 3) {
+        const cardId = cardIdList[cardIndex];
+        const card = document.getElementById(cardId);
+        card.innerHTML = " ";
+        card.classList.remove("skocko-input-card");
+        card.classList.add("skocko-card");
+        cardComb.splice(cardIndex % 4, 1);
+        clickCounter--;
+    
+        for (let i = cardIndex; i < clickCounter; i++) {
+          const nextCardId = cardIdList[i + 1];
+          const nextCard = document.getElementById(nextCardId);
+          const currentCard = document.getElementById(cardIdList[i]);
+          currentCard.innerHTML = nextCard.innerHTML;
+          currentCard.classList.add("skocko-input-card");
+          currentCard.classList.remove("skocko-card");
+        }
+      }
+    };
     const createCardOptions = () => {
       const cardOptionMenu = document.createElement("section");
       cardOptionMenu.classList.add("skocko-card-option-menu");

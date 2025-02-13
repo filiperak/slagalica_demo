@@ -39,7 +39,7 @@ body {
   flex-direction: column;
   max-width: 700px;
   margin: 10px auto 0;
-  /* gap: 10px;  MOŽDA OVAKO */
+  gap: 10px;
   padding: 5px;
   max-height: 1000px;
 }
@@ -149,7 +149,7 @@ body {
 .popup-container--message {
   padding: 40px 10px;
 }
-@media (min-width: 520px) {
+@media (max-width: 520px) {
   .popup-container--message {
     width: 80%;
   }
@@ -186,6 +186,7 @@ body {
   right: 0;
 }
 .game-container {
+  gap: 0;
   z-index: 2;
   /* border: 1px solid red; */
 }
