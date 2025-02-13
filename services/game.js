@@ -207,6 +207,7 @@ export class Game {
         numbers.push(mediumNimbers[Math.floor(Math.random() * mediumNimbers.length)])
         numbers.push(largeNumbers[Math.floor(Math.random() * largeNumbers.length)])
 
+        //const solution = "123"
         const solution = this.solveMojBroj(numbers,target)
 
         return {target, numbers,solution}
@@ -243,19 +244,40 @@ export class Game {
     solveMojBroj(numbers, target) {
         let bestSolution = null;
         let closestDiff = Infinity;
+        const memo = new Map();
+        const startTime = Date.now();
+        const timeLimit = 5000; // 5 seconds
     
         function backtrack(currentNumbers, expressions) {
+            if (Date.now() - startTime > timeLimit) {
+                return "Nemamo rešenje"; 
+            }
+    
+            const key = currentNumbers.slice().sort((a, b) => a - b).join(",");
+            if (memo.has(key)) {
+                return;
+            }
+    
+            if (currentNumbers.includes(target)) {
+                bestSolution = `${target}`;
+                closestDiff = 0;
+                return;
+            }
+    
             if (currentNumbers.length === 1) {
                 let result = currentNumbers[0];
                 let diff = Math.abs(target - result);
     
                 if (diff < closestDiff) {
                     closestDiff = diff;
-                    bestSolution = expressions[0]; // Izraz koji je proizveo rezultat
+                    bestSolution = expressions[0];
                 }
     
+                memo.set(key, { result, expressions });
                 return;
             }
+    
+            let seen = new Set();
     
             for (let i = 0; i < currentNumbers.length; i++) {
                 for (let j = i + 1; j < currentNumbers.length; j++) {
@@ -271,7 +293,7 @@ export class Game {
                         { result: b - a, expr: `(${expressions[j]} - ${expressions[i]})` },
                         { result: a * b, expr: `(${expressions[i]} * ${expressions[j]})` }
                     ];
-                    
+    
                     if (b !== 0 && a % b === 0) {
                         operations.push({ result: a / b, expr: `(${expressions[i]} / ${expressions[j]})` });
                     }
@@ -280,25 +302,36 @@ export class Game {
                     }
     
                     for (let op of operations) {
-                        if (op.result > 0) {
+                        if (op.result > 0 && !seen.has(op.result)) {
+                            seen.add(op.result);
+    
+                            if (op.result === target) {
+                                bestSolution = op.expr;
+                                closestDiff = 0;
+                                return;
+                            }
+    
                             backtrack([...nextNumbers, op.result], [...nextExpressions, op.expr]);
                         }
                     }
                 }
             }
+    
+            memo.set(key, { result: null, expressions });
         }
     
         let expressions = numbers.map(num => num.toString());
         backtrack(numbers, expressions);
     
         if (bestSolution) {
-            console.log(`Najbolje rešenje: ${bestSolution} = ${eval(bestSolution)}`);
-            return `${bestSolution} = ${eval(bestSolution)}`
+            console.log(`${bestSolution} = ${eval(bestSolution)}`);
+            return `${bestSolution} = ${eval(bestSolution)}`;
         } else {
             console.log("Nema tačnog rešenja.");
-            return "Nema rešenja"
+            return "Nema rešenja";
         }
     }
+    
     
         
 }

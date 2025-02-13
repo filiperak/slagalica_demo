@@ -38,6 +38,7 @@ export class GameUi {
     this._socket.off("scoreSubmitedSkocko");
     this._socket.off("scoreSubmitedKoznazna");
     this._socket.off("scoreSubmitedAsocijacije");
+    this._socket.off("scoreSubmitedMojBroj");
 
     //add request to fetch game data
     this._socket.emit("requestPlayerData", this._gameId);
@@ -256,7 +257,7 @@ export class GameUi {
     });
 
     //time functions
-    let time = 90;
+    let time = 6;
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
@@ -1360,7 +1361,7 @@ export class GameUi {
     createBoard();
 
     if (!this._socket.hasListeners("scoreSubmitedAsocijacije")) {
-      this._socket.on("scoreSubmitedAsocijacije", this.popupMessageDefault);
+      this._socket.on("scoreSubmitedAsocijacije", this.popupMessageAsocijacije);
     }
     parent.append(asocijacijeContainer);
   }
@@ -1482,6 +1483,24 @@ export class GameUi {
       r.innerText = this._gameState.mojBroj.solution
       combination.append(p,r)
       popupMessageMojBroj.appendChild(combination)
+      
+    })
+  }
+  popupMessageAsocijacije= (t) => {
+    const letters = ["A","B","C","D"]
+
+    const text = `Osvojili ste ${t.data} poena`;
+    this.drawPopup(text,(popupMessageAsocijacije) => {
+      const combination = document.createElement("div")
+      this._gameState.asocijacije.asocijacija.columns.forEach((e,i) => {
+      const p = document.createElement("p");
+      p.innerText = `$Rešenje kolone ${letters[i]}: ${e.rešenje}`
+      combination.appendChild(p)
+      })
+      const r = document.createElement("p");
+      r.innerText = ` Konačno rešenje: ${this._gameState.asocijacije.asocijacija.konačnoRešenje}`
+      combination.append(r)
+      popupMessageAsocijacije.appendChild(combination)
       
     })
   }
