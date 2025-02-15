@@ -7,6 +7,7 @@ import { setUsername, toggleModel } from "./util/helperFunctions.js"
 const createGame = document.querySelector("#createGame")
 const gameId = document.querySelector("#gameId")
 const joinGame = document.querySelector("#joinGame")
+const singlePlayer = document.querySelector("#singlePlayer")
 const randomGame = document.querySelector("#randomGame")
 const gameContainer = document.querySelector("#gameContainer")
 const usernameInp = document.querySelector(".username-inp")
@@ -15,6 +16,7 @@ const cancleModel = document.querySelector(".loading-model-cancle")
 const loadingModal = document.querySelector(".loading-model")
 
 let gameUi
+let gameui2
 
 setUsername(usernameInp)
 cancleModel.addEventListener("click",() => {
@@ -39,24 +41,36 @@ joinGame.addEventListener("click",() => {
         toggleModel(loadingModal)
     }
 })
+singlePlayer.addEventListener("click",() => {
+    if(usernameInp.value) {
+        const game = createGameId()
+        console.log(game);
+        
 
-//join random game
-// randomGame.addEventListener("click",() => {
-//     if(usernameInp.value){
-//         socket.emit("joinRandomGame",{name:usernameInp.value})
-//     }
-// })
+        socket.emit("enterSinglePlayer",{
+            name:usernameInp.value
+        })
+        toggleModel(loadingModal)
+    }
+})
 
+socket.on("startSinglePlayerGame", ({ game }) => {
+    console.log("Received startSinglePlayerGame event");
+    console.log("Game object:", game);
 
-// move the socket functions to a seperate folder
+    gameui2 = new GameUi(gameContainer, game, socket);
+    toggleModel(loadingModal);
+    gameui2.createGameMenu();
 
+    console.log("GameUi instance:", gameui2);
+    console.log("Game object after instantiation:", game);
+});
 
 socket.on("notification",(data) => {
     //alert(data.text)
 })
 
 socket.on("startGame",({game}) => {
-    //console.log(game,playersInGame);
     
     gameUi = new GameUi(gameContainer,game,socket)
     toggleModel(loadingModal)

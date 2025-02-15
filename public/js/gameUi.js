@@ -49,6 +49,8 @@ export class GameUi {
 
       const menu = document.createElement("div");
       menu.classList.add("game-menu");
+      console.log("test");
+      
 
       //header -- players names
       const header = document.createElement("header");
@@ -145,86 +147,6 @@ export class GameUi {
 
       this._element.appendChild(menu);
     });
-    // const popupMessageDefault = (t) => {
-    //   let text;
-    //   console.log(t);
-    //   if (t) {
-    //     t.data > 0
-    //       ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
-    //       : (text = `🤡Osvojili ste ${t.data} poena🤡`);
-    //   } else {
-    //     text = `🤡Osvojili ste 0 poena🤡`;
-    //   }
-    //   this.drawPopup(text, () => {});
-    // };
-
-    // const popupMessageSlagalica = (t) => {
-    //   // const text = `Osvojili ste ${t.data} poena`;
-    //   let text;
-    //   t.data > 0
-    //     ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
-    //     : (text = `🤡Osvojili ste ${t.data} poena🤡`);
-    //   this.drawPopup(text, (m) => {
-    //     const p1 = document.createElement("p");
-    //     p1.innerText = "Naša reč:";
-
-    //     const p2 = document.createElement("p");
-    //     p2.innerText = this._gameState.slagalica.word;
-    //     p2.style.fontWeight = 600;
-    //     p2.style.fontSize = "1.1rem";
-
-    //     m.append(p1, p2);
-    //   });
-    // };
-
-    // const popupMessageSkocko = (t) => {
-    //   const text = `Osvojili ste ${t.data} poena`;
-    //   this.drawPopup(text, (popupMessageSkocko) => {
-    //     const combination = document.createElement("div");
-    //     combination.classList.add("popup-combination-skocko");
-
-    //     const p = document.createElement("p");
-    //     p.innerText = "Tačna kombinacija:";
-
-    //     const skockoCombination = document.createElement("section");
-
-    //     this._gameState.skocko.forEach((e, ind) => {
-    //       const c = document.createElement("div");
-    //       c.classList.add("popup-combination-skocko--card");
-
-    //       const img = document.createElement("img");
-    //       img.setAttribute("src", this._imgPaths[e]);
-
-    //       c.appendChild(img);
-    //       skockoCombination.appendChild(c);
-    //     });
-    //     combination.append(p, skockoCombination);
-    //     popupMessageSkocko.appendChild(combination);
-    //   });
-    // };
-    // this._socket.once("scoreSubmitedSlagalica",  popupMessage);
-    // this._socket.once("scoreSubmitedSkocko", popupMessage);
-    // if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
-    //   this._socket.on("scoreSubmitedSlagalica", popupMessageSlagalica);
-    // }
-    // if (!this._socket.hasListeners("scoreSubmitedSkocko")) {
-    //   this._socket.on("scoreSubmitedSkocko", this.popupMessageSkocko);
-    // }
-    // this._socket.on("scoreSubmitedSkocko", (score) => {
-    //   const text = `Osvojili ste ${score.data} poena`;
-    //   this.drawPopup(text, () => {
-    //     console.log(" created");
-    //   });
-    // });
-    // if (!this._socket.hasListeners("scoreSubmitedSpojnice")) {
-    //   this._socket.on("scoreSubmitedSpojnice", this.popupMessageDefault);
-    // }
-    // if (!this._socket.hasListeners("scoreSubmitedKoznazna")) {
-    //   this._socket.on("scoreSubmitedKoznazna", this.popupMessageDefault);
-    // }
-    // if (!this._socket.hasListeners("scoreSubmitedAsocijacije")) {
-    //   this._socket.on("scoreSubmitedAsocijacije", popupMessageDefault);
-    // }
   }
   createScoreBoard() {
     //implment scores recived from socket
@@ -604,6 +526,7 @@ export class GameUi {
     const combination = [];
     const nums = [...firstRow, ...secondRow];
     let newTime = time;
+    let sub = false;
 
     const mojBrojContainer = document.createElement("div");
     mojBrojContainer.classList.add("moj-broj-container");
@@ -741,15 +664,18 @@ export class GameUi {
     deleteBtn.addEventListener("click", removeElement);
 
     const submit = () => {
-      clearInterval(timerCheckInterval);
-
-      this._socket.emit("submitMojBroj", {
-        gameId: this._gameId,
-        combination: combination.join(" "),
-      });
-      stopTimer()
-      stopSubmitBtn.removeEventListener("click", submit);
-      removeAllEventListeners(mojBrojContainer)
+      if(!sub){
+        clearInterval(timerCheckInterval);
+  
+        this._socket.emit("submitMojBroj", {
+          gameId: this._gameId,
+          combination: combination.join(" "),
+        });
+        stopTimer()
+        stopSubmitBtn.removeEventListener("click", submit);
+        removeAllEventListeners(mojBrojContainer)
+        sub = true
+      }
     };
 
     const stopNumbers = () => {

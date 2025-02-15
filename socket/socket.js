@@ -64,7 +64,6 @@ const handleSocket = (io) => {
 
         socket.on("requestPlayerData",gameId => {
             const game = games[gameId]
-
             if(game){
                 socket.emit("playersState",game)
             }
@@ -185,6 +184,17 @@ const handleSocket = (io) => {
         //         socket.emit("gameData",game[singleGame])
         //     }
         // })
+
+        socket.on("enterSinglePlayer",({name}) => {
+            const gameId = createGameId() //promeni kod za ulazak u igru da ne bi neko iz multy playera ušao u single
+            console.log(gameId);
+            
+            const singlePlayerGame = new Game(gameId)
+            games[gameId] = singlePlayerGame
+            games[gameId].addPlayer(socket.id,name)
+
+            socket.emit("startSinglePlayerGame", {game:games[gameId]})
+        })
 
         socket.on("disconnect", (reason) => {
             console.log(socket.id, "DISCONNECTED",reason);

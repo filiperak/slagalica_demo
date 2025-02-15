@@ -59,8 +59,8 @@ export class Game {
             if(player.id === playerId){
                 
                 player.score.games[gameKey].score += score
-               console.log(this.players[0].score.games[gameKey]);
-               console.log(this.players[1].score.games[gameKey]);
+            //    console.log(this.players[0].score.games[gameKey]);
+            //    console.log(this.players[1].score.games[gameKey]);
                
             }
         })
@@ -180,7 +180,6 @@ export class Game {
     createKoznazna(){
         const QUESTIONNAIRE = initialize(); 
         const Q4 = QUESTIONNAIRE.questions({ howMany: 10, wrong: 2 });
-        console.log(Q4);
         
         return Q4
     }
@@ -188,7 +187,6 @@ export class Game {
 
         
         const randomAsocijacija = asocijacijeDB[Math.floor(Math.random() * asocijacijeDB.length)];
-        console.log(randomAsocijacija);
         
         return {
             asocijacija:randomAsocijacija
