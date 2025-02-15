@@ -40,19 +40,18 @@ export class GameUi {
     this._socket.off("scoreSubmitedAsocijacije");
     this._socket.off("scoreSubmitedMojBroj");
     this._socket.off("scoreSubmitedSpojnice");
+    this._socket.off("gameCompleted");
+    this._socket.off("opponentLeft");
 
     //add request to fetch game data
     this._socket.emit("requestPlayerData", this._gameId);
     this._socket.on("playersState", (data) => {
-      console.log("game data recived");
       
       this._players = data.players;
       this.reversePlayerIndex();
 
       const menu = document.createElement("div");
-      menu.classList.add("game-menu");
-      console.log("test");
-      
+      menu.classList.add("game-menu");      
 
       //header -- players names
       const header = document.createElement("header");
@@ -96,7 +95,6 @@ export class GameUi {
       gameOptions.classList.add("game-options");
 
       games.forEach((game) => {
-        console.log("Game obj",game);
         
         const gameKey = gameKeys[game];
         const gameOption = document.createElement("div");
@@ -157,6 +155,14 @@ export class GameUi {
       const msg = `<h3>🥳Pobedili ste!🥳</h3><br/><p>Vaš protivnik je napustio igru</p>`
       this.popupMessagePlayerLeftGame(msg)
     })
+
+    if (!this._socket.hasListeners("gameCompleted")) {
+      this._socket.on("gameCompleted",({data}) => {
+        console.log(data);
+        alert("game ended niga")
+      })
+    }
+
   }
   createScoreBoard() {
     //implment scores recived from socket
@@ -187,6 +193,7 @@ export class GameUi {
       clearInterval(timerInterval);
       this.removeEveryElement();
       this.createGameMenu();
+      this._socket.emit("checkIfCompleted",{gameId:this._gameId})
     });
 
     //time functions

@@ -97,6 +97,31 @@ const handleSocket = (io) => {
             }
         })
 
+        
+        socket.on("enterSinglePlayer",({name}) => {
+            const gameId = createGameIdSingleGame() //promeni kod za ulazak u igru da ne bi neko iz multy playera ušao u single
+            console.log(gameId);
+            
+            const singlePlayerGame = new Game(gameId)
+            games[gameId] = singlePlayerGame
+            games[gameId].addPlayer(socket.id,name)
+
+            socket.emit("startSinglePlayerGame", {game:games[gameId]})
+        })
+
+        socket.on("checkIfCompleted",({gameId}) => {
+            const game = games[gameId]
+            if(game){
+                const check = game.isCompleted()
+                if(check){
+                    const finalScore = game.checkWinner()
+                    io.to(gameId).emit("gameCompleted",{
+                        data: finalScore
+                    })
+                }
+            }
+        })
+
         socket.on("sendSlagalicaScore",({gameId,word}) => {
             const game = games[gameId]
             if(game){
@@ -189,17 +214,6 @@ const handleSocket = (io) => {
         //         socket.emit("gameData",game[singleGame])
         //     }
         // })
-
-        socket.on("enterSinglePlayer",({name}) => {
-            const gameId = createGameIdSingleGame() //promeni kod za ulazak u igru da ne bi neko iz multy playera ušao u single
-            console.log(gameId);
-            
-            const singlePlayerGame = new Game(gameId)
-            games[gameId] = singlePlayerGame
-            games[gameId].addPlayer(socket.id,name)
-
-            socket.emit("startSinglePlayerGame", {game:games[gameId]})
-        })
 
         socket.on("disconnect", (reason) => {
             console.log(socket.id, "DISCONNECTED",reason);

@@ -65,6 +65,38 @@ export class Game {
             }
         })
     }
+    isCompleted() {
+        let completed = true;
+        this.players.forEach((e) => {
+            Object.values(e.score.games).forEach((g) => {
+                if (!g.opend) {
+                    completed = false;
+                }
+            });
+        });
+        this.gameCompleted = completed;
+        // return completed;
+        return true;
+    }
+    checkWinner(){
+        let winner = this.players[0];
+        let loser = this.players[1] || null;
+        let draw = false;
+
+        if(this.players[1] && this.players[1].score.total > this.players[0].score.total){
+            winner = this.players[1]
+            loser = this.players[0];
+        }else if(this.players[1] && this.players[1].score.total === this.players[0].score.total){
+            draw = true
+        }
+
+        return {
+          winnerPlayer: { id: winner.id, score: winner.score.total,name:winner.name },
+          loser: loser ? { id: loser.id, score: loser.score.total ,name:loser.name} : null,
+          draw:false
+        };
+
+    }
     createSlagalica(){
         const letters = ["A","B","C","Č","Ć","D","Đ","E","F","G","H","I","J","K","L","LJ","M","N","NJ","O","P","R","S","Š","T","U","V","Z","Ž"]
         const getRandomLongWord = (arr) => {
