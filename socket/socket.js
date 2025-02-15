@@ -1,5 +1,5 @@
 import { bulidNotification } from "../utils/buildNotification.js";
-import { createGameId } from "../utils/createGameId.js";
+import { createGameId, createGameIdSingleGame } from "../utils/createGameId.js";
 import { Game } from "../services/game.js";
 
 const handleSocket = (io) => {
@@ -64,8 +64,14 @@ const handleSocket = (io) => {
 
         socket.on("requestPlayerData",gameId => {
             const game = games[gameId]
+            console.log("gameOvde",game);
+            
             if(game){
-                socket.emit("playersState",game)
+                if(gameId.slice(0,2) === "sg"){
+                    socket.emit("playersState",game)                    
+                }else{
+                    io.to(gameId).emit("playersState",game)
+                }
             }
             
         })
@@ -97,7 +103,6 @@ const handleSocket = (io) => {
                 const validatedWord = game.validateSlagalica(word)
                 game.addScore("slagalica",socket.id,validatedWord.score)
                 console.log("SUBMITTED SLAGALICA SCORE,", validatedWord.score, validatedWord);
-                
                 
                 socket.emit("scoreSubmitedSlagalica",{data:validatedWord.score})
             }else {
@@ -186,7 +191,7 @@ const handleSocket = (io) => {
         // })
 
         socket.on("enterSinglePlayer",({name}) => {
-            const gameId = createGameId() //promeni kod za ulazak u igru da ne bi neko iz multy playera ušao u single
+            const gameId = createGameIdSingleGame() //promeni kod za ulazak u igru da ne bi neko iz multy playera ušao u single
             console.log(gameId);
             
             const singlePlayerGame = new Game(gameId)

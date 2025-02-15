@@ -44,6 +44,8 @@ export class GameUi {
     //add request to fetch game data
     this._socket.emit("requestPlayerData", this._gameId);
     this._socket.on("playersState", (data) => {
+      console.log("game data recived");
+      
       this._players = data.players;
       this.reversePlayerIndex();
 
@@ -94,6 +96,8 @@ export class GameUi {
       gameOptions.classList.add("game-options");
 
       games.forEach((game) => {
+        console.log("Game obj",game);
+        
         const gameKey = gameKeys[game];
         const gameOption = document.createElement("div");
         gameOption.classList.add("game-option");
