@@ -85,5 +85,5 @@ socket.on("disconnect",() => {
 })
 
 socket.on("opponentLeft",() => {
-    gameUi.removeEveryElement()
+    // gameUi.removeEveryElement()
 })

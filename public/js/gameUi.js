@@ -150,7 +150,13 @@ export class GameUi {
       menu.appendChild(exitBtn);
 
       this._element.appendChild(menu);
+    
     });
+    this._socket.on("opponentLeft",(data) => {
+      console.log(data);
+      const msg = `<h3>🥳Pobedili ste!🥳</h3><br/><p>Vaš protivnik je napustio igru</p>`
+      this.popupMessagePlayerLeftGame(msg)
+    })
   }
   createScoreBoard() {
     //implment scores recived from socket
@@ -1145,6 +1151,7 @@ export class GameUi {
     resultInput.classList.add("asocijacije-result-input");
     resultInput.placeholder = "Konačno rešenje";
     resultInput.readOnly = true;
+    resultInput.setAttribute("autocomplete","off")
     resultInput.style.textTransform = "uppercase";
 
     const handleMainInputInput = (e) => {
@@ -1198,6 +1205,8 @@ export class GameUi {
       inp.setAttribute("id", `asocijacije-input-${index}`);
       inp.placeholder = `Rešenje kolone ${indexMap[index + 1]}`;
       inp.readOnly = true;
+      inp.setAttribute("autocomplete","off")
+
       inp.style.textTransform = "uppercase";
       inp.addEventListener("keyup", (e) => {
         if (e.keyCode === 13) {
@@ -1433,7 +1442,9 @@ export class GameUi {
       const combination = document.createElement("div")
       this._gameState.asocijacije.asocijacija.columns.forEach((e,i) => {
       const p = document.createElement("p");
-      p.innerText = `$Rešenje kolone ${letters[i]}: ${e.rešenje}`
+      p.innerText = `Rešenje kolone ${letters[i]}: ${e.rešenje}`
+      p.style.fontSize = "0.85rem"
+      p.style.fontWeight = "500"
       combination.appendChild(p)
       })
       const r = document.createElement("p");
@@ -1442,5 +1453,30 @@ export class GameUi {
       popupMessageAsocijacije.appendChild(combination)
       
     })
+  }
+  popupMessagePlayerLeftGame = (text) => {
+    const popup = document.createElement("div");
+    popup.classList.add("popup-container");
+    // popup.setAttribute("id", "popup-game");
+
+    const popupMessage = document.createElement("div");
+    popupMessage.classList.add("popup-container--message");
+
+    const popupText = document.createElement("p");
+    popupMessage.innerHTML = text;
+
+    const popupBtn = document.createElement("div");
+    popupBtn.classList.add("popup-container--btn");
+    popupBtn.innerText = "OK";
+
+    popupBtn.addEventListener("click", () => {
+      this._element.removeChild(popup);
+      this.removeEveryElement()
+    });
+
+
+    popupMessage.append(popupText, popupBtn);
+    popup.appendChild(popupMessage);
+    this._element.appendChild(popup);
   }
 }
