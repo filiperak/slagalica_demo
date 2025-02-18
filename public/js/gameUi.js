@@ -156,10 +156,11 @@ export class GameUi {
       this.popupMessagePlayerLeftGame(msg)
     })
 
-    if (!this._socket.hasListeners("gameCompleted")) {
+    if (!this._socket.hasListeners("gameCompleted")) {//
       this._socket.on("gameCompleted",({data}) => {
         console.log(data);
         alert("game ended niga")
+        this.popupGameCompleated(data)
       })
     }
 
@@ -1487,6 +1488,42 @@ export class GameUi {
     this._element.appendChild(popup);
   }
   popupGameCompleated = (t) => {
+    let text;
+    if(t.draw){
+      text = "Izjednačeno"
+    }else if(t.winnerPlayer.id === this._socket.id){
+      text = "🥳Pobedio si!🥳"
+    }else{
+      text = "😓Izgubio si!😓"
+    }
+    this.drawPopup(text,(popupGameCompleated) => {
+      const scoreContainer = document.createElement("div")
+      scoreContainer.classList.add("popup-completed-score-container")
+      
+      const p1 = document.createElement("div")
+      const p1name = document.createElement("p")
+      const p1score = document.createElement("p")
 
+      p1name.innerText = t.winnerPlayer.name
+      p1score.innerText = t.winnerPlayer.score
+
+      p1.append(p1name,p1score)
+      scoreContainer.appendChild(p1)
+
+      if(t.loser){
+        const p2 = document.createElement("div")
+        const p2name = document.createElement("p")
+        const p2score = document.createElement("p")
+  
+        p2name.innerText = t.loser.name
+        p2score.innerText = t.loser.score
+  
+        p2.append(p2name,p2score)
+        scoreContainer.appendChild(p2)
+
+      }
+
+      popupGameCompleated.appendChild(scoreContainer)
+    })
   }
 }
