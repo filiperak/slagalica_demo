@@ -75,8 +75,8 @@ export class Game {
             });
         });
         this.gameCompleted = completed;
-        // return completed;
-        return true;
+        return completed;
+        // return true;
     }
     checkWinner(){
         let winner = this.players[0];

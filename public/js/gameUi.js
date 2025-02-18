@@ -199,7 +199,7 @@ export class GameUi {
     });
 
     //time functions
-    let time = 10;
+    let time = 90;
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
