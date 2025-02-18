@@ -1486,4 +1486,7 @@ export class GameUi {
     popup.appendChild(popupMessage);
     this._element.appendChild(popup);
   }
+  popupGameCompleated = (t) => {
+
+  }
 }

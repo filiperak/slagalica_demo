@@ -93,7 +93,7 @@ export class Game {
         return {
           winnerPlayer: { id: winner.id, score: winner.score.total,name:winner.name },
           loser: loser ? { id: loser.id, score: loser.score.total ,name:loser.name} : null,
-          draw:false
+          draw
         };
 
     }
@@ -354,10 +354,8 @@ export class Game {
         backtrack(numbers, expressions);
     
         if (bestSolution) {
-            console.log(`${bestSolution} = ${eval(bestSolution)}`);
             return `${bestSolution} = ${eval(bestSolution)}`;
         } else {
-            console.log("Nema tačnog rešenja.");
             return "Nema rešenja";
         }
     }
