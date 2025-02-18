@@ -19,6 +19,7 @@ export class GameUi {
     this._gameId = game.gameId;
     this._gameState = game.gameState;
     this._socket = socket;
+    this._gameCompleated = false
     this.reversePlayerIndex();
     this._imgPaths = [
       "../../assets/tref.png",
@@ -153,15 +154,17 @@ export class GameUi {
     });
     this._socket.on("opponentLeft",(data) => {
       console.log(data);
-      const msg = `<h3>🥳Pobedili ste!🥳</h3><br/><p>Vaš protivnik je napustio igru</p>`
-      this.popupMessagePlayerLeftGame(msg)
+      if(!this._gameCompleated){
+        const msg = `<h3>🥳Pobedili ste!🥳</h3><br/><p>Vaš protivnik je napustio igru</p>`
+        this.popupMessagePlayerLeftGame(msg)
+      }
     })
 
     if (!this._socket.hasListeners("gameCompleted")) {//
       this._socket.on("gameCompleted",({data}) => {
         console.log(data);
-        alert("game ended niga")
         this.popupGameCompleated(data)
+        this._gameCompleated = true
       })
     }
 
