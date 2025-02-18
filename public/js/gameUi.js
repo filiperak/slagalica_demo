@@ -35,6 +35,7 @@ export class GameUi {
     this._socket.off("playersState");
     this._socket.off("gameData");
     this._socket.off("scoreSubmited");
+    this._socket.off("scoreSubmitedSlagalica");
     this._socket.off("scoreSubmitedSkocko");
     this._socket.off("scoreSubmitedKoznazna");
     this._socket.off("scoreSubmitedAsocijacije");
@@ -203,8 +204,6 @@ export class GameUi {
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
 
-    let gameEndCallback;
-
     const updateClock = () => {
       time -= 1;
       clock.querySelector("span").innerText = time;
@@ -216,9 +215,6 @@ export class GameUi {
       if (time <= 0) {
         clock.innerHTML = `<i class="fa-regular fa-clock"></i><span>${time}</span>`;
         clearInterval(timerInterval);
-        if (gameEndCallback) {
-          gameEndCallback();
-        }
       }
     };
     const timerInterval = setInterval(updateClock, 1000);
@@ -233,13 +229,6 @@ export class GameUi {
 
     switch (game) {
       case "slagalica":
-        gameEndCallback = () =>
-          this.slagalica(
-            data,
-            gameContainer,
-            () => clearInterval(timerInterval),
-            time
-          );
         this.slagalica(
           data,
           gameContainer,
@@ -329,6 +318,8 @@ export class GameUi {
     ];
     const intervals = [];
     const letterOptions = [];
+    let newTime = time;
+    let sub = false;
 
     const slagalicaContainer = document.createElement("div");
     slagalicaContainer.classList.add("slagalica-container");
@@ -353,7 +344,7 @@ export class GameUi {
     slagalicaInputLine.classList.add("slagalica-container--input-line");
     slagalicaInput.append(slagalicaInputContainer);
 
-    if (time > 0) slagalicaInput.append(slagalicaInputLine);
+    slagalicaInput.append(slagalicaInputLine);
 
     const checkWordBtn = document.createElement("div");
     checkWordBtn.classList.add("slagalica-container--check-btn");
@@ -370,7 +361,7 @@ export class GameUi {
     slagalicaStopBtn.classList.add("slagalica-container--stop-btn");
     slagalicaStopBtn.innerText = "Stop";
 
-    if (time > 0) {
+    const createLetterButtons = () => {
       for (let i = 0; i < 12; i++) {
         const letter = document.createElement("p");
         letter.classList.add("slagalica--letter");
@@ -381,7 +372,8 @@ export class GameUi {
         intervals.push(interval);
         slagalicaLetters.appendChild(letter);
       }
-    }
+    };
+    createLetterButtons()
 
     const renderInputLetters = () => {
       slagalicaInputContainer.innerHTML = "";
@@ -396,6 +388,7 @@ export class GameUi {
         slagalicaInputContainer.appendChild(letter);
       });
     };
+    renderInputLetters()
 
     const deleteLastLetter = () => {
       if (inputWord.length > 0) {
@@ -449,12 +442,15 @@ export class GameUi {
     };
 
     const submitWord = () => {
-      const word = inputWord.map((elem) => elem.letter).join("");
-      this._socket.emit("sendSlagalicaScore", { gameId: this._gameId, word });
-      stopTimer();
-      removeAllEventListeners(slagalicaContainer);
-      document.body.removeEventListener("keydown", handleKeyDown);
-      document.body.removeEventListener("keyup", handleKeyUpLetter);
+      if(!sub){
+        clearInterval(timerCheckInterval);
+        const word = inputWord.map((elem) => elem.letter).join("");
+        this._socket.emit("sendSlagalicaScore", { gameId: this._gameId, word });
+        stopTimer();
+        removeAllEventListeners(slagalicaContainer);
+        document.body.removeEventListener("keydown", handleKeyDown);
+        document.body.removeEventListener("keyup", handleKeyUpLetter);
+      }
     };
 
     const handleKeyDown = (e) => {
@@ -524,14 +520,16 @@ export class GameUi {
       wordValidatorDiv,
       slagalicaLetters
     );
-    if (time > 0) slagalicaContainer.append(slagalicaStopBtn);
+    slagalicaContainer.append(slagalicaStopBtn);
     parent.appendChild(slagalicaContainer);
-    if (time < 1) {
-      submitWord();
-      this.removeEveryElement();
-      this.createGameMenu();
-      //jeftiono rešenje da bi se izbegao bug, EL se nnebrišu ako vreme isteknt a sad te samo izbaci iz igre i vrati u meni
-    }
+
+    const timerCheckInterval = setInterval(() => {
+      newTime--;
+      if (newTime <= 0) {
+        submitWord();
+        console.log("submit slagalica");
+      }
+    }, 1000);
     if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
       this._socket.on("scoreSubmitedSlagalica", this.popupMessageSlagalica);
     }
