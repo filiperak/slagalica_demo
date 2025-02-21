@@ -22,12 +22,12 @@ export class GameUi {
     this._gameCompleated = false
     this.reversePlayerIndex();
     this._imgPaths = [
-      "../../assets/tref.png",
-      "../../assets/owl_logo.png",
-      "../../assets/caro.png",
-      "../../assets/spades.png",
-      "../../assets/herz.png",
-      "../../assets/star.png",
+      "./assets/tref.png",
+      "./assets/owl_logo.png",
+      "./assets/caro.png",
+      "./assets/spades.png",
+      "./assets/herz.png",
+      "./assets/star.png",
     ];
   }
 
