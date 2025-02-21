@@ -2,7 +2,7 @@ import { GameUi } from "./gameUi.js"
 import { createGameId } from "./util/createGameId.js"
 import { setUsername, toggleModel } from "./util/helperFunctions.js"
 
- const socket = io("https://slagalica-demo.vercel.app/")
+ const socket = io("ws://slagalica-demo.vercel.app/")
 //  const socket = io("ws://localhost:3500")
 
 const createGame = document.querySelector("#createGame")
