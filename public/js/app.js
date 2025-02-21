@@ -30,40 +30,39 @@ createGame.addEventListener("click",() => {
     gameId.value = gid    
 })
 
-joinGame.addEventListener("click",() => {
-    if(usernameInp.value) {
-        const game = gameId.value? gameId.value:null 
+function handleGameJoin(mode) {
+    if (usernameInp.value) {
+        const game = mode === "single" ? createGameId() : gameId.value || null;
 
-        socket.emit("enterRoom",{
-            name:usernameInp.value,
-            game: game
-        })
-        toggleModel(loadingModal)
-    }
-})
-singlePlayer.addEventListener("click",() => {
-    if(usernameInp.value) {
-        const game = createGameId()
-        console.log(game);
-        
+        socket.emit(mode === "single" ? "enterSinglePlayer" : "enterRoom", {
+            name: usernameInp.value,
+            game: mode === "single" ? undefined : game
+        });
 
-        socket.emit("enterSinglePlayer",{
-            name:usernameInp.value
-        })
-        toggleModel(loadingModal)
+        toggleModel(loadingModal);
+    } else {
+        usernameInp.classList.add("missing-username-input");
+        usernameInp.placeholder = "PLEASE PROVIDE A USERNAME";
     }
-})
+}
+
+// Event listeners
+joinGame.addEventListener("click", () => handleGameJoin("multi"));
+randomGame.addEventListener("click", () => handleGameJoin("multi"));
+singlePlayer.addEventListener("click", () => handleGameJoin("single"));
+
+usernameInp.addEventListener("input", () => {
+    usernameInp.classList.remove("missing-username-input");
+    usernameInp.placeholder = "Enter username";
+});
+
 
 socket.on("startSinglePlayerGame", ({ game }) => {
-    console.log("Received startSinglePlayerGame event");
-    console.log("Game object:", game);
 
     gameui2 = new GameUi(gameContainer, game, socket);
     toggleModel(loadingModal);
     gameui2.createGameMenu();
 
-    console.log("GameUi instance:", gameui2);
-    console.log("Game object after instantiation:", game);
 });
 
 socket.on("notification",(data) => {
@@ -75,7 +74,6 @@ socket.on("startGame",({game}) => {
     gameUi = new GameUi(gameContainer,game,socket)
     toggleModel(loadingModal)
     gameUi.createGameMenu()
-    console.log(game);
     
     //gameUi.createGames()
 })
