@@ -189,6 +189,13 @@ export class GameUi {
     const gameContainer = document.createElement("div");
     gameContainer.classList.add("game-container");
 
+    const timerBar = document.createElement("div")
+    timerBar.classList.add("timer-bar")
+
+    const updateBar = () => {
+
+    }
+
     const gameContainerHeader = document.createElement("header");
 
     const backButton = document.createElement("div");
@@ -203,6 +210,7 @@ export class GameUi {
 
     //time functions
     let time = 90;
+    let initialTime = time
     const clock = document.createElement("div");
     clock.classList.add("game-container--clock");
     clock.innerHTML = `<i class="fa-regular fa-clock fa-spin"></i><span>${time}</span>`;
@@ -210,10 +218,15 @@ export class GameUi {
     const updateClock = () => {
       time -= 1;
       clock.querySelector("span").innerText = time;
+      let percent =  (time / initialTime)*100 
+      timerBar.style.width = percent + "%";
+
       if (time < 16) {
         clock.innerHTML = "";
         clock.style.backgroundColor = "red";
         clock.innerHTML = `<i class="fa-regular fa-clock fa-beat-fade"></i><span>${time}</span>`;
+
+        timerBar.style.backgroundColor = "red"
       }
       if (time <= 0) {
         clock.innerHTML = `<i class="fa-regular fa-clock"></i><span>${time}</span>`;
@@ -228,7 +241,7 @@ export class GameUi {
     const header = document.createElement("h1");
     header.innerText = capitalizeAfterSpaces(game);
 
-    gameContainer.append(gameContainerHeader, header);
+    gameContainer.append(timerBar,gameContainerHeader, header);
 
     switch (game) {
       case "slagalica":

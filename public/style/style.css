@@ -630,3 +630,9 @@ body {
 .popup-completed-score-container p{
   font-weight: 500;
 }
+.timer-bar{
+  height: 6px;
+  background-color: var(--dark-blue);
+  margin-bottom: 8px;
+  transition: width 1s linear;
+}
