@@ -20,8 +20,9 @@
   --background-primary: #eef0f4;
   --dark-primary: #dce1eb;
   --dark-blue: #1a2a44;
-  --lime-grean: #00ff00;
-  --dark-brown: #432000;
+  --lime-grean: #148514;
+  --dark-brown: #828282;
+  /* --dark-brown: #432000; */
   --box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
 }
 body {
@@ -152,7 +153,7 @@ body {
 }
 @media (max-width: 520px) {
   .popup-container--message {
-    width: 80%;
+    width: 90%;
   }
 }
 
@@ -202,7 +203,7 @@ body {
   color: var(--dark-primary);
   padding: 8px;
   text-align: center;
-  width: 72px;
+  width: 82px;
 }
 .game-container--clock > span {
   margin-left: 10px;

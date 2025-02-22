@@ -29,6 +29,7 @@ export class GameUi {
       "./assets/herz.png",
       "./assets/star.png",
     ];
+    this._sub = false
   }
 
   createGameMenu() {
@@ -45,6 +46,9 @@ export class GameUi {
     this._socket.off("gameCompleted");
     this._socket.off("opponentLeft");
 
+    const appMenue = document.querySelector(".app-menu")
+    appMenue.classList.add("hide")
+
     //add request to fetch game data
     this._socket.emit("requestPlayerData", this._gameId);
     this._socket.on("playersState", (data) => {
@@ -54,6 +58,8 @@ export class GameUi {
 
       const menu = document.createElement("div");
       menu.classList.add("game-menu");      
+      menu.classList.remove("hide")
+
 
       //header -- players names
       const header = document.createElement("header");
@@ -71,6 +77,7 @@ export class GameUi {
       exitBtn.innerText = "Napusti igru";
       exitBtn.addEventListener("click", () => {
         this._socket.emit("leaveGame");
+        appMenue.classList.remove("hide")
         this.removeEveryElement();
       });
 
@@ -127,7 +134,8 @@ export class GameUi {
               });
               this._socket.on("gameData", (data) => {
                 this._element.appendChild(this.createGameContainer(game, data));
-                console.log(data, "OVDEEE");
+                // console.log(data);
+                menu.classList.add("hide")
               });
             };
             gameOptionName.addEventListener("click", handleOpenGameClick);
@@ -160,11 +168,15 @@ export class GameUi {
       }
     })
 
-    if (!this._socket.hasListeners("gameCompleted")) {//
+    if (!this._socket.hasListeners("gameCompleted")) {
       this._socket.on("gameCompleted",({data}) => {
-        console.log(data);
-        this.popupGameCompleated(data)
-        this._gameCompleated = true
+        if(!this._sub){
+          this._sub = true
+        }else{
+          console.log(data);
+          this.popupGameCompleated(data)
+          this._gameCompleated = true
+        }
       })
     }
 
@@ -192,15 +204,11 @@ export class GameUi {
     const timerBar = document.createElement("div")
     timerBar.classList.add("timer-bar")
 
-    const updateBar = () => {
-
-    }
-
     const gameContainerHeader = document.createElement("header");
 
     const backButton = document.createElement("div");
     backButton.classList.add("game-container--back-btn");
-    backButton.innerText = "\u2190 Back";
+    backButton.innerText = "\u2190 Nazad";
     backButton.addEventListener("click", () => {
       clearInterval(timerInterval);
       this.removeEveryElement();
@@ -718,7 +726,7 @@ export class GameUi {
         elem.innerText = data.numbers[index];
       });
       stopSubmitBtn.removeEventListener("click", stopNumbers);
-      stopSubmitBtn.innerText = "Submit";
+      stopSubmitBtn.innerText = "Potvrdi";
       stopSubmitBtn.addEventListener("click", submit);
     };
     const keyDown = (e) => {
