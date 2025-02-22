@@ -1511,7 +1511,7 @@ export class GameUi {
     popup.appendChild(popupMessage);
     this._element.appendChild(popup);
     const appMenue = document.querySelector(".app-menu")
-    appMenue.classList.add("hide")
+    appMenue.classList.remove("hide")
   }
   popupGameCompleated = (t) => {
     let text;
