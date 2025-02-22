@@ -1,4 +1,4 @@
-# Slagalica Demo
+# Slagalica Game
 
 Slagalica Demo is a web-based game inspired by the popular Serbian TV quiz show "Slagalica". This project allows users to play various mini-games either in single-player or multiplayer mode.
 
@@ -6,8 +6,11 @@ Slagalica Demo is a web-based game inspired by the popular Serbian TV quiz show 
 
 - **Single Player Mode**: Play the game alone and try to achieve the highest score.
 - **Multiplayer Mode**: Compete against other players in real-time.
+- **Multiplayer Against Friend Mode**: Compete against other player that connects to the same room in real-time.
 - **Mini-Games**: Includes various mini-games such as "Slagalica", "Moj Broj", "Spojnice", "Skočko", "Ko Zna Zna", and "Asocijacije".
 - **Real-Time Updates**: Uses WebSockets for real-time communication between players and the server.
+- - **User-Friendly Interface**: Designed with a clean and intuitive interface, making it easy for players of all ages to navigate and enjoy the game.
+
 
 ## Technologies Used
 
