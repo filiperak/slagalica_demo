@@ -901,6 +901,7 @@ export class GameUi {
     let rowCounter = 0;
     let subComb;
     let newTime = time
+    let sub = false
 
     const skockoContainer = document.createElement("section");
     skockoContainer.classList.add("skocko-container");
@@ -1036,8 +1037,9 @@ export class GameUi {
 
   const timerCheckInterval = setInterval(() => {
     newTime--;
-      if (newTime <= 0) {
+      if (newTime <= 0 && !sub) {
           submitScore();
+          sub = true
       }
     }, 1000);
 

@@ -21,14 +21,14 @@ const expressServer = app.listen(PORT,() => {
     console.log(`App is running on ${PORT}`);  
 })
 
-// const io = new Server(expressServer,{
-//     cors:{
-//         origin: process.env.NODE_ENV === "production"?
-//         "https://slagalica-demo.onrender.com" : 
-//          ["http://localhost:5500","http://127.0.0.1:5500"]
-//     }
-// })
-const io = new Server(expressServer)
+const io = new Server(expressServer,{
+    cors:{
+        origin: process.env.NODE_ENV === "production"?
+        "https://slagalica-demo.onrender.com" : 
+         ["http://localhost:5500","http://127.0.0.1:5500"]
+    }
+})
+//const io = new Server(expressServer)
 
 //init socket logic
 handleSocket(io)
