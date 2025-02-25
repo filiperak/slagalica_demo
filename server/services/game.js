@@ -59,9 +59,6 @@ export class Game {
             if(player.id === playerId){
                 
                 player.score.games[gameKey].score += score
-            //    console.log(this.players[0].score.games[gameKey]);
-            //    console.log(this.players[1].score.games[gameKey]);
-               
             }
         })
     }
