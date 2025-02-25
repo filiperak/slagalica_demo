@@ -126,7 +126,6 @@ export class GameUi {
             gameOptionName.classList.add("game-opened");
           } else {
             const handleOpenGameClick = () => {
-              //this._element.appendChild(this.createGameContainer(game))
               this._socket.emit("opendGame", {
                 gameId: this._gameId,
                 gameKey,
@@ -134,7 +133,6 @@ export class GameUi {
               });
               this._socket.on("gameData", (data) => {
                 this._element.appendChild(this.createGameContainer(game, data));
-                // console.log(data);
                 menu.classList.add("hide")
               });
             };
@@ -161,7 +159,6 @@ export class GameUi {
     
     });
     this._socket.on("opponentLeft",(data) => {
-      console.log(data);
       if(!this._gameCompleated){
         const msg = `<h3>🥳Pobedili ste!🥳</h3><br/><p>Vaš protivnik je napustio igru</p>`
         this.popupMessagePlayerLeftGame(msg)
@@ -173,7 +170,6 @@ export class GameUi {
         if(!this._sub){
           this._sub = true
         }else{
-          console.log(data);
           this.popupGameCompleated(data)
           this._gameCompleated = true
         }
@@ -301,7 +297,6 @@ export class GameUi {
         );
         break;
       default:
-        console.log("game not found");
     }
 
     return gameContainer;
@@ -531,7 +526,6 @@ export class GameUi {
 
     checkWordBtn.addEventListener("click", () => {
       const word = inputWord.map((elem) => elem.letter).join("");
-      console.log(word);
       this._socket.emit("checkWord", { gameId: this._gameId, word });
       wordValidatorDiv.innerHTML =
         '<i class="fa-solid fa-spinner fa-spin-pulse"></i>';
@@ -551,7 +545,6 @@ export class GameUi {
       newTime--;
       if (newTime <= 0) {
         submitWord();
-        console.log("submit slagalica");
       }
     }, 1000);
     if (!this._socket.hasListeners("scoreSubmitedSlagalica")) {
@@ -629,8 +622,6 @@ export class GameUi {
     const pushOperant = (e) => {
       const element = e.target.innerHTML;
       const lastElement = combination[combination.length - 1];
-      console.log(lastElement);
-
       const isValid = validateAddition(lastElement, element);
       if (isValid) {
         combination.push(element);
@@ -772,7 +763,6 @@ export class GameUi {
       newTime--;
       if (newTime <= 0) {
         submit();
-        console.log("submit mojbroj");
       }
     }, 1000);
 
@@ -807,9 +797,6 @@ export class GameUi {
     spojniceContainerCards.classList.add("spojnice-container--cards");
 
     const handleClick = (e) => {
-      // console.log(leftRow, e.target);
-
-      //const element = document.getElementById(e.target.id);
       const element = e.target;
       element.classList.add("add-dark-bg");
 
@@ -832,7 +819,6 @@ export class GameUi {
         spojnniceIdList = [];
         pick++;
         if (pick === 8) submit();
-        console.log(pick);
 
         rightRow.forEach((elem) => {
           elem.removeEventListener("click", handleClick);
@@ -850,7 +836,6 @@ export class GameUi {
       }
     };
 
-    console.log(data);
     //create spojnice board and cards
     const createBoard = () => {
       data.set.forEach((elem, index) => {
@@ -1097,7 +1082,6 @@ export class GameUi {
         if (qCounter < data.length) {
           renderQuestion();
         } else {
-          console.log("Quiz finished");
           if (!sub) {
             stopTimer();
             this._socket.emit("endKoznazna", { gameId: this._gameId });
@@ -1107,7 +1091,6 @@ export class GameUi {
       }, 1000);
     };
     const handleClick = (e) => {
-      console.log(e.target.innerText);
       e.target.classList.add("add-dark-bg");
 
       setTimeout(() => {
@@ -1131,7 +1114,6 @@ export class GameUi {
           if (qCounter < data.length) {
             renderQuestion();
           } else {
-            console.log("Quiz finished");
             if (!sub) {
               stopTimer();
               this._socket.emit("endKoznazna", { gameId: this._gameId });
@@ -1143,7 +1125,6 @@ export class GameUi {
     };
     this._socket.on("addScoreKoznazna", (data) => {
       correctAwnser += data.data;
-      console.log(data);
     });
 
     let newTime = time;
@@ -1168,8 +1149,6 @@ export class GameUi {
     }, 1000);
   }
   asocijacije(data, parent, stopTimer, time) {
-    console.log(data);
-    console.log(data.asocijacija);
 
     const indexMap = { 1: "A", 2: "B", 3: "C", 4: "D" };
     let points = 0;
@@ -1189,7 +1168,6 @@ export class GameUi {
     const handleMainInputInput = (e) => {
       e.preventDefault();
       if (e.keyCode === 13) {
-        console.log("submit asocijacije");
 
         if (
           resultInput.value &&
@@ -1242,12 +1220,10 @@ export class GameUi {
       inp.style.textTransform = "uppercase";
       inp.addEventListener("keyup", (e) => {
         if (e.keyCode === 13) {
-          console.log(e.keyCode);
 
           e.preventDefault();
           const word = e.target.value.toUpperCase();
           if (word && word === data.asocijacija.columns[index].rešenje) {
-            console.log(word, data.asocijacija.columns[index].rešenje);
 
             inp.style.background = GREEN_BUTTON_BACKGROUND;
             const cards = document.querySelectorAll(
@@ -1334,7 +1310,6 @@ export class GameUi {
       newTime--;
       if (newTime <= 0) {
         submit();
-        console.log("submit asocijacije");
       }
     }, 1000);
 
@@ -1400,7 +1375,6 @@ export class GameUi {
   }
   popupMessageDefault = (t) => {
     let text;
-    console.log(t);
     if (t) {
       t.data > 0
         ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
@@ -1411,7 +1385,6 @@ export class GameUi {
     this.drawPopup(text, () => {});
   };
   popupMessageSlagalica = (t) => {
-    // const text = `Osvojili ste ${t.data} poena`;
     let text;
     t.data > 0
       ? (text = `🥳Osvojili ste ${t.data} poena🥳`)
