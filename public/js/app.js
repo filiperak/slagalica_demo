@@ -12,7 +12,6 @@ const singlePlayer = document.querySelector("#singlePlayer")
 const randomGame = document.querySelector("#randomGame")
 const gameContainer = document.querySelector("#gameContainer")
 const usernameInp = document.querySelector(".username-inp")
-const popup = document.querySelector(".popup-container")
 const cancleModel = document.querySelector(".loading-model-cancle")
 const loadingModal = document.querySelector(".loading-model")
 
