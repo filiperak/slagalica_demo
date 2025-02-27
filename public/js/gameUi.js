@@ -1009,22 +1009,24 @@ export class GameUi {
     };
 
     const submitScore = () => {
-      clearInterval(timerCheckInterval);
-      this._socket.emit("submitSkocko", {
-        gameId: this._gameId,
-        cardComb: subComb,
-      });
-      stopTimer();
-      removeAllEventListeners(skockoContainer);
+      if(!sub){
+        sub = true
+        clearInterval(timerCheckInterval);
+        this._socket.emit("submitSkocko", {
+          gameId: this._gameId,
+          cardComb: subComb,
+        });
+        stopTimer();
+        removeAllEventListeners(skockoContainer);
+      }
     };
     createBoard();
     createCardOptions();
 
   const timerCheckInterval = setInterval(() => {
     newTime--;
-      if (newTime <= 0 && !sub) {
+      if (newTime <= 0) {
           submitScore();
-          sub = true
       }
     }, 1000);
 
