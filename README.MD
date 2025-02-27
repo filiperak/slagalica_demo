@@ -1,9 +1,12 @@
 <!-- Project logo -->
 
-<img src="public/assets/owl_logo.png" alt="Slagalica Logo" width="100" height="100" style="vertical-align: middle; margin-right: 10px;">
-<h1 style="display: inline; ">Slagalica</h1>
+<div style="text-align: center;">
+    <img src="public/assets/owl_logo.png" alt="Slagalica Logo" width="150" height="150" style="display: block; margin: 0 auto;">
+    <h1 style="font-size: 60px; text-align: center; margin-top: 10px;">Slagalica</h1>
+</div>
 
-##
+
+
 
 Slagalica is a web-based game inspired by the Serbian TV quiz show "Slagalica." It lets users play mini-games in single-player or multiplayer mode.
 
