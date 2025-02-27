@@ -42,5 +42,10 @@ Slagalica Demo is a web-based game inspired by the popular Serbian TV quiz show 
    ```sh
    npm start
 
+<<<<<<< HEAD
    ```sh
       Navigate to `http://localhost:8001`
+=======
+   ```
+      Navigate to `http://localhost:8001`
+>>>>>>> 5e12d1988d7efa817248b1e9daec2639a616b9b9
