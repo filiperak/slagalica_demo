@@ -1,14 +1,12 @@
-![Slagalica Game Logo](public/assets//owl_logo.png)
 # Slagalica
 
 <!-- Project logo -->
 
 <div style="display: flex; align-items: center;">
-    <img src="public/assets/owl_logo.png" alt="Slagalica Logo" width="100" height="100" style="margin-right: 10px;">
-    <span style="color:#3232ff; font-weight: 600; font-size: 24px;">Slagalica</span>
+    <img src="public/assets/owl_logo.png" alt="Slagalica Logo" width="100" height="100" style="margin-left: auto;">
 </div>
 
-Slagalica Demo is a web-based game inspired by the popular Serbian TV quiz show "Slagalica". This project allows users to play various mini-games either in single-player or multiplayer mode.
+Slagalica Demo is a web-based game inspired by the Serbian TV quiz show "Slagalica." It lets users enjoy mini-games in single-player or multiplayer mode.
 
 ## Features
 
