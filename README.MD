@@ -1,4 +1,5 @@
-# Slagalica Game
+![Slagalica Game Logo](public/assets//owl_logo.png)
+# Slagalica
 
 Slagalica Demo is a web-based game inspired by the popular Serbian TV quiz show "Slagalica". This project allows users to play various mini-games either in single-player or multiplayer mode.
 
@@ -18,12 +19,13 @@ Slagalica Demo is a web-based game inspired by the popular Serbian TV quiz show 
 - **Backend**: Node.js, Express.js
 - **WebSockets**: Socket.io
 - **Deployment**: Render.com
+- **Testing**: Jest
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js and npm installed on your machine.
+- Node.js installed on your machine.
 
 ### Installation
 
@@ -39,3 +41,6 @@ Slagalica Demo is a web-based game inspired by the popular Serbian TV quiz show 
 3. Start the server:
    ```sh
    npm start
+
+   ```sh
+      Navigate to `http://localhost:8001`
