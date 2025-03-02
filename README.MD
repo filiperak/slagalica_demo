@@ -13,7 +13,7 @@ Slagalica is a web-based game inspired by the Serbian TV quiz show "Slagalica." 
 ## Live Demo
 
 > [!IMPORTANT]  
-> The application is deployed on Render.com using a free instance. Due to inactivity, the initial load may take up to 50 seconds. Please be patient as the application starts up. You can access the deployed project [here ](https://slagalica-demo.onrender.com).
+> The application is deployed on Render.com using a free instance. Due to inactivity, the initial load may take up to 50 seconds. You can access the deployed project [here ](https://slagalica-demo.onrender.com).
 
 Check out the live demo hosted on Render.com: [slagalica](https://slagalica-demo.onrender.com)
 link: https://slagalica-demo.onrender.com
