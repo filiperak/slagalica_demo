@@ -313,7 +313,7 @@ export class Game {
         }
         return points;
     }
-    
+
     solveMojBroj(numbers: number[], target: number) {
         let bestSolution = null;
         let closestDiff = Infinity;

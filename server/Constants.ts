@@ -1,4 +1,3 @@
-
 /**
  * @readonly
  * @description Socket event names used for communication between server and clients.
@@ -60,7 +59,6 @@ export const SOCKET_EVENTS = Object.freeze({
         },
     },
 });
-
 
 export const GAME_KEYS = Object.freeze({
     SLAGALICA: "slagalica",
