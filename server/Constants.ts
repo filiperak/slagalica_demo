@@ -8,6 +8,7 @@ export const SOCKET_EVENTS = Object.freeze({
         CONNECTION: "connection",
         DISCONNECT: "disconnect",
         ENTER_ROOM: "enterRoom",
+        RECONNECT: "reconnectPlayer",
         ENTER_SINGLE_PLAYER: "enterSinglePlayer",
         LEAVE_GAME: "leaveGame",
         OPPONENT_LEFT: "opponentLeft",

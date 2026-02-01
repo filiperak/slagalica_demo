@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import path from "path";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
-import { SocketHandler } from "./socket"
+import { SocketHandler } from "./SocketHandler"
 import cors from "cors";
 
 dotenv.config();

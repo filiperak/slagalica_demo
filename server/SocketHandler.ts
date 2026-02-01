@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { bulidNotification } from "./utils/buildNotification.js";
 import { createGameId, createGameIdSingleGame } from "./utils/createGameId.js";
-import { Game } from "./game.js";
+import { Game } from "./GameEngine.js";
 import { SOCKET_EVENTS, GAME_KEYS } from "./Constants.js";
 
 interface GameEvent {
@@ -40,6 +40,7 @@ export class SocketHandler {
 
         // Register all event handlers
         socket.on(SOCKET_EVENTS.CORE.ENTER_ROOM, (data) => this.handleEnterRoom(socket, data));
+       // socket.on(SOCKET_EVENTS.CORE.RECONNECT, (data) => this.handleReconnect(socket, data));
         socket.on(SOCKET_EVENTS.CORE.ENTER_SINGLE_PLAYER, (data) => this.handleEnterSinglePlayer(socket, data));
         socket.on(SOCKET_EVENTS.STATE.REQUEST_PLAYER_DATA, (gameId) => this.handleRequestPlayerData(socket, gameId));
         socket.on(SOCKET_EVENTS.STATE.OPEN_GAME, (data) => this.handleOpenGame(socket, data));
@@ -402,6 +403,53 @@ export class SocketHandler {
             }
         } catch (error) {
             console.error("Error in handleDisconnect:", error);
+        }
+    }
+
+    private handleReconnect(socket: Socket, { gameId, name }: { gameId?: string; name?: string }): void {
+        try {
+            if (!gameId || !name) {
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, bulidNotification("Invalid reconnect data"));
+                return;
+            }
+
+            const game = this.getGame(gameId);
+            if (!game) {
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, bulidNotification("Game not found"));
+                return;
+            }
+
+            // Try to find player by name and update their socket id
+            const existingPlayer = game.players.find((p: any) => p.name === name);
+            if (existingPlayer) {
+                existingPlayer.id = socket.id;
+                socket.join(gameId);
+                console.log(`Player ${name} reconnected to game ${gameId} as ${socket.id}`);
+
+                // Send updated state to the reconnected socket and room
+                socket.emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
+                socket.emit(SOCKET_EVENTS.STATE.GAME_DATA, game.gameState);
+                this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
+                return;
+            }
+
+            // If player not found, try to add them if there's space
+            if (game.players.length < 2) {
+                game.addPlayer(socket.id, name);
+                socket.join(gameId);
+                console.log(`Player ${name} rejoined (new slot) game ${gameId}`);
+                socket.emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
+                this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
+                if (game.isReady()) {
+                    this.io.to(gameId).emit(SOCKET_EVENTS.STATE.START_GAME, { game });
+                }
+                return;
+            }
+
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, bulidNotification("Room is full"));
+        } catch (error) {
+            console.error("Error in handleReconnect:", error);
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, bulidNotification("Failed to reconnect"));
         }
     }
 

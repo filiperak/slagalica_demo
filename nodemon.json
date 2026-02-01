@@ -3,6 +3,6 @@
   "ext": "ts,js",
   "ignore": ["server/**/*.spec.ts"],
   "exec": "tsx",
-  "args": "server/index.ts"
+  "args": "server/Index.ts"
 }
 
