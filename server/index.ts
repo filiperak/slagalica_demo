@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import path from "path";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
-import handleSocket from "./socket/socket.js";
+import { SocketHandler } from "./socket"
 import cors from "cors";
 
 dotenv.config();
@@ -31,4 +31,4 @@ const io = new Server(expressServer, {
 // const io = new Server(expressServer)
 
 //init socket logic
-handleSocket(io);
+const socketHandler = new SocketHandler(io);

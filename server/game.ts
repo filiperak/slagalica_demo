@@ -1,7 +1,7 @@
-import { srDictCapital } from "../db/sr-latin-capital-dict.js";
-import { spojniceCombDb } from "../db/spojnice-comb-db.js";
+import { srDictCapital } from "./db/sr-latin-capital-dict.js";
+import { spojniceCombDb } from "./db/spojnice-comb-db.js";
 // import { initialize } from "@paunovic/questionnaire";
-import { asocijacijeDB } from "../db/asocijacije-db.js";
+import { asocijacijeDB } from "./db/asocijacije-db.js";
 
 export class Game {
     gameId: string;
@@ -17,7 +17,7 @@ export class Game {
             mojBroj: this.createMojBroj(),
             spojnice: this.createSpojnice(),
             skocko: this.createSkocko(),
-            koZnaZna: this.createKoznazna(),
+            koznazna: this.createKoznazna(),
             asocijacije: this.createAsocijacije(),
         };
         this.gameCompleted = false;
@@ -43,15 +43,19 @@ export class Game {
         }
         return false;
     }
+
     removePlayer(id: string) {
         this.players = this.players.filter((player) => player.id !== id);
     }
+
     getPlayer(id: string) {
         return this.players.find((player) => player.id === id);
     }
+
     isReady() {
         return this.players.length === 2;
     }
+
     handleOpendGame(gameKey: string, playerId: string) {
         this.players.forEach((player) => {
             if (player.id === playerId) {
@@ -59,6 +63,7 @@ export class Game {
             }
         });
     }
+
     addScore(gameKey: string, playerId: string, score: number) {
         this.players.forEach((player) => {
             if (player.id === playerId) {
@@ -66,6 +71,7 @@ export class Game {
             }
         });
     }
+
     isCompleted() {
         let completed = true;
         this.players.forEach((e) => {
@@ -77,8 +83,8 @@ export class Game {
         });
         this.gameCompleted = completed;
         return completed;
-        // return true;
     }
+
     checkWinner() {
         let winner = this.players[0];
         let loser = this.players[1] || null;
@@ -97,6 +103,7 @@ export class Game {
             draw,
         };
     }
+
     createSlagalica() {
         const letters = [
             "A",
@@ -152,11 +159,13 @@ export class Game {
         };
         return wordCombination();
     }
+
     validateSlagalica(str: string) {
         const isValid = srDictCapital.includes(str);
         const score = isValid ? str.length * 2 : 0;
         return { validated: isValid, score };
     }
+
     createSkocko() {
         const skockoComb = [];
         const createRandIndex = () => Math.floor(Math.random() * 6);
@@ -165,6 +174,7 @@ export class Game {
         }
         return skockoComb;
     }
+
     validateSkocko(inputComb: number[]) {
         const correctComb = this.gameState.skocko;
         let correctNumbers = 0;
@@ -192,6 +202,7 @@ export class Game {
 
         return { correctNumbers, correctPositions, score };
     }
+
     createSpojnice() {
         const randomSpojnica = spojniceCombDb[Math.floor(Math.random() * spojniceCombDb.length)];
         const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
@@ -236,14 +247,17 @@ export class Game {
             set: resultSet,
         };
     }
+
     validateSpojnice(d: number) {
         return d * 4;
     }
+
     createKoznazna() {
         // const QUESTIONNAIRE = initialize();
         //const Q4 = QUESTIONNAIRE.questions({ howMany: 10, wrong: 2 });
         //return Q4
     }
+
     createAsocijacije() {
         const randomAsocijacija = asocijacijeDB[Math.floor(Math.random() * asocijacijeDB.length)];
 
@@ -251,6 +265,7 @@ export class Game {
             asocijacija: randomAsocijacija,
         };
     }
+
     createMojBroj() {
         const target = Math.floor(Math.random() * 900) + 100;
 
@@ -269,6 +284,7 @@ export class Game {
 
         return { target, numbers, solution };
     }
+
     validateMojBroj(combination: string) {
         const target = this.gameState.mojBroj.target;
         console.log(combination);
@@ -297,6 +313,7 @@ export class Game {
         }
         return points;
     }
+    
     solveMojBroj(numbers: number[], target: number) {
         let bestSolution = null;
         let closestDiff = Infinity;
