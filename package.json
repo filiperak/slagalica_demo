@@ -7,8 +7,10 @@
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "dev": "nodemon",
-    "start": "tsx server/Index.ts",
-    "build": "tsc",
+    "start": "node dist/server/Index.js",
+    "start:dev": "tsx server/Index.ts",
+    "build": "tsc && cp -r app/public/* dist/app",
+    "build:watch": "tsc --watch",
     "format": "prettier --write \"server/**/*.ts\"",
     "format:check": "prettier --check \"server/**/*.ts\""
   },

@@ -10,11 +10,11 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORT = process.env.PORT || 3500;
+const PORT = process.env.PORT || 5500;
 
 const app = express();
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../app")));
+app.use(express.static(path.join(__dirname, "../dist/app")));
 
 const expressServer = app.listen(PORT, () => {
     console.log(`App is running on ${PORT}`);
