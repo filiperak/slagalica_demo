@@ -9,5 +9,7 @@ const ioUrl = isLocal
 
 console.log("Connecting to:", ioUrl);
 
-const app = new App(ioUrl);
-app.init();
+window.addEventListener("DOMContentLoaded", () => {
+    const app = new App(ioUrl);
+    app.init();
+});

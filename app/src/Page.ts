@@ -4,16 +4,27 @@ interface PageEvent {
     callback: EventListener;
 }
 
+interface AppDomElements {
+    gameContainer: HTMLElement | null;
+    gameHeader: HTMLElement | null;
+}
+
 /**
  * @description Base class for all pages in the application.
  *  It provides common functionality for managing events and lifecycle of the page.
  */
-class Page {
+export default class Page {
 
     _events: PageEvent[] = [];
+    _domElements: AppDomElements;
+
 
     constructor() {
         this._events = [];
+        this._domElements = {
+            gameContainer: document.querySelector("#gameContainer"),
+            gameHeader: document.querySelector("#gameHeader")
+        }
     }
 
     init() {
