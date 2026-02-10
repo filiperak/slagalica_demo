@@ -1,11 +1,11 @@
 import Loby from "./pages/Loby.js";
-
+import { Socket } from "socket.io";
 declare const io: any;
 
 export default class App {
 
     _ioUrl: string
-    _socket: any;
+    _socket: Socket;
 
     constructor(ioUrl:string) {
 
@@ -16,6 +16,8 @@ export default class App {
 
     init() {
         new Loby(this._socket).init();
+        console.log(this._socket);
+        
     }
 
 }

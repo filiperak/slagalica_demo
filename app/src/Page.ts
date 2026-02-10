@@ -1,5 +1,5 @@
 interface PageEvent {
-    element: HTMLElement;
+    element: HTMLElement | null;
     event: string;
     callback: EventListener;
 }
@@ -22,8 +22,8 @@ export default class Page {
     constructor() {
         this._events = [];
         this._domElements = {
-            gameContainer: document.querySelector("#gameContainer"),
-            gameHeader: document.querySelector("#gameHeader")
+            gameContainer: document.querySelector("#gameContainer") as HTMLDivElement,
+            gameHeader: document.querySelector("#gameHeader") as HTMLDivElement
         }
     }
 
@@ -41,8 +41,9 @@ export default class Page {
      * @description Disposes the page by removing all event listeners and clearing the events array.
      * This will be used any time the pange changes, Neccesary to prevent memory leaks and ensure that old event listeners do not interfere with the new page.
      */
-    _dispose(): void {
+    _dispose() {
         this._events.forEach(({ element, event, callback }) => {
+            if (!element) return;
             element.removeEventListener(event, callback);
         });
         this._events = [];
