@@ -9,7 +9,8 @@
     "dev": "nodemon",
     "start": "node dist/server/Index.js",
     "start:dev": "tsx server/Index.ts",
-    "build": "tsc && cp -r app/public/* dist/app",
+"build": "tsc && npm run build:css && cpy \"app/public/**/*\" dist/app",
+    "build:css": "tailwindcss -i ./app/public/style.css -o ./dist/app/output.css",
     "build:watch": "tsc --watch",
     "format": "prettier --write \"server/**/*.ts\"",
     "format:check": "prettier --check \"server/**/*.ts\""
@@ -28,14 +29,17 @@
   "devDependencies": {
     "@babel/core": "^7.26.9",
     "@babel/preset-env": "^7.26.9",
+    "@tailwindcss/cli": "^4.1.18",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.1.0",
     "@types/socket.io": "^3.0.1",
     "babel-jest": "^29.7.0",
+    "daisyui": "^5.5.18",
     "jest": "^29.7.0",
     "prettier": "^3.8.1",
     "socket.io-client": "^4.8.3",
+    "tailwindcss": "^4.1.18",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
