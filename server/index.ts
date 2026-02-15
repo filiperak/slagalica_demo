@@ -1,9 +1,10 @@
 import express from "express";
 import { Server } from "socket.io";
 import path from "path";
+import fs from "fs";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
-import { SocketHandler } from "./SocketHandler";
+import { SocketHandler } from "./SocketHandler.js";
 import cors from "cors";
 
 dotenv.config();
@@ -14,7 +15,13 @@ const PORT = process.env.PORT || 5500;
 
 const app = express();
 app.use(cors());
-app.use(express.static(path.join(__dirname, "../dist/app")));
+
+// Resolve correct static folder for both dev (running TS from repo)
+// and production (running compiled JS from dist).
+const candidates = [path.join(__dirname, "../dist/app"), path.join(__dirname, "../app")];
+const staticFolder = candidates.find((p) => fs.existsSync(p)) || candidates[0];
+console.log(`Serving static files from: ${staticFolder}`);
+app.use(express.static(staticFolder));
 
 const expressServer = app.listen(PORT, () => {
     console.log(`App is running on ${PORT}`);
