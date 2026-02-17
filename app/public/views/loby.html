@@ -1,4 +1,4 @@
-<main class="app-menu">
+<!-- <main class="app-menu">
         <img src="./assets/owl_logo.png" class="logo-img"/>
         <h3>SLAGALICA</h3>
 
@@ -13,4 +13,54 @@
         <button class="menu-button" id="singlePlayer">Single Player</button>
 
         <p class="trade-mark">2025 copyrigth &copy; Slagalica</p>
-    </main>
+    </main> -->
+
+    <main class="app-menu min-h-screen font-sans flex flex-col items-center p-4 relative text-[#1d2d44]">
+    
+    <div class="w-full flex justify-between items-center mb-8">
+        <div class="flex items-center bg-gray-400/30 rounded-full pr-6 py-1 pl-1 backdrop-blur-sm">
+            <img src="./assets/owl_logo.png" class="w-10 h-10 rounded-full mr-3 shadow-sm bg-white p-1" />
+            <input type="text" class="username-inp bg-transparent border-none focus:outline-none font-bold text-white placeholder-white/80" id="usernameInp" placeholder="Igrac123">
+        </div>
+        <button class="bg-[#f0a53d] p-2 rounded-lg shadow-md hover:scale-105 transition-transform text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="flex flex-col items-center mb-8">
+        <img src="./assets/owl_logo.png" class="logo-img w-32 h-32 drop-shadow-lg mb-2" />
+        <h3 class="text-3xl font-black tracking-widest text-[#1d2d44]">SLAGALICA</h3>
+    </div>
+
+    <button id="randomGame" class="menu-button w-full max-w-md bg-linear-to-b from-[#ffcc80] to-[#f0a53d] rounded-2xl p-6 flex items-center justify-center gap-6 shadow-xl hover:brightness-105 transition-all mb-10 group">
+        <div class="bg-white rounded-full p-2 group-hover:scale-110 transition-transform">
+             <svg class="w-8 h-8 text-[#f0a53d] fill-current" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="text-left">
+            <span class="block text-2xl font-bold text-[#1d2d44]">Započni Igru</span>
+            <span class="block text-sm opacity-80 font-medium">Single Player režim</span>
+        </div>
+    </button>
+
+    <div class="flex flex-col md:flex-row gap-4 w-full max-w-2xl justify-center mb-12">
+        <div class="bg-blue-100 rounded-2xl p-8 flex-1 flex flex-col items-center shadow-inner border border-white/20">
+            <h4 class="font-bold text-xl mb-8">Napravi Sobu</h4>
+            <button id="createGameBtn" class="menu-button bg-linear-to-b from-[#f9b14d] to-[#e68a1a] px-8 py-2 rounded-lg text-white font-bold shadow-md hover:brightness-110">Kreiraj</button>
+        </div>
+
+        <div class="bg-blue-100 rounded-2xl p-8 flex-1 flex flex-col items-center shadow-inner border border-white/20">
+            <h4 class="font-bold text-xl mb-4">Pridruži se</h4>
+            <input type="text" id="gameId" placeholder="KOD..." class="menu-input w-full bg-[#e8f1ed] rounded-lg py-2 px-4 mb-4 text-center focus:outline-none focus:ring-2 focus:ring-[#f0a53d]">
+            <button id="joinGame" class="menu-button bg-linear-to-b from-[#f9b14d] to-[#e68a1a] px-8 py-2 rounded-lg text-white font-bold shadow-md hover:brightness-110">Uđi</button>
+        </div>
+    </div>
+
+    <p class="trade-mark absolute bottom-4 text-xs opacity-40 font-bold uppercase tracking-widest">
+        2025 copyright &copy; Slagalica
+    </p>
+
+</main>
+

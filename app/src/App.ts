@@ -1,23 +1,61 @@
 import Loby from "./pages/Loby.js";
 import { Socket } from "socket.io";
+import { Menu } from "./pages/Menu.js";
+import { SOCKET_EVENTS, VIEWS } from "./util/ClientConstants.js";
+import Page from "./Page.js";
+import { Partial } from "./util/Partials.js";
+
+
 declare const io: any;
+
+interface Views {
+    loby: Loby;
+    menu: Menu;
+}
 
 export default class App {
 
-    _ioUrl: string
-    _socket: Socket;
+    private _ioUrl: string
+    private _socket: Socket;
+    private _previousView: Page | null;
+    private _views: Views;
+    private _partial: Partial;
 
     constructor(ioUrl:string) {
 
         this._ioUrl = ioUrl;
         this._socket = io(ioUrl);
+        this._previousView = null;
+        this._partial = new Partial();
+        this._views = {
+            loby: new Loby(this._socket,this._partial),
+            menu: new Menu(this._socket)
+        }
+        this._addSocketEvents__();
+
 
     }
 
     init() {
-        new Loby(this._socket).init();
+        this._router(VIEWS.LOBY);
         console.log(this._socket);
-        
+
+    }
+
+    _router(page: keyof Views) {
+        if (this._previousView) {
+            this._previousView._dispose();
+        }
+        this._views[page].init();
+        this._previousView = this._views[page];
+    }
+
+    _addSocketEvents__(){
+        this._socket.on(SOCKET_EVENTS.STATE.START_GAME,({game}) => {
+            console.log(game);
+            this._partial.hideModal__();
+            this._router(VIEWS.MENU);
+        })
     }
 
 }

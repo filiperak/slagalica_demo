@@ -5,8 +5,8 @@ interface PageEvent {
 }
 
 interface AppDomElements {
-    gameContainer: HTMLElement | null;
-    gameHeader: HTMLElement | null;
+    gameContainer: HTMLElement;
+    gameHeader: HTMLElement;
 }
 
 /**

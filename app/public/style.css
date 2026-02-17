@@ -1,16 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@plugin "daisyui";
+
+@import "tailwindcss";
+
 
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   font-family: "Rubik", serif;
   font-optical-sizing: auto;
-  font-weight: 300;
   font-style: normal;
 
   user-select: none;
@@ -31,11 +27,9 @@
 }
 body {
   /* background: radial-gradient(circle, #1a2a44, #0d1b2a); */
-  background-color: var(--background-primary);
   height: 100dvh;
-  text-align: center;
-  padding: 3px;
-  position: relative;
+  margin: 0;
+  padding: 0;
 }
 .app-menu,
 .game-menu,

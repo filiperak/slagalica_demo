@@ -1,6 +1,8 @@
 import { Socket } from "socket.io";
 import Page from "../Page.js";
 import { FetchHTML } from "../util/FetchHTML.js";
+import { Partial } from "../util/Partials.js";
+import { SOCKET_EVENTS } from "../util/ClientConstants.js";
 
 interface LocalDomElements {
     createGameBtn: HTMLElement;
@@ -17,21 +19,23 @@ export default class Loby extends Page {
     private _gameId: string | null;
     private _socket: Socket;
     private _username: string;
+    private _partials: Partial;
 
-    constructor(socket:Socket) {
+    constructor(socket:Socket, popup: Partial) {
         super();
 
         this._gameMode = null;
         this._gameId = null;
         this._socket = socket;
         this._username = `User-${Date.now()}`;
+        this._partials = popup;
     }
 
     async init() {
         const lobyHTML = await FetchHTML("../views/loby.html");
-        if (this._domElements.gameContainer) {
-            this._domElements.gameContainer.innerHTML = lobyHTML;
-        }
+        this._domElements.gameContainer.innerHTML = lobyHTML;
+        // if (this._domElements.gameContainer) {
+        // }
 
         this._localDom = {
             createGameBtn: document.querySelector("#createGameBtn")!,
@@ -55,6 +59,12 @@ export default class Loby extends Page {
                 name: this._localDom.usernameInp.value,
                 game: this._gameId
             });
+            this._partials.showModal__({
+                title: "Čekamo protivnika!",
+                text: "Pogrešan kod za sobu. Pokušajte ponovo.",
+                buttonText: "Odustani",
+                callback: this._leaveGame__.bind(this)
+            });
         } else {
             this._localDom.usernameInp?.classList.add("missing-username-input");
             this._localDom.usernameInp?.setAttribute("placeholder", "Enter username");
@@ -70,7 +80,7 @@ export default class Loby extends Page {
             this._username = `User-${Date.now()}`;
             localStorage.setItem("slagalicaUsername", this._username);
         }
-
+        this
         this._localDom.usernameInp.value = this._username;
     }
 
@@ -92,5 +102,12 @@ export default class Loby extends Page {
     _setGameId__(){
         this._gameId = this._createGameId__();
         this._localDom.gameIdInput.value = this._gameId
+    }
+
+    _leaveGame__() {
+        this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
+        this._gameId = null;
+        this._gameMode = null;
+        this._partials.hideModal__();
     }
 }

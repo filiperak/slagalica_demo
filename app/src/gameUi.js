@@ -1,4 +1,4 @@
-import {
+  import {
   capitalizeAfterSpaces,
   removeAllEventListeners,
   validateAddition,
