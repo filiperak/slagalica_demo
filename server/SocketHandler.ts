@@ -146,10 +146,7 @@ export class SocketHandler {
     private handleEnterRoom(socket: Socket, { name, game }: EnterRoomEvent): void {
         try {
             if (!name || typeof name !== "string") {
-                socket.emit(
-                    SOCKET_EVENTS.STATE.NOTIFICATION,
-                    ("Invalid name provided")
-                );
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Invalid name provided");
                 return;
             }
 
@@ -157,25 +154,20 @@ export class SocketHandler {
             const playerGame = this.getOrCreateGame(gameId);
 
             if (playerGame.players.length >= 2) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Room is full"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Room is full");
                 return;
             }
 
             const newPlayer = playerGame.addPlayer(socket.id, name);
             if (!newPlayer) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Room is full"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Room is full");
                 return;
             }
 
             socket.join(gameId);
             console.log(`Player ${name} joined game ${gameId}`);
 
-            socket
-                .to(gameId)
-                .emit(
-                    SOCKET_EVENTS.STATE.NOTIFICATION,
-                    (`${name} joined the game`)
-                );
+            socket.to(gameId).emit(SOCKET_EVENTS.STATE.NOTIFICATION, `${name} joined the game`);
 
             if (playerGame.isReady()) {
                 this.io.to(gameId).emit(SOCKET_EVENTS.STATE.START_GAME, {
@@ -184,17 +176,14 @@ export class SocketHandler {
             }
         } catch (error) {
             console.error("Error in handleEnterRoom:", error);
-            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Failed to join room"));
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to join room");
         }
     }
 
     private handleEnterSinglePlayer(socket: Socket, { name }: EnterSinglePlayerEvent): void {
         try {
             if (!name || typeof name !== "string") {
-                socket.emit(
-                    SOCKET_EVENTS.STATE.NOTIFICATION,
-                    ("Invalid name provided")
-                );
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Invalid name provided");
                 return;
             }
 
@@ -208,10 +197,7 @@ export class SocketHandler {
             socket.emit("startSinglePlayerGame", { game: this.games[gameId] });
         } catch (error) {
             console.error("Error in handleEnterSinglePlayer:", error);
-            socket.emit(
-                SOCKET_EVENTS.STATE.NOTIFICATION,
-                ("Failed to start single player game")
-            );
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to start single player game");
         }
     }
 
@@ -219,7 +205,7 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -237,7 +223,7 @@ export class SocketHandler {
         try {
             const currentGame = this.getGame(gameId);
             if (!currentGame) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -245,7 +231,7 @@ export class SocketHandler {
             socket.emit("gameData", currentGame.gameState[gameKey]);
         } catch (error) {
             console.error("Error in handleOpenGame:", error);
-            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Failed to open game"));
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to open game");
         }
     }
 
@@ -279,7 +265,7 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -287,10 +273,7 @@ export class SocketHandler {
             socket.emit("wordCheckResult", validatedWord);
         } catch (error) {
             console.error("Error in handleCheckWord:", error);
-            socket.emit(
-                SOCKET_EVENTS.STATE.NOTIFICATION,
-                ("Failed to check word")
-            );
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to check word");
         }
     }
 
@@ -298,7 +281,7 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -309,10 +292,7 @@ export class SocketHandler {
             socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUCCESS, { data: validatedWord.score });
         } catch (error) {
             console.error("Error in handleSendSlagalicaScore:", error);
-            socket.emit(
-                SOCKET_EVENTS.STATE.NOTIFICATION,
-                ("Failed to submit score")
-            );
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
         }
     }
 
@@ -321,7 +301,7 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -335,10 +315,7 @@ export class SocketHandler {
             socket.emit(SOCKET_EVENTS.GAMES.SKOCKO.RESULT, validateSkocko);
         } catch (error) {
             console.error("Error in handleCheckSkocko:", error);
-            socket.emit(
-                SOCKET_EVENTS.STATE.NOTIFICATION,
-                ("Failed to check Skocko")
-            );
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to check Skocko");
         }
     }
 
@@ -346,7 +323,7 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -355,10 +332,7 @@ export class SocketHandler {
             socket.emit("scoreSubmitedSkocko", { data: validateSkocko.score });
         } catch (error) {
             console.error("Error in handleSubmitSkocko:", error);
-            socket.emit(
-                SOCKET_EVENTS.STATE.NOTIFICATION,
-                ("Failed to submit score")
-            );
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
         }
     }
 
@@ -370,7 +344,7 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -379,10 +353,7 @@ export class SocketHandler {
             socket.emit("scoreSubmitedSpojnice", { data: validateSpojnice });
         } catch (error) {
             console.error("Error in handleSubmitSpojnice:", error);
-            socket.emit(
-                SOCKET_EVENTS.STATE.NOTIFICATION,
-                ("Failed to submit score")
-            );
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
         }
     }
 
@@ -391,16 +362,13 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
             const numericPoints = Number(points);
             if (isNaN(numericPoints)) {
-                socket.emit(
-                    SOCKET_EVENTS.STATE.NOTIFICATION,
-                    ("Invalid points value")
-                );
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Invalid points value");
                 return;
             }
 
@@ -410,10 +378,7 @@ export class SocketHandler {
             socket.emit("addScoreKoznazna", { data: player.score.games.koZnaZna.score });
         } catch (error) {
             console.error("Error in handleSubmitKoznazna:", error);
-            socket.emit(
-                SOCKET_EVENTS.STATE.NOTIFICATION,
-                ("Failed to submit score")
-            );
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
         }
     }
 
@@ -421,7 +386,7 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -429,7 +394,7 @@ export class SocketHandler {
             socket.emit("scoreSubmitedKoznazna", { data: player.score.games.koZnaZna.score });
         } catch (error) {
             console.error("Error in handleEndKoznazna:", error);
-            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Failed to end game"));
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to end game");
         }
     }
 
@@ -441,16 +406,13 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
             const numericPoints = Number(points);
             if (isNaN(numericPoints)) {
-                socket.emit(
-                    SOCKET_EVENTS.STATE.NOTIFICATION,
-                    ("Invalid points value")
-                );
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Invalid points value");
                 return;
             }
 
@@ -462,10 +424,7 @@ export class SocketHandler {
             });
         } catch (error) {
             console.error("Error in handleSubmitAsocijacije:", error);
-            socket.emit(
-                SOCKET_EVENTS.STATE.NOTIFICATION,
-                ("Failed to submit score")
-            );
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
         }
     }
 
@@ -474,7 +433,7 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -483,10 +442,7 @@ export class SocketHandler {
             socket.emit(SOCKET_EVENTS.GAMES.MOJ_BROJ.SUCCESS, { data: validateMojBroj });
         } catch (error) {
             console.error("Error in handleSubmitMojBroj:", error);
-            socket.emit(
-                SOCKET_EVENTS.STATE.NOTIFICATION,
-                ("Failed to submit score")
-            );
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
         }
     }
 
@@ -506,10 +462,7 @@ export class SocketHandler {
             if (otherPlayer) {
                 this.io
                     .to(otherPlayer.id)
-                    .emit(
-                        SOCKET_EVENTS.CORE.OPPONENT_LEFT,
-                        ("Opponent left the game")
-                    );
+                    .emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
             } else {
                 this.cleanupGame(gameId);
             }
@@ -531,10 +484,7 @@ export class SocketHandler {
             if (otherPlayer) {
                 this.io
                     .to(otherPlayer.id)
-                    .emit(
-                        SOCKET_EVENTS.CORE.OPPONENT_LEFT,
-                        ("Opponent left the game")
-                    );
+                    .emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
             } else {
                 this.cleanupGame(gameId);
             }
@@ -547,7 +497,7 @@ export class SocketHandler {
         try {
             const game = this.getGame(gameId);
             if (!game) {
-                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Game not found"));
+                socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Game not found");
                 return;
             }
 
@@ -578,10 +528,10 @@ export class SocketHandler {
                 return;
             }
 
-            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Room is full"));
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Room is full");
         } catch (error) {
             console.error("Error in handleReconnect:", error);
-            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, ("Failed to reconnect"));
+            socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to reconnect");
         }
     }
 

@@ -22,7 +22,7 @@ export default class Loby extends Page {
     private _username: string;
     private _partials: Partial;
 
-    constructor(socket:Socket, popup: Partial, store: Store) {
+    constructor(socket: Socket, popup: Partial, store: Store) {
         super(store);
 
         this._gameMode = null;
@@ -47,22 +47,22 @@ export default class Loby extends Page {
 
         this._setUsername__();
 
-        this._addEvents(this._localDom.randomGame, "click", this._playRandomGame__.bind(this))
-        this._addEvents(this._localDom.usernameInp, "input", this._changeUsername__.bind(this))
-        this._addEvents(this._localDom.createGameBtn,"click", this._setGameId__.bind(this))
+        this._addEvents(this._localDom.randomGame, "click", this._playRandomGame__.bind(this));
+        this._addEvents(this._localDom.usernameInp, "input", this._changeUsername__.bind(this));
+        this._addEvents(this._localDom.createGameBtn, "click", this._setGameId__.bind(this));
     }
 
     _playRandomGame__() {
         if (this._localDom.usernameInp && this._localDom.usernameInp.value) {
-            this._socket.emit('enterRoom', {
+            this._socket.emit("enterRoom", {
                 name: this._localDom.usernameInp.value,
-                game: this._gameId
+                game: this._gameId,
             });
             this._partials.showModal__({
                 title: "Čekamo protivnika!",
                 text: "Pogrešan kod za sobu. Pokušajte ponovo.",
                 buttonText: "Odustani",
-                callback: this._leaveGame__.bind(this)
+                callback: this._leaveGame__.bind(this),
             });
         } else {
             this._localDom.usernameInp?.classList.add("missing-username-input");
@@ -79,15 +79,14 @@ export default class Loby extends Page {
             this._username = `User-${Date.now()}`;
             localStorage.setItem("slagalicaUsername", this._username);
         }
-        this
+        this;
         this._localDom.usernameInp.value = this._username;
     }
 
-    _changeUsername__(event: Event)
-    {
+    _changeUsername__(event: Event) {
         const newUsername = (event.target as HTMLInputElement).value;
         console.log(newUsername);
-        
+
         localStorage.setItem("slagalicaUsername", newUsername);
     }
 
@@ -98,9 +97,9 @@ export default class Loby extends Page {
         return gid() + "-" + gid() + "-" + gid();
     }
 
-    _setGameId__(){
+    _setGameId__() {
         this._gameId = this._createGameId__();
-        this._localDom.gameIdInput.value = this._gameId
+        this._localDom.gameIdInput.value = this._gameId;
     }
 
     _leaveGame__() {

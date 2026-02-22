@@ -18,9 +18,8 @@ export class Partial {
             overlay: document.querySelector("#modalOverlay") as HTMLDivElement,
             title: document.querySelector("#modalTitle") as HTMLHeadingElement,
             text: document.querySelector("#modalText") as HTMLParagraphElement,
-            button: document.querySelector("#modalActionBtn") as HTMLButtonElement
+            button: document.querySelector("#modalActionBtn") as HTMLButtonElement,
         };
-
     }
 
     /**

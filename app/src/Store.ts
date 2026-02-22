@@ -19,12 +19,12 @@ export class Store {
     private _listeners: Array<(state: GameState) => void> = [];
 
     /**
-     * @param newState 
+     * @param newState
      * @description Updates state and triggers UI refreshes
      */
     setState__(newState: any) {
         this._state = newState;
-        this._listeners.forEach(listener => listener(this._state!));
+        this._listeners.forEach((listener) => listener(this._state!));
     }
 
     getState__() {
@@ -32,13 +32,13 @@ export class Store {
     }
 
     /**
-     * @param {state} newState The new state to set, which will trigger all subscribed listeners    
+     * @param {state} newState The new state to set, which will trigger all subscribed listeners
      * @returns Pages call this to "listen" for data changes
      */
     subscribe(fn: (state: GameState) => void) {
         this._listeners.push(fn);
         return () => {
-            this._listeners = this._listeners.filter(l => l !== fn);
+            this._listeners = this._listeners.filter((l) => l !== fn);
         };
     }
 }

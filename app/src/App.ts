@@ -6,7 +6,6 @@ import Page from "./Page.js";
 import { Partial } from "./util/Partials.js";
 import { Store } from "./Store.js";
 
-
 declare const io: any;
 
 interface Views {
@@ -14,19 +13,15 @@ interface Views {
     menu: Menu;
 }
 
-
-
 export default class App {
-
-    private _ioUrl: string
+    private _ioUrl: string;
     private _socket: Socket;
     private _previousView: Page | null;
     private _views: Views;
     private _partial: Partial;
     private _store: Store;
 
-    constructor(ioUrl:string) {
-
+    constructor(ioUrl: string) {
         this._ioUrl = ioUrl;
         this._socket = io(ioUrl);
         this._previousView = null;
@@ -34,18 +29,15 @@ export default class App {
         this._store = new Store();
 
         this._views = {
-            loby: new Loby(this._socket,this._partial, this._store),
-            menu: new Menu(this._socket, this._store)
-        }
+            loby: new Loby(this._socket, this._partial, this._store),
+            menu: new Menu(this._socket, this._store),
+        };
         this._addSocketEvents__();
-
-
     }
 
     init() {
         this._router(VIEWS.LOBY);
         console.log(this._socket);
-
     }
 
     _router(page: keyof Views) {
@@ -56,13 +48,13 @@ export default class App {
         this._previousView = this._views[page];
     }
 
-    _addSocketEvents__(){
-        this._socket.on(SOCKET_EVENTS.STATE.START_GAME,({game}) => {
+    _addSocketEvents__() {
+        this._socket.on(SOCKET_EVENTS.STATE.START_GAME, ({ game }) => {
             console.log(game);
-            this._store.setState__(game); 
+            this._store.setState__(game);
 
             this._partial.hideModal__();
             this._router(VIEWS.MENU);
-        })
+        });
     }
 }

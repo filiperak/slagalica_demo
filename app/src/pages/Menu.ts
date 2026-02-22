@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import Page from "../Page.js";
 import { FetchHTML } from "../util/FetchHTML.js";
-import { Store, GameState } from "../Store.js"; 
+import { Store, GameState } from "../Store.js";
 
 export class Menu extends Page {
     private _socket: Socket;
@@ -18,10 +18,8 @@ export class Menu extends Page {
         const initialState = this._store.getState__();
         if (initialState) {
             //this.render(initialState);
-            
         }
         console.log(initialState);
-        
 
         // 3. Subscribe: Listen for future changes (e.g. score updates)
         // We save the unsubscribe function to clean up later
@@ -52,7 +50,7 @@ export class Menu extends Page {
         if (!state || !state.players) return;
 
         // 1. Define the game keys exactly as they appear in your Socket JSON and HTML IDs
-        const gameKeys = ['slagalica', 'mojBroj', 'spojnice', 'skocko', 'koZnaZna', 'asocijacije'];
+        const gameKeys = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
 
         // 2. Loop through players (supporting up to 2 as per your HTML)
         state.players.forEach((player, index) => {
@@ -69,14 +67,14 @@ export class Menu extends Page {
             }
 
             // --- Update Individual Game Scores ---
-            gameKeys.forEach(gameKey => {
+            gameKeys.forEach((gameKey) => {
                 const scoreEl = document.getElementById(`p${index}-${gameKey}`);
                 if (scoreEl) {
                     // Navigate the nested JSON: player.score.games.slagalica.score
                     // We use optional chaining ?. and nullish coalescing ?? to prevent crashes
                     const gameData = player.score.games[gameKey as keyof typeof player.score.games];
                     const scoreValue = gameData?.score ?? 0;
-                    
+
                     scoreEl.textContent = scoreValue.toString();
                 }
             });

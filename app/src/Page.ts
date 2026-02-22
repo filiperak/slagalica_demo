@@ -22,11 +22,11 @@ export default abstract class Page {
     protected _store: Store;
     private _unsubStore: (() => void) | null = null;
 
-    constructor(store: Store) { 
+    constructor(store: Store) {
         this._store = store;
         this._domElements = {
             gameContainer: document.querySelector("#gameContainer") as HTMLElement,
-            gameHeader: document.querySelector("#gameHeader") as HTMLElement
+            gameHeader: document.querySelector("#gameHeader") as HTMLElement,
         };
     }
 
@@ -36,7 +36,7 @@ export default abstract class Page {
         }
 
         this._unsubStore = this._store.subscribe((state) => this.render(state));
-        
+
         const currentState = this._store.getState__();
         if (currentState) {
             this.render(currentState);
@@ -46,10 +46,9 @@ export default abstract class Page {
     /**
      * @abstract Every page must implement its own render logic
      */
-    render(state: GameState): void{
+    render(state: GameState): void {
         //Do nothing for now
-    };
-
+    }
 
     _addEvents(element: HTMLElement, event: string, callback: EventListener): void {
         this._events.push({ element, event, callback });
