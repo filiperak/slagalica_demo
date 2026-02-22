@@ -1,170 +1,149 @@
-
-    <main class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<main class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl mx-auto">
         
-        <div class="w-full max-w-4xl mx-auto">
-            <!-- Player Names Header -->
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-white rounded-lg shadow-md">
-                    <div class="p-4 text-center">
-                        <h2 class="text-2xl font-bold text-gray-800">q22</h2>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-md">
-                    <div class="p-4 text-center">
-                        <h2 class="text-2xl font-bold text-gray-800">22</h2>
-                    </div>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-lg shadow-md border-b-4 border-blue-500">
+                <div class="p-4 text-center">
+                    <h2 id="p0-name" class="text-2xl font-bold text-gray-800 text-truncate">Igrač 1</h2>
                 </div>
             </div>
-
-            <!-- Games List -->
-            <div class="space-y-4 mb-8">
-                <!-- Slagalica -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
-                    <div class="bg-white rounded-lg shadow-md 
-                    hover:shadow-lg transition-shadow cursor-pointer
-                active:bg-blue-100 active:border-2 active:border-blue-200 active:shadow-lg">
-                        <div class="p-4 text-center">
-                            <h3 class="text-xl font-bold text-gray-800">Slagalica</h3>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
+            <div class="bg-white rounded-lg shadow-md border-b-4 border-red-500">
+                <div class="p-4 text-center">
+                    <h2 id="p1-name" class="text-2xl font-bold text-gray-800 text-truncate">Igrač 2</h2>
                 </div>
-
-                <!-- Moj Broj -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
-                    <div class="bg-white rounded-lg shadow-md 
-                    hover:shadow-lg transition-shadow cursor-pointer
-                active:bg-blue-100 active:border-2 active:border-blue-200 active:shadow-lg">
-                        <div class="p-4 text-center">
-                            <h3 class="text-xl font-bold text-gray-800">Moj Broj</h3>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Spojnice -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
-                    <div class="bg-white rounded-lg shadow-md 
-                    hover:shadow-lg transition-shadow cursor-pointer
-                active:bg-blue-100 active:border-2 active:border-blue-200 active:shadow-lg">
-                        <div class="p-4 text-center">
-                            <h3 class="text-xl font-bold text-gray-800">Spojnice</h3>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Skočko (Highlighted) -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
-                    <div class="bg-white rounded-lg shadow-md 
-                    hover:shadow-lg transition-shadow cursor-pointer
-                active:bg-blue-100 active:border-2 active:border-blue-200 active:shadow-lg">
-                        <div class="p-4 text-center">
-                            <h3 class="text-xl font-bold text-gray-800">Skočko</h3>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Ko Zna Zna -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
-                    <div class="bg-white rounded-lg shadow-md 
-                    hover:shadow-lg transition-shadow cursor-pointer
-                active:bg-blue-100 active:border-2 active:border-blue-200 active:shadow-lg">
-                        <div class="p-4 text-center">
-                            <h3 class="text-xl font-bold text-gray-800">Ko Zna Zna</h3>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Asocijacije -->
-                <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
-                    <div class="bg-white rounded-lg shadow-md 
-                    hover:shadow-lg transition-shadow cursor-pointer
-                active:bg-blue-100 active:border-2 active:border-blue-200 active:shadow-lg">
-                        <div class="p-4 text-center">
-                            <h3 class="text-xl font-bold text-gray-800">Asocijacije</h3>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-md w-20">
-                        <div class="p-4 text-center">
-                            <span class="text-2xl font-bold text-gray-800">0</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Total Scores -->
-            <div class="grid grid-cols-2 gap-4 mb-8">
-                <div class="bg-white rounded-lg shadow-md">
-                    <div class="p-4 text-center">
-                        <span class="text-2xl font-bold text-gray-800">0</span>
-                    </div>
-                </div>
-                <div class="bg-white rounded-lg shadow-md">
-                    <div class="p-4 text-center">
-                        <span class="text-2xl font-bold text-gray-800">0</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Leave Game Button -->
-            <div class="text-center">
-                <button class="px-12 py-3 bg-slate-700 hover:bg-slate-800 text-white text-lg font-medium rounded-lg transition-colors">
-                    Napusti igru
-                </button>
             </div>
         </div>
 
-    </main>
+        <div class="space-y-4 mb-8">
+            
+            <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
+                <div data-game="slagalica" class="game-btn bg-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95">
+                    <div class="p-4 text-center">
+                        <h3 class="text-xl font-bold text-gray-800">Slagalica</h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p0-slagalica" class="text-2xl font-bold text-blue-600">0</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p1-slagalica" class="text-2xl font-bold text-red-600">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
+                <div data-game="mojBroj" class="game-btn bg-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95">
+                    <div class="p-4 text-center">
+                        <h3 class="text-xl font-bold text-gray-800">Moj Broj</h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p0-mojBroj" class="text-2xl font-bold text-blue-600">0</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p1-mojBroj" class="text-2xl font-bold text-red-600">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
+                <div data-game="spojnice" class="game-btn bg-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95">
+                    <div class="p-4 text-center">
+                        <h3 class="text-xl font-bold text-gray-800">Spojnice</h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p0-spojnice" class="text-2xl font-bold text-blue-600">0</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p1-spojnice" class="text-2xl font-bold text-red-600">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
+                <div data-game="skocko" class="game-btn bg-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95">
+                    <div class="p-4 text-center">
+                        <h3 class="text-xl font-bold text-gray-800">Skočko</h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p0-skocko" class="text-2xl font-bold text-blue-600">0</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p1-skocko" class="text-2xl font-bold text-red-600">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
+                <div data-game="koZnaZna" class="game-btn bg-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95">
+                    <div class="p-4 text-center">
+                        <h3 class="text-xl font-bold text-gray-800">Ko Zna Zna</h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p0-koZnaZna" class="text-2xl font-bold text-blue-600">0</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p1-koZnaZna" class="text-2xl font-bold text-red-600">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-[1fr_auto_auto] gap-2 items-center">
+                <div data-game="asocijacije" class="game-btn bg-white rounded-lg shadow-md hover:shadow-lg transition-all cursor-pointer active:scale-95">
+                    <div class="p-4 text-center">
+                        <h3 class="text-xl font-bold text-gray-800">Asocijacije</h3>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p0-asocijacije" class="text-2xl font-bold text-blue-600">0</span>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-md w-20">
+                    <div class="p-4 text-center">
+                        <span id="p1-asocijacije" class="text-2xl font-bold text-red-600">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <div class="bg-slate-800 rounded-lg shadow-xl">
+                <div class="p-4 text-center">
+                    <p class="text-slate-400 text-xs uppercase font-bold mb-1">Ukupno</p>
+                    <span id="p0-total" class="text-3xl font-black text-white">0</span>
+                </div>
+            </div>
+            <div class="bg-slate-800 rounded-lg shadow-xl">
+                <div class="p-4 text-center">
+                    <p class="text-slate-400 text-xs uppercase font-bold mb-1">Ukupno</p>
+                    <span id="p1-total" class="text-3xl font-black text-white">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button id="leave-game-btn" class="px-12 py-3 bg-red-600 hover:bg-red-700 text-white text-lg font-bold rounded-lg shadow-lg transition-all hover:-translate-y-1 active:translate-y-0">
+                Napusti igru
+            </button>
+        </div>
+    </div>
+</main>

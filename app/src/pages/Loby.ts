@@ -3,6 +3,7 @@ import Page from "../Page.js";
 import { FetchHTML } from "../util/FetchHTML.js";
 import { Partial } from "../util/Partials.js";
 import { SOCKET_EVENTS } from "../util/ClientConstants.js";
+import { Store } from "../Store.js";
 
 interface LocalDomElements {
     createGameBtn: HTMLElement;
@@ -21,8 +22,8 @@ export default class Loby extends Page {
     private _username: string;
     private _partials: Partial;
 
-    constructor(socket:Socket, popup: Partial) {
-        super();
+    constructor(socket:Socket, popup: Partial, store: Store) {
+        super(store);
 
         this._gameMode = null;
         this._gameId = null;
@@ -34,8 +35,6 @@ export default class Loby extends Page {
     async init() {
         const lobyHTML = await FetchHTML("../views/loby.html");
         this._domElements.gameContainer.innerHTML = lobyHTML;
-        // if (this._domElements.gameContainer) {
-        // }
 
         this._localDom = {
             createGameBtn: document.querySelector("#createGameBtn")!,

@@ -4,6 +4,7 @@ import { Menu } from "./pages/Menu.js";
 import { SOCKET_EVENTS, VIEWS } from "./util/ClientConstants.js";
 import Page from "./Page.js";
 import { Partial } from "./util/Partials.js";
+import { Store } from "./Store.js";
 
 
 declare const io: any;
@@ -13,6 +14,8 @@ interface Views {
     menu: Menu;
 }
 
+
+
 export default class App {
 
     private _ioUrl: string
@@ -20,6 +23,7 @@ export default class App {
     private _previousView: Page | null;
     private _views: Views;
     private _partial: Partial;
+    private _store: Store;
 
     constructor(ioUrl:string) {
 
@@ -27,9 +31,11 @@ export default class App {
         this._socket = io(ioUrl);
         this._previousView = null;
         this._partial = new Partial();
+        this._store = new Store();
+
         this._views = {
-            loby: new Loby(this._socket,this._partial),
-            menu: new Menu(this._socket)
+            loby: new Loby(this._socket,this._partial, this._store),
+            menu: new Menu(this._socket, this._store)
         }
         this._addSocketEvents__();
 
@@ -53,9 +59,10 @@ export default class App {
     _addSocketEvents__(){
         this._socket.on(SOCKET_EVENTS.STATE.START_GAME,({game}) => {
             console.log(game);
+            this._store.setState__(game); 
+
             this._partial.hideModal__();
             this._router(VIEWS.MENU);
         })
     }
-
 }

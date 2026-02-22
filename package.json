@@ -12,8 +12,8 @@
     "build": "tsc && npm run build:css && cpy \"app/public/**/*\" dist/app",
     "build:css": "tailwindcss -i ./app/public/style.css -o ./dist/app/output.css",
     "build:watch": "tsc --watch",
-    "format": "prettier --write \"server/**/*.ts\"",
-    "format:check": "prettier --check \"server/**/*.ts\""
+    "format": "prettier --write \"{server,app}/**/*.ts\"",
+    "format:check": "prettier --check \"{server,app}/**/*.ts\""
   },
   "keywords": [],
   "author": "",
