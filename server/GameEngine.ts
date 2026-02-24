@@ -1,7 +1,7 @@
-import { srDictCapital } from "./db/sr-latin-capital-dict.js";
-import { spojniceCombDb } from "./db/spojnice-comb-db.js";
+import { srDictCapital } from "./data/sr-latin-capital-dict.js";
+import { spojniceCombDb } from "./data/spojnice-comb-db.js";
 // import { initialize } from "@paunovic/questionnaire";
-import { asocijacijeDB } from "./db/asocijacije-db.js";
+import { asocijacijeDB } from "./data/asocijacije-db.js";
 
 export class Game {
     gameId: string;

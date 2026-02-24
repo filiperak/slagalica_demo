@@ -245,7 +245,7 @@ export class GameUi {
     const header = document.createElement("h1");
     header.innerText = capitalizeAfterSpaces(game);
 
-    gameContainer.append(timerBar,gameContainerHeader, header);
+    gameContainer.append(timerBar,gameContainerHeader, header);///
 
     switch (game) {
       case "slagalica":

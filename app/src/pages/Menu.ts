@@ -2,10 +2,38 @@ import { Socket } from "socket.io";
 import Page from "../Page.js";
 import { FetchHTML } from "../util/FetchHTML.js";
 import { Store, GameState } from "../Store.js";
+import { SOCKET_EVENTS } from "../util/ClientConstants.js";
+
+interface LocalDomElements {
+    leaveBtn: HTMLElement;
+    slagalicaBtn: HTMLElement;
+    mojBrojBtn: HTMLElement;
+    spojniceBtn: HTMLElement;
+    skockoBtn: HTMLElement;
+    koZnaZnaBtn: HTMLElement;
+    asocijacijeBtn: HTMLElement;
+    p0Name: HTMLElement;
+    p0Total: HTMLElement;
+    p0Slagalica: HTMLElement;
+    p0MojBroj: HTMLElement;
+    p0Spojnice: HTMLElement;
+    p0Skocko: HTMLElement;
+    p0KoZnaZna: HTMLElement;
+    p0Asocijacije: HTMLElement;
+    p1Name: HTMLElement;
+    p1Total: HTMLElement;
+    p1Slagalica: HTMLElement;
+    p1MojBroj: HTMLElement;
+    p1Spojnice: HTMLElement;
+    p1Skocko: HTMLElement;
+    p1KoZnaZna: HTMLElement;
+    p1Asocijacije: HTMLElement;
+}
 
 export class Menu extends Page {
     private _socket: Socket;
     private _unsub: (() => void) | null = null;
+    private _localDom!: LocalDomElements;
 
     constructor(socket: Socket, store: Store) {
         super(store);
@@ -15,81 +43,99 @@ export class Menu extends Page {
     async init() {
         const menuHTML = await FetchHTML("../views/menu.html");
         this._domElements.gameContainer.innerHTML = menuHTML;
-        const initialState = this._store.getState__();
-        if (initialState) {
-            //this.render(initialState);
-        }
-        console.log(initialState);
 
-        // 3. Subscribe: Listen for future changes (e.g. score updates)
-        // We save the unsubscribe function to clean up later
+        this._localDom = {
+            leaveBtn: document.querySelector("#leave-game-btn")!,
+            slagalicaBtn: document.querySelector("#slagalica")!,
+            mojBrojBtn: document.querySelector("#mojBroj")!,
+            spojniceBtn: document.querySelector("#spojnice")!,
+            skockoBtn: document.querySelector("#skocko")!,
+            koZnaZnaBtn: document.querySelector("#koZnaZna")!,
+            asocijacijeBtn: document.querySelector("#asocijacije")!,
+
+            p0Name: document.querySelector("#p0-name")!,
+            p0Total: document.querySelector("#p0-total")!,
+            p0Slagalica: document.querySelector("#p0-slagalica")!,
+            p0MojBroj: document.querySelector("#p0-mojBroj")!,
+            p0Spojnice: document.querySelector("#p0-spojnice")!,
+            p0Skocko: document.querySelector("#p0-skocko")!,
+            p0KoZnaZna: document.querySelector("#p0-koZnaZna")!,
+            p0Asocijacije: document.querySelector("#p0-asocijacije")!,
+
+            p1Name: document.querySelector("#p1-name")!,
+            p1Total: document.querySelector("#p1-total")!,
+            p1Slagalica: document.querySelector("#p1-slagalica")!,
+            p1MojBroj: document.querySelector("#p1-mojBroj")!,
+            p1Spojnice: document.querySelector("#p1-spojnice")!,
+            p1Skocko: document.querySelector("#p1-skocko")!,
+            p1KoZnaZna: document.querySelector("#p1-koZnaZna")!,
+            p1Asocijacije: document.querySelector("#p1-asocijacije")!,
+        };
+
+        const initialState = this._store.getState__();
+        if (initialState) this.render__(initialState);
+
         this._unsub = this._store.subscribe((state: GameState) => {
-            console.log("Store updated, re-rendering Menu...");
-            //this.render(state);
+            this.render__(state);
         });
 
-        // 4. Setup local UI events (if any)
-        this._setupLocalEvents__();
+        this.addEvents__(this._localDom.leaveBtn, "click", this._leaveGame__.bind(this));
+        
+        const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
+        games.forEach((game) => {
+            const btn = this._localDom[`${game}Btn` as keyof LocalDomElements] as HTMLElement;
+            this.addEvents__(btn, "click", this._openGame__.bind(this, game));
+        });
     }
 
-    _setupLocalEvents__() {
-        // Example: If you have a 'leave' button in menu.html
-        const leaveBtn = document.querySelector("#leave-btn") as HTMLElement;
-        if (leaveBtn) {
-            this._addEvents(leaveBtn, "click", () => {
-                this._socket.emit("leave_game");
-            });
-        }
-    }
-
-    /**
-     * The Render method updates specific DOM elements based on the Store state.
-     * This avoids refreshing the whole page.
-     */
-    render(state: GameState): void {
+    render__(state: GameState) {
         if (!state || !state.players) return;
 
-        // 1. Define the game keys exactly as they appear in your Socket JSON and HTML IDs
-        const gameKeys = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
+        const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
 
-        // 2. Loop through players (supporting up to 2 as per your HTML)
         state.players.forEach((player, index) => {
-            // --- Update Player Name ---
-            const nameEl = document.getElementById(`p${index}-name`);
-            if (nameEl) {
-                nameEl.textContent = player.name || `Igrač ${index + 1}`;
-            }
+            const prefix = `p${index}`;
 
-            // --- Update Total Score ---
-            const totalEl = document.getElementById(`p${index}-total`);
-            if (totalEl) {
-                totalEl.textContent = player.score.total.toString();
-            }
+            (this._localDom[`${prefix}Name` as keyof LocalDomElements] as HTMLElement).textContent =
+                player.name || `Igrač ${index + 1}`;
 
-            // --- Update Individual Game Scores ---
-            gameKeys.forEach((gameKey) => {
-                const scoreEl = document.getElementById(`p${index}-${gameKey}`);
-                if (scoreEl) {
-                    // Navigate the nested JSON: player.score.games.slagalica.score
-                    // We use optional chaining ?. and nullish coalescing ?? to prevent crashes
+            (
+                this._localDom[`${prefix}Total` as keyof LocalDomElements] as HTMLElement
+            ).textContent = player.score.total.toString();
+
+            games.forEach((gameKey) => {
+                const domKey =
+                    `${prefix}${gameKey.charAt(0).toUpperCase() + gameKey.slice(1)}` as keyof LocalDomElements;
+                const element = this._localDom[domKey] as HTMLElement;
+
+                if (element) {
                     const gameData = player.score.games[gameKey as keyof typeof player.score.games];
-                    const scoreValue = gameData?.score ?? 0;
-
-                    scoreEl.textContent = scoreValue.toString();
+                    element.textContent = (gameData?.score ?? 0).toString();
                 }
             });
         });
     }
 
-    /**
-     * @description Clean up both DOM events (via super) and the Store subscription.
-     */
-    _dispose() {
-        super._dispose();
-        // Kill the store subscription to prevent memory leaks
+    dispose__() {
+        super.dispose__();
         if (this._unsub) {
             this._unsub();
             this._unsub = null;
         }
+    }
+
+    _leaveGame__() {
+        this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
+        alert("you left");
+    }
+
+    _openGame__(gameKey: string) {
+        console.log(`menu reqested game:${gameKey}`);
+
+        this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
+            gameId: this._store.getState__()?.gameId,
+            gameKey,
+            playerId: this._socket.id,
+        });
     }
 }

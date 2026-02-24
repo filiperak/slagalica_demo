@@ -47,9 +47,9 @@ export default class Loby extends Page {
 
         this._setUsername__();
 
-        this._addEvents(this._localDom.randomGame, "click", this._playRandomGame__.bind(this));
-        this._addEvents(this._localDom.usernameInp, "input", this._changeUsername__.bind(this));
-        this._addEvents(this._localDom.createGameBtn, "click", this._setGameId__.bind(this));
+        this.addEvents__(this._localDom.randomGame, "click", this._playRandomGame__.bind(this));
+        this.addEvents__(this._localDom.usernameInp, "input", this._changeUsername__.bind(this));
+        this.addEvents__(this._localDom.createGameBtn, "click", this._setGameId__.bind(this));
     }
 
     _playRandomGame__() {

@@ -220,6 +220,9 @@ export class SocketHandler {
     }
 
     private handleOpenGame(socket: Socket, { gameId, gameKey, playerId }: OpenGameEvent): void {
+        console.log(
+            `Open game requested: ${gameKey} for gameId: ${gameId} by playerId: ${playerId}`
+        );
         try {
             const currentGame = this.getGame(gameId);
             if (!currentGame) {
@@ -228,7 +231,14 @@ export class SocketHandler {
             }
 
             currentGame.handleOpendGame(gameKey, playerId);
-            socket.emit("gameData", currentGame.gameState[gameKey]);
+            console.log(playerId, currentGame.gameState[gameKey]);
+
+            const response = {
+                gameKey,
+                gameState: currentGame.gameState[gameKey],
+            };
+
+            socket.emit(SOCKET_EVENTS.STATE.GAME_DATA, response);
         } catch (error) {
             console.error("Error in handleOpenGame:", error);
             socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to open game");
@@ -457,6 +467,7 @@ export class SocketHandler {
             const game = this.games[gameId];
             game.removePlayer(socket.id);
             socket.leave(gameId);
+            console.log(`${gameId} left the game`);
 
             const otherPlayer = game.players.find((p) => p.id !== socket.id);
             if (otherPlayer) {

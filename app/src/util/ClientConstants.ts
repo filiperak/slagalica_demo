@@ -72,4 +72,6 @@ export const GAME_KEYS = Object.freeze({
 export const VIEWS = Object.freeze({
     LOBY: "loby",
     MENU: "menu",
+    SLAGALICA: "slagalica",
+    MOJ_BROJ: "mojBroj",
 });

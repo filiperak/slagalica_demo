@@ -5,12 +5,16 @@ import { SOCKET_EVENTS, VIEWS } from "./util/ClientConstants.js";
 import Page from "./Page.js";
 import { Partial } from "./util/Partials.js";
 import { Store } from "./Store.js";
+import { Slagalica } from "./pages/Slagalica.js";
+import { MojBroj } from "./pages/MojBroj.js";
 
 declare const io: any;
 
 interface Views {
     loby: Loby;
     menu: Menu;
+    slagalica: Slagalica;
+    mojBroj: MojBroj;
 }
 
 export default class App {
@@ -31,7 +35,10 @@ export default class App {
         this._views = {
             loby: new Loby(this._socket, this._partial, this._store),
             menu: new Menu(this._socket, this._store),
+            slagalica: new Slagalica(this._socket, this._store),
+            mojBroj: new MojBroj(this._socket, this._store),
         };
+
         this._addSocketEvents__();
     }
 
@@ -42,8 +49,9 @@ export default class App {
 
     _router(page: keyof Views) {
         if (this._previousView) {
-            this._previousView._dispose();
+            this._previousView.dispose__();
         }
+
         this._views[page].init();
         this._previousView = this._views[page];
     }
@@ -51,10 +59,15 @@ export default class App {
     _addSocketEvents__() {
         this._socket.on(SOCKET_EVENTS.STATE.START_GAME, ({ game }) => {
             console.log(game);
-            this._store.setState__(game);
 
+            this._store.setState__(game);
             this._partial.hideModal__();
             this._router(VIEWS.MENU);
+        });
+
+        this._socket.on(SOCKET_EVENTS.STATE.GAME_DATA, ({ gameKey, gameState }) => {
+            console.log("Received game data:", gameKey, gameState);
+            this._router(gameKey as keyof Views);
         });
     }
 }
