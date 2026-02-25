@@ -36,7 +36,7 @@ export default class App {
             loby: new Loby(this._socket, this._partial, this._store, this._router.bind(this)),
             menu: new Menu(this._socket, this._store, this._router.bind(this), this._partial),
             slagalica: new Slagalica(this._socket, this._store, this._router.bind(this), this._partial),
-            mojBroj: new MojBroj(this._socket, this._store, this._router.bind(this)),
+            mojBroj: new MojBroj(this._socket, this._store, this._router.bind(this), this._partial),
         };
 
         this._addSocketEvents__();

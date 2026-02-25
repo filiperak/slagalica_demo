@@ -33,13 +33,11 @@ interface LocalDomElements {
 }
 
 export class Menu extends Page {
-    private _socket: Socket;
     private _unsub: (() => void) | null = null;
     private _localDom!: LocalDomElements;
 
     constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
-        super(store, router, partial);
-        this._socket = socket;
+        super(socket, store, router, partial);
     }
 
     async init() {

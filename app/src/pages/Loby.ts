@@ -19,11 +19,10 @@ export default class Loby extends Page {
     private _localDom!: LocalDomElements;
     private _gameMode: string | null;
     private _gameId: string | null;
-    private _socket: Socket;
     private _username: string;
 
     constructor(socket: Socket, partial: Partial, store: Store, router: RouerFn) {
-        super(store, router, partial);
+        super(socket, store, router, partial);
 
         this._gameMode = null;
         this._gameId = null;

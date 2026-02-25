@@ -6,11 +6,9 @@ import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants.js";
 import { Partial } from "../util/Partials.js";
 
 export class Slagalica extends Page {
-    private _socket: Socket;
 
     constructor(socket: Socket, store: Store, router: RouerFn, partial:Partial) {
-        super(store, router, partial);
-        this._socket = socket;
+        super(socket, store, router, partial);
     }
 
     init() {

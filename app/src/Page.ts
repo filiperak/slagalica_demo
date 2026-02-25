@@ -1,3 +1,4 @@
+import { Socket } from "socket.io";
 import { Store, GameState } from "./Store.js";
 import { VIEWS } from "./util/ClientConstants.js";
 import { Partial } from "./util/Partials.js";
@@ -20,11 +21,6 @@ interface HeaderOptions {
     backMessage?: string;
 }
 
-interface PageConstructor {
-    stoe: Store;
-    router: () => void;
-}
-
 /**
  * @description Base class for all pages in the application.
  * Provides common functionality for managing events, store subscription,
@@ -33,19 +29,20 @@ interface PageConstructor {
 export default abstract class Page {
     protected _events: PageEvent[] = [];
     protected _domElements: AppDomElements;
+    protected _socket: Socket;
     protected _store: Store;
     protected _router: RouerFn;
     protected _partial: Partial;
 
     private _unsubStore: (() => void) | null = null;
-    private _modal: Partial | null = null;
     private _timerInterval: ReturnType<typeof setInterval> | null = null;
     private _timerRemaining: number = 0;
     private _timerDuration: number = 90;
     private _headerTimerEl: HTMLElement | null = null;
     private _headerProgressEl: HTMLElement | null = null;
 
-    constructor(store: Store, router: RouerFn, partial: Partial) {
+    constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
+        this._socket = socket;
         this._store = store;
         this._router = router;
         this._partial = partial;
@@ -107,8 +104,8 @@ export default abstract class Page {
     protected initHeader__(options: HeaderOptions = {}): void {
         const {
             durationSeconds = 90,
-            timeoutMessage = "Vreme je isteklo!",
-            backMessage = "Napuštate igru.",
+            timeoutMessage = "",
+            backMessage = "",
         } = options;
 
         this._timerDuration = durationSeconds;
