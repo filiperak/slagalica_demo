@@ -1,4 +1,7 @@
 import { Store, GameState } from "./Store.js";
+import { VIEWS } from "./util/ClientConstants.js";
+import { Partial } from "./util/Partials.js";
+import { RouerFn } from "./util/Types.js";
 
 interface PageEvent {
     element: HTMLElement | null;
@@ -13,8 +16,13 @@ interface AppDomElements {
 
 interface HeaderOptions {
     durationSeconds?: number;
-    onTimeout?: () => void;
-    alertMessage?: string;
+    timeoutMessage?: string;
+    backMessage?: string;
+}
+
+interface PageConstructor {
+    stoe: Store;
+    router: () => void;
 }
 
 /**
@@ -26,41 +34,53 @@ export default abstract class Page {
     protected _events: PageEvent[] = [];
     protected _domElements: AppDomElements;
     protected _store: Store;
-    private _unsubStore: (() => void) | null = null;
+    protected _router: RouerFn;
+    protected _partial: Partial;
 
+    private _unsubStore: (() => void) | null = null;
+    private _modal: Partial | null = null;
     private _timerInterval: ReturnType<typeof setInterval> | null = null;
     private _timerRemaining: number = 0;
     private _timerDuration: number = 90;
     private _headerTimerEl: HTMLElement | null = null;
     private _headerProgressEl: HTMLElement | null = null;
 
-    constructor(store: Store) {
+    constructor(store: Store, router: RouerFn, partial: Partial) {
         this._store = store;
+        this._router = router;
+        this._partial = partial;
+
         this._domElements = {
             gameContainer: document.querySelector("#gameContainer") as HTMLElement,
             gameHeader: document.querySelector("#gameHeader") as HTMLElement,
         };
     }
 
-    init() {}
+    init() {
+        this._events = [];   
+    }
 
     /**
      * @description Cleans up DOM events, store subscription, and the timer interval.
      */
     dispose__() {
         this._events.forEach(({ element, event, callback }) => {
-            if (element) element.removeEventListener(event, callback);
+
+            if (element) {
+                element.removeEventListener(event, callback);
+            }
         });
+
         this._events = [];
 
         if (this._unsubStore) {
+
             this._unsubStore();
             this._unsubStore = null;
         }
 
         this._clearTimer__();
         this._domElements.gameHeader.innerHTML = "";
-
         this._headerTimerEl = null;
         this._headerProgressEl = null;
     }
@@ -74,12 +94,22 @@ export default abstract class Page {
         element.addEventListener(event, callback);
     }
 
+    protected onHeaderExit__(message: string): void {
+        this._partial.showModal__({title: "",text: message})
+        this._clearTimer__();
+        this._router(VIEWS.MENU);
+    }
+
     /**
      * @description Call this inside a subclass's init() to mount the header
      * with a countdown timer and back button into gameHeader.
      */
     protected initHeader__(options: HeaderOptions = {}): void {
-        const { durationSeconds = 90, onTimeout, alertMessage = "Vreme je isteklo!" } = options;
+        const {
+            durationSeconds = 90,
+            timeoutMessage = "Vreme je isteklo!",
+            backMessage = "Napuštate igru.",
+        } = options;
 
         this._timerDuration = durationSeconds;
         this._timerRemaining = durationSeconds;
@@ -88,6 +118,13 @@ export default abstract class Page {
 
         this._headerTimerEl = this._domElements.gameHeader.querySelector("#header-timer-count");
         this._headerProgressEl = this._domElements.gameHeader.querySelector("#header-progress-bar");
+
+        const backBtn = this._domElements.gameHeader.querySelector("#header-back-btn") as HTMLElement;
+        if (backBtn) {
+            this.addEvents__(backBtn, "click", () => {
+                this.onHeaderExit__(backMessage);
+            });
+        }
 
         this._timerInterval = setInterval(() => {
             this._timerRemaining--;
@@ -107,9 +144,7 @@ export default abstract class Page {
             }
 
             if (this._timerRemaining <= 0) {
-                this._clearTimer__();
-                window.alert(alertMessage);
-                onTimeout?.();
+                this.onHeaderExit__(timeoutMessage);
             }
         }, 1000);
     }

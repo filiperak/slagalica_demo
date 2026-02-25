@@ -1,12 +1,15 @@
 import { Socket } from "socket.io";
 import Page from "../Page.js";
 import { Store, GameState } from "../Store.js";
+import { RouerFn } from "../util/Types.js";
+import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants.js";
+import { Partial } from "../util/Partials.js";
 
 export class Slagalica extends Page {
     private _socket: Socket;
 
-    constructor(socket: Socket, store: Store) {
-        super(store);
+    constructor(socket: Socket, store: Store, router: RouerFn, partial:Partial) {
+        super(store, router, partial);
         this._socket = socket;
     }
 
@@ -15,10 +18,15 @@ export class Slagalica extends Page {
         this._domElements.gameContainer.innerHTML = "<h1>Slagalica</h1>";
         this.initHeader__({
             durationSeconds: 90,
-            alertMessage: "Vreme za Slagalicu je isteklo!",
-            onTimeout: () => {
-                // nesto ovde
-            },
+            timeoutMessage: "Vreme za Slagalicu je isteklo!",
+            backMessage: "Da li ste sigurni da želite da napustite Slagalicu?",
         });
+    }
+
+    protected onHeaderExit__(message: string): void {
+        // this._socket.emit(SOCKET_EVENTS.STATE.GAME_TIMEOUT, { ILI VEC NESTO SLICNO
+        //     gameId: this._store.getState__()?.gameId,
+        // });
+        super.onHeaderExit__(message);
     }
 }

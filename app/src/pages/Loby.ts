@@ -4,6 +4,7 @@ import { FetchHTML } from "../util/FetchHTML.js";
 import { Partial } from "../util/Partials.js";
 import { SOCKET_EVENTS } from "../util/ClientConstants.js";
 import { Store } from "../Store.js";
+import { RouerFn } from "../util/Types.js";
 
 interface LocalDomElements {
     createGameBtn: HTMLElement;
@@ -20,16 +21,14 @@ export default class Loby extends Page {
     private _gameId: string | null;
     private _socket: Socket;
     private _username: string;
-    private _partials: Partial;
 
-    constructor(socket: Socket, popup: Partial, store: Store) {
-        super(store);
+    constructor(socket: Socket, partial: Partial, store: Store, router: RouerFn) {
+        super(store, router, partial);
 
         this._gameMode = null;
         this._gameId = null;
         this._socket = socket;
         this._username = `User-${Date.now()}`;
-        this._partials = popup;
     }
 
     async init() {
@@ -58,7 +57,7 @@ export default class Loby extends Page {
                 name: this._localDom.usernameInp.value,
                 game: this._gameId,
             });
-            this._partials.showModal__({
+            this._partial.showModal__({
                 title: "Čekamo protivnika!",
                 text: "Pogrešan kod za sobu. Pokušajte ponovo.",
                 buttonText: "Odustani",
@@ -106,6 +105,6 @@ export default class Loby extends Page {
         this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
         this._gameId = null;
         this._gameMode = null;
-        this._partials.hideModal__();
+        this._partial.hideModal__();
     }
 }

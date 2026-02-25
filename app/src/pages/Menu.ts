@@ -3,6 +3,8 @@ import Page from "../Page.js";
 import { FetchHTML } from "../util/FetchHTML.js";
 import { Store, GameState } from "../Store.js";
 import { SOCKET_EVENTS } from "../util/ClientConstants.js";
+import { RouerFn } from "../util/Types.js";
+import { Partial } from "../util/Partials.js";
 
 interface LocalDomElements {
     leaveBtn: HTMLElement;
@@ -35,8 +37,8 @@ export class Menu extends Page {
     private _unsub: (() => void) | null = null;
     private _localDom!: LocalDomElements;
 
-    constructor(socket: Socket, store: Store) {
-        super(store);
+    constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
+        super(store, router, partial);
         this._socket = socket;
     }
 
