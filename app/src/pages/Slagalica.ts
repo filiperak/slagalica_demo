@@ -7,24 +7,35 @@ import { Partial } from "../util/Partials.js";
 
 export class Slagalica extends Page {
 
-    constructor(socket: Socket, store: Store, router: RouerFn, partial:Partial) {
+    constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
         super(socket, store, router, partial);
     }
 
     init() {
         super.init();
-        this._domElements.gameContainer.innerHTML = "<h1>Slagalica</h1>";
+        this._domElements.gameContainer.innerHTML = `
+            <h1>Slagalica</h1>
+            <button id="submitAnswer">Potvrdi odgovor</button>
+        `;
+
         this.initHeader__({
             durationSeconds: 90,
             timeoutMessage: "Vreme za Slagalicu je isteklo!",
+            description: "Slagalica",
             backMessage: "Da li ste sigurni da želite da napustite Slagalicu?",
         });
-    }
 
-    protected onHeaderExit__(message: string): void {
-        // this._socket.emit(SOCKET_EVENTS.STATE.GAME_TIMEOUT, { ILI VEC NESTO SLICNO
-        //     gameId: this._store.getState__()?.gameId,
-        // });
-        super.onHeaderExit__(message);
+        // Scenario 3 — user submits their answer
+        const submitBtn = this._domElements.gameContainer.querySelector("#submitAnswer") as HTMLElement;
+        if (submitBtn) {
+            this.addEvents__(submitBtn, "click", () => {
+                this.onGameComplete__("Potvrdi rezultat", () => {
+                    // Replace with real submit logic, e.g.:
+                    // this._socket.emit(SOCKET_EVENTS.SLAGALICA_SUBMIT, { answer: this._currentAnswer });
+                    console.log("Slagalica result submitted, proceeding...");
+                    this.go(VIEWS.MOJ_BROJ);
+                });
+            });
+        }
     }
 }

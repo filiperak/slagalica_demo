@@ -300,6 +300,7 @@ export class SocketHandler {
             console.log(`Submitted Slagalica score: ${validatedWord.score}`);
 
             socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUCCESS, { data: validatedWord.score });
+            this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
         } catch (error) {
             console.error("Error in handleSendSlagalicaScore:", error);
             socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
@@ -320,6 +321,7 @@ export class SocketHandler {
             if (validateSkocko.correctPositions === 4) {
                 game.addScore(GAME_KEYS.SKOCKO, socket.id, validateSkocko.score);
                 socket.emit(SOCKET_EVENTS.GAMES.SKOCKO.SUCCESS, { data: validateSkocko.score });
+                this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
             }
 
             socket.emit(SOCKET_EVENTS.GAMES.SKOCKO.RESULT, validateSkocko);
@@ -340,6 +342,7 @@ export class SocketHandler {
             const validateSkocko = game.validateSkocko(cardComb);
             game.addScore(GAME_KEYS.SKOCKO, socket.id, validateSkocko.score);
             socket.emit("scoreSubmitedSkocko", { data: validateSkocko.score });
+            this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
         } catch (error) {
             console.error("Error in handleSubmitSkocko:", error);
             socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
@@ -361,6 +364,7 @@ export class SocketHandler {
             const validateSpojnice = game.validateSpojnice(correctPick);
             game.addScore(GAME_KEYS.SPOJNICE, socket.id, validateSpojnice);
             socket.emit("scoreSubmitedSpojnice", { data: validateSpojnice });
+            this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
         } catch (error) {
             console.error("Error in handleSubmitSpojnice:", error);
             socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
@@ -383,6 +387,7 @@ export class SocketHandler {
             }
 
             game.addScore(GAME_KEYS.KO_ZNA_ZNA, socket.id, numericPoints);
+            this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
             const player = game.getPlayer(socket.id);
 
             socket.emit("addScoreKoznazna", { data: player.score.games.koZnaZna.score });
@@ -402,6 +407,7 @@ export class SocketHandler {
 
             const player = game.getPlayer(socket.id);
             socket.emit("scoreSubmitedKoznazna", { data: player.score.games.koZnaZna.score });
+            this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
         } catch (error) {
             console.error("Error in handleEndKoznazna:", error);
             socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to end game");
@@ -427,6 +433,7 @@ export class SocketHandler {
             }
 
             game.addScore(GAME_KEYS.ASOCIJACIJE, socket.id, numericPoints);
+            this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
             const player = game.getPlayer(socket.id);
 
             socket.emit("scoreSubmitedAsocijacije", {
@@ -450,6 +457,7 @@ export class SocketHandler {
             const validateMojBroj = game.validateMojBroj(combination);
             game.addScore(GAME_KEYS.MOJ_BROJ, socket.id, validateMojBroj);
             socket.emit(SOCKET_EVENTS.GAMES.MOJ_BROJ.SUCCESS, { data: validateMojBroj });
+            this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
         } catch (error) {
             console.error("Error in handleSubmitMojBroj:", error);
             socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");

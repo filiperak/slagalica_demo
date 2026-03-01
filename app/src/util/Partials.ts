@@ -1,16 +1,28 @@
 interface ModalOptions {
     title: string;
     text: string;
-    buttonText?: string;
-    callback?: () => void;
+    primaryText?: string;
+    secondaryText?: string;
+    spinner?: boolean;
+    primaryAction?: () => void;
+    secondaryAction?: () => void;
+}
+
+interface PartialEvent {
+    element: HTMLElement;
+    event: string;
+    callback: EventListener;
 }
 
 export class Partial {
+    private _events: PartialEvent[] = [];
     private _elements: {
         overlay: HTMLDivElement;
         title: HTMLHeadingElement;
         text: HTMLParagraphElement;
-        button: HTMLButtonElement;
+        primaryBtn: HTMLButtonElement;
+        secondaryBtn: HTMLButtonElement;
+        spinner: HTMLDivElement;
     };
 
     constructor() {
@@ -18,32 +30,69 @@ export class Partial {
             overlay: document.querySelector("#modalOverlay") as HTMLDivElement,
             title: document.querySelector("#modalTitle") as HTMLHeadingElement,
             text: document.querySelector("#modalText") as HTMLParagraphElement,
-            button: document.querySelector("#modalActionBtn") as HTMLButtonElement,
+            primaryBtn: document.querySelector("#modalPrimary") as HTMLButtonElement,
+            secondaryBtn: document.querySelector("#modalSecondary") as HTMLButtonElement,
+            spinner: document.querySelector("#modalLoadingAnimation") as HTMLDivElement,
         };
     }
 
-    /**
-     * Display the modal with custom content
-     * @param options {title, text, buttonText, callback}
-     */
-    showModal__({ title, text, buttonText = "Zatvori", callback }: ModalOptions) {
+    private _addEvent(element: HTMLElement, event: string, callback: EventListener): void {
+        this._events.push({ element, event, callback });
+        element.addEventListener(event, callback);
+    }
+
+    private _clearEvents(): void {
+        this._events.forEach(({ element, event, callback }) => {
+            element.removeEventListener(event, callback);
+        });
+        this._events = [];
+    }
+
+    showModal__({
+        title,
+        text,
+        primaryText,
+        secondaryText,
+        spinner = false,
+        primaryAction,
+        secondaryAction,
+    }: ModalOptions) {
+        this._clearEvents();
+
         this._elements.title.innerText = title;
         this._elements.text.innerText = text;
-        this._elements.button.innerText = buttonText;
 
-        const newBtn = this._elements.button.cloneNode(true) as HTMLButtonElement;
-        this._elements.button.parentNode?.replaceChild(newBtn, this._elements.button);
-        this._elements.button = newBtn;
+        const toggle = (el: Element, show: boolean) => el.classList.toggle("hidden", !show);
 
-        this._elements.button.addEventListener("click", () => {
-            this.hideModal__();
-            if (callback) callback();
-        });
+        toggle(this._elements.spinner, spinner);
+
+        if (primaryText) {
+            this._elements.primaryBtn.innerText = primaryText;
+            toggle(this._elements.primaryBtn, true);
+            this._addEvent(this._elements.primaryBtn, "click", () => {
+                this.hideModal__();
+                primaryAction?.();
+            });
+        } else {
+            toggle(this._elements.primaryBtn, false);
+        }
+
+        if (secondaryText) {
+            this._elements.secondaryBtn.innerText = secondaryText;
+            toggle(this._elements.secondaryBtn, true);
+            this._addEvent(this._elements.secondaryBtn, "click", () => {
+                this.hideModal__();
+                secondaryAction?.();
+            });
+        } else {
+            toggle(this._elements.secondaryBtn, false);
+        }
 
         this._elements.overlay.classList.remove("hidden");
     }
 
     hideModal__() {
+        this._clearEvents();
         this._elements.overlay.classList.add("hidden");
     }
 }

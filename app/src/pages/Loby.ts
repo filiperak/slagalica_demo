@@ -59,8 +59,9 @@ export default class Loby extends Page {
             this._partial.showModal__({
                 title: "Čekamo protivnika!",
                 text: "Pogrešan kod za sobu. Pokušajte ponovo.",
-                buttonText: "Odustani",
-                callback: this._leaveGame__.bind(this),
+                primaryText: "Odustani",
+                spinner: true,
+                primaryAction: this._leaveGame__.bind(this),
             });
         } else {
             this._localDom.usernameInp?.classList.add("missing-username-input");

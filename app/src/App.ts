@@ -33,21 +33,21 @@ export default class App {
         this._store = new Store();
 
         this._views = {
-            loby: new Loby(this._socket, this._partial, this._store, this._router.bind(this)),
-            menu: new Menu(this._socket, this._store, this._router.bind(this), this._partial),
-            slagalica: new Slagalica(this._socket, this._store, this._router.bind(this), this._partial),
-            mojBroj: new MojBroj(this._socket, this._store, this._router.bind(this), this._partial),
+            loby: new Loby(this._socket, this._partial, this._store, this.go.bind(this)),
+            menu: new Menu(this._socket, this._store, this.go.bind(this), this._partial),
+            slagalica: new Slagalica(this._socket, this._store, this.go.bind(this), this._partial),
+            mojBroj: new MojBroj(this._socket, this._store, this.go.bind(this), this._partial),
         };
 
         this._addSocketEvents__();
     }
 
     init() {
-        this._router(VIEWS.LOBY);
+        this.go(VIEWS.LOBY);
         console.log(this._socket);
     }
 
-    _router(page: keyof Views) {
+    go(page: keyof Views) {
         if (this._previousView) {
             this._previousView.dispose__();
         }
@@ -56,18 +56,40 @@ export default class App {
         this._previousView = this._views[page];
     }
 
+    //IMPLEMENT NEXT(PAGE) AND CREATE nAVIGATORO CLASS
+
     _addSocketEvents__() {
         this._socket.on(SOCKET_EVENTS.STATE.START_GAME, ({ game }) => {
-            console.log(game);
-
             this._store.setState__(game);
             this._partial.hideModal__();
-            this._router(VIEWS.MENU);
+            this.go(VIEWS.MENU);
         });
 
         this._socket.on(SOCKET_EVENTS.STATE.GAME_DATA, ({ gameKey, gameState }) => {
             console.log("Received game data:", gameKey, gameState);
-            this._router(gameKey as keyof Views);
+            this.go(gameKey as keyof Views);
+            // this._store.setState__((prevState:any) => {
+            //     if (!prevState) return null;
+            //     return {
+            //         ...prevState,
+            //         gameState: {
+            //             ...prevState.gameState,
+            //             [gameKey]: gameState,
+            //         },
+            //     };
+            // });
         });
+
+        this._socket.on(SOCKET_EVENTS.STATE.PLAYERS_STATE, ({state}) => {
+            this._store.setState__(state);
+            console.log(state);
+            console.log("ode", this._store.getState__);
+            
+            
+        })
+
+        this._socket.on(SOCKET_EVENTS.CORE.OPPONENT_LEFT, () => {
+            alert("Opponent left the game!!!")
+        })
     }
 }

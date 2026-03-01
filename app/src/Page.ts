@@ -16,22 +16,18 @@ interface AppDomElements {
 }
 
 interface HeaderOptions {
-    durationSeconds?: number;
-    timeoutMessage?: string;
-    backMessage?: string;
+    durationSeconds: number;
+    timeoutMessage: string;
+    description: string;
+    backMessage: string;
 }
 
-/**
- * @description Base class for all pages in the application.
- * Provides common functionality for managing events, store subscription,
- * and an optional game header with countdown timer.
- */
 export default abstract class Page {
     protected _events: PageEvent[] = [];
     protected _domElements: AppDomElements;
     protected _socket: Socket;
     protected _store: Store;
-    protected _router: RouerFn;
+    protected go: RouerFn;
     protected _partial: Partial;
 
     private _unsubStore: (() => void) | null = null;
@@ -44,7 +40,7 @@ export default abstract class Page {
     constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
         this._socket = socket;
         this._store = store;
-        this._router = router;
+        this.go = router;
         this._partial = partial;
 
         this._domElements = {
@@ -54,24 +50,16 @@ export default abstract class Page {
     }
 
     init() {
-        this._events = [];   
+        this._events = [];
     }
 
-    /**
-     * @description Cleans up DOM events, store subscription, and the timer interval.
-     */
     dispose__() {
         this._events.forEach(({ element, event, callback }) => {
-
-            if (element) {
-                element.removeEventListener(event, callback);
-            }
+            if (element) element.removeEventListener(event, callback);
         });
-
         this._events = [];
 
         if (this._unsubStore) {
-
             this._unsubStore();
             this._unsubStore = null;
         }
@@ -82,44 +70,99 @@ export default abstract class Page {
         this._headerProgressEl = null;
     }
 
-    render__(state: GameState): void {
-        // Override in subclasses
-    }
+    render__(state: GameState): void {}
 
     addEvents__(element: HTMLElement, event: string, callback: EventListener): void {
         this._events.push({ element, event, callback });
         element.addEventListener(event, callback);
     }
 
-    protected onHeaderExit__(message: string): void {
-        this._partial.showModal__({title: "",text: message})
+    /**
+     * Scenario 1 — Timer expired.
+     * Shows "Time's up" with Nazad (→ menu) and Sledeće (→ next()).
+     */
+    private _onTimerExpired__(timeoutMessage: string): void {
         this._clearTimer__();
-        this._router(VIEWS.MENU);
+        this._partial.showModal__({
+            title: timeoutMessage,
+            text: "Vreme je isteklo.",
+            primaryText: "Nazad",
+            secondaryText: "Sledeće",
+            primaryAction: () => this.go(VIEWS.MENU),
+            // Replace this.next__() once the method is implemented
+            secondaryAction: () => this._next__(),
+        });
     }
 
     /**
-     * @description Call this inside a subclass's init() to mount the header
-     * with a countdown timer and back button into gameHeader.
+     * Scenario 2 — User pressed the header back button.
+     * Shows a confirmation modal. Confirm navigates to menu; cancel just closes.
      */
-    protected initHeader__(options: HeaderOptions = {}): void {
+    private _onBackButtonPressed__(backMessage: string): void {
+        this._partial.showModal__({
+            title: backMessage,
+            text: "Da li ste sigurni da želite da napustite igru?",
+            primaryText: "Odustani",   // closes modal, no navigation
+            secondaryText: "Potvrdi",  // navigates away
+            primaryAction: () => {},   // modal auto-closes; nothing else needed
+            secondaryAction: () => {
+                this._clearTimer__();
+                this.go(VIEWS.MENU);
+            },
+        });
+    }
+
+    /**
+     * Scenario 3 — Mini-game completed and result submitted.
+     * Subclasses call this after the user submits their answer.
+     * primaryAction: close modal (stay). secondaryAction: proceed with completion flow.
+     */
+    protected onGameComplete__(completionMessage: string = "Rezultat potvrđen!", onProceed?: () => void): void {
+        this._clearTimer__();
+        this._partial.showModal__({
+            title: completionMessage,
+            text: "Da li ste sigurni da želite da potvrdite rezultat?",
+            primaryText: "Odustani",
+            secondaryText: "Potvrdi",
+            primaryAction: () => {},   // modal auto-closes; player can reconsider
+            secondaryAction: () => {
+                if (onProceed) {
+                    onProceed();
+                } else {
+                    // Placeholder: replace with real completion flow
+                    this._next__();
+                }
+            },
+        });
+    }
+
+    /**
+     * Placeholder for the next() navigation. Replace with real implementation.
+     */
+    protected _next__(): void {
+        console.warn("_next__() not yet implemented — add logic here.");
+        this.go(VIEWS.MOJ_BROJ);
+    }
+
+    protected initHeader__(options: HeaderOptions): void {
         const {
             durationSeconds = 90,
-            timeoutMessage = "",
-            backMessage = "",
+            description = "",
+            timeoutMessage = "Vreme je isteklo!",
+            backMessage = "Napusti igru?",
         } = options;
 
         this._timerDuration = durationSeconds;
         this._timerRemaining = durationSeconds;
-
         this._domElements.gameHeader.innerHTML = this._buildHeaderHTML__(durationSeconds);
-
         this._headerTimerEl = this._domElements.gameHeader.querySelector("#header-timer-count");
         this._headerProgressEl = this._domElements.gameHeader.querySelector("#header-progress-bar");
 
         const backBtn = this._domElements.gameHeader.querySelector("#header-back-btn") as HTMLElement;
         if (backBtn) {
+            // Scenario 2 — back button click
             this.addEvents__(backBtn, "click", () => {
-                this.onHeaderExit__(backMessage);
+                this._onBackButtonPressed__(backMessage);
             });
         }
 
@@ -141,19 +184,15 @@ export default abstract class Page {
             }
 
             if (this._timerRemaining <= 0) {
-                this.onHeaderExit__(timeoutMessage);
+                // Scenario 1 — timer expired
+                this._onTimerExpired__(timeoutMessage);
             }
         }, 1000);
     }
 
-    /**
-     * @description Builds the header HTML string using Tailwind classes.
-     * Progress bar sits between the back button and timer badge on the same row.
-     */
     private _buildHeaderHTML__(duration: number): string {
         return `
-            <div class="flex items-center gap-3 px-4 py-2">
-
+            <div class="flex items-center gap-3 px-4 py-2 w-full max-w-4xl mx-auto">
                 <button
                     id="header-back-btn"
                     class="flex items-center gap-2 px-3 py-2 bg-gray-700 hover:bg-gray-600 
@@ -163,7 +202,6 @@ export default abstract class Page {
                     <span>Nazad</span>
                 </button>
 
-                <!-- Progress bar track — grows to fill available space -->
                 <div class="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
                     <div
                         id="header-progress-bar"
@@ -172,9 +210,8 @@ export default abstract class Page {
                     ></div>
                 </div>
 
-                <!-- Timer badge -->
                 <div class="flex items-center gap-2 px-3 py-2 bg-gray-700 rounded-lg shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" 
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white"
                          fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <polyline points="12 6 12 12 16 14"/>
@@ -183,7 +220,6 @@ export default abstract class Page {
                         ${duration}
                     </span>
                 </div>
-
             </div>
         `;
     }
@@ -196,15 +232,10 @@ export default abstract class Page {
     }
 
     protected subscribeToStore__() {
-        if (this._unsubStore) {
-            this._unsubStore();
-        }
-
+        if (this._unsubStore) this._unsubStore();
         this._unsubStore = this._store.subscribe((state) => this.render__(state));
 
         const currentState = this._store.getState__();
-        if (currentState) {
-            this.render__(currentState);
-        }
+        if (currentState) this.render__(currentState);
     }
 }
