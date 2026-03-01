@@ -164,11 +164,13 @@ export class Menu extends Page {
         this._partial.showModal__({
             title: "Napuštanje",
             text: "Da li ste sigurni da želite da napustite partiju?",
-            primaryText: "Napusti",
+            primaryText: "Izađi",
+            secondaryText: "Ondustani",
             primaryAction: () => {
                 this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
                 this.go(VIEWS.LOBY);
-            }
+            },
+            secondaryAction: () => {}
         });
     }
 

@@ -80,16 +80,17 @@ export default class App {
             // });
         });
 
-        this._socket.on(SOCKET_EVENTS.STATE.PLAYERS_STATE, ({state}) => {
+        this._socket.on(SOCKET_EVENTS.STATE.PLAYERS_STATE, (state) => {
             this._store.setState__(state);
             console.log(state);
-            console.log("ode", this._store.getState__);
-            
-            
         })
 
         this._socket.on(SOCKET_EVENTS.CORE.OPPONENT_LEFT, () => {
             alert("Opponent left the game!!!")
+        })
+
+        this._socket.on(SOCKET_EVENTS.STATE.NOTIFICATION, (msg) => {
+            console.error("NOTIFICATION!!!:" + msg)
         })
     }
 }
