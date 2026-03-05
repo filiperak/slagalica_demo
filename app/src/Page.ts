@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { Store, GameState } from "./Store.js";
+import { Store, GameState, GameEventMap } from "./Store.js";
 import { VIEWS } from "./util/ClientConstants.js";
 import { Partial } from "./util/Partials.js";
 import { RouerFn } from "./util/Types.js";
@@ -30,6 +30,7 @@ interface SocketEvents {
 export default abstract class Page {
     protected _events: PageEvent[] = [];
     protected _socketEvents: SocketEvents[] = [];
+    private _busUnsubs: Array<() => void> = [];
     protected _domElements: AppDomElements;
     protected _socket: Socket;
     protected _store: Store;
@@ -72,6 +73,9 @@ export default abstract class Page {
         this._events = [];
         this._socketEvents = [];
 
+        this._busUnsubs.forEach(unsub => unsub());
+        this._busUnsubs = [];
+
         if (this._unsubStore) {
             this._unsubStore();
             this._unsubStore = null;
@@ -93,6 +97,14 @@ export default abstract class Page {
     addSocketEvents__(name: string, callback: (...args: any[]) => void): void {
         this._socketEvents.push({ eventName: name, eventHandler: callback });
         this._socket.on(name, callback);
+    }
+
+    addBusEvent__<K extends keyof GameEventMap>(
+        event: K,
+        handler: (payload: GameEventMap[K]) => void,
+    ): void {
+        const unsub = this._store.bus.on(event, handler);
+        this._busUnsubs.push(unsub);
     }
 
     /**

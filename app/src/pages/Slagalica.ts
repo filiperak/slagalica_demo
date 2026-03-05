@@ -38,14 +38,8 @@ export class Slagalica extends Page {
     private _localDom!: LocalDomElements;
     private _gameData!: GameData;
 
-    // State
     private _inputWord: InputLetter[] = [];
     private _submitted: boolean = false;
-
-    // Bound listener refs (needed for cleanup)
-    private _onKeyDown!: (e: KeyboardEvent) => void;
-    private _onKeyUp!: (e: KeyboardEvent) => void;
-    private _onWordCheckResult!: (data: { validated: boolean }) => void;
 
     constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
         super(socket, store, router, partial);
@@ -59,24 +53,31 @@ export class Slagalica extends Page {
         this._domElements.gameContainer.innerHTML = await FetchHTML("../views/slagalica.html");
 
         this._localDom = {
-            checkWord:       document.querySelector("#checkWord")!,
-            submitAnswer:    document.querySelector("#submitAnswer")!,
-            clearBtn:        document.querySelector("#clearBtn")!,
-            keyboard:        document.querySelector("#keyboard")!,
-            inputContainer:  document.querySelector("#input")!,
-            wordStatus:      document.querySelector("#wordStatus")!,
+            checkWord:      document.querySelector("#checkWord")!,
+            submitAnswer:   document.querySelector("#submitAnswer")!,
+            clearBtn:       document.querySelector("#clearBtn")!,
+            keyboard:       document.querySelector("#keyboard")!,
+            inputContainer: document.querySelector("#input")!,
+            wordStatus:     document.querySelector("#wordStatus")!,
         };
 
         const state = this._store.getState__();
         this._gameData = {
             letters:    state?.gameState.slagalica.letterComb ?? [],
             targetWord: state?.gameState.slagalica.word ?? "",
-            gameId: state?.gameId ?? ""
+            gameId:     state?.gameId ?? "",
         };
 
         this._renderKeyboard__();
         this._renderInputWord__();
-        this._bindEvents__();
+
+        this.addEvents__(this._localDom.clearBtn,     "click", this._deleteLastLetter__.bind(this));
+        this.addEvents__(this._localDom.checkWord,    "click", this._checkWord__.bind(this));
+        this.addEvents__(this._localDom.submitAnswer, "click", this._submit__.bind(this));
+        this.addEvents__(document.body, "keydown", this._onKeyDown__.bind(this) as EventListener);
+        this.addEvents__(document.body, "keyup",   this._onKeyUp__.bind(this) as EventListener);
+
+        this.addSocketEvents__("wordCheckResult", this._onWordCheckResult__.bind(this));
 
         this.initHeader__({
             durationSeconds: 90,
@@ -86,13 +87,7 @@ export class Slagalica extends Page {
         });
     }
 
-    // ─── Rendering ────────────────────────────────────────────────────────────
 
-    /**
-     * Builds the clickable letter grid from gameData.letters.
-     * Each button gets a unique id ("letter-0", "letter-1", ...) so we can
-     * hide it when it's been added to the input word.
-     */
     private _renderKeyboard__(): void {
         this._localDom.keyboard.innerHTML = "";
 
@@ -110,25 +105,18 @@ export class Slagalica extends Page {
                 "font-bold text-base transition-all active:scale-95 shadow-sm",
             ].join(" ");
 
-            this.addEvents__(btn, "click", () => this._onLetterClick__(letter, id));
+            this.addEvents__(btn, "click", this._onLetterClick__.bind(this, letter, id));
             this._localDom.keyboard.appendChild(btn);
         });
     }
 
-    /**
-     * Re-renders the input tile row. Called after every change to _inputWord.
-     */
     private _renderInputWord__(): void {
         const tilesRow = document.querySelector("#tilesRow") as HTMLElement;
         const clearBtn = document.querySelector("#clearBtn") as HTMLElement;
 
-        // Clear only the tiles
         tilesRow.innerHTML = "";
-
-        // Show / hide clear button
         clearBtn?.classList.toggle("hidden", this._inputWord.length === 0);
 
-        // Render one tile per letter
         this._inputWord.forEach(({ letter }) => {
             const tile = document.createElement("div");
             tile.className = [
@@ -141,27 +129,52 @@ export class Slagalica extends Page {
             tilesRow.appendChild(tile);
         });
     }
-    // ─── Letter interaction ────────────────────────────────────────────────────
 
     private _onLetterClick__(letter: string, id: string): void {
         this._clearStatus__();
         this._inputWord.push({ letter, id });
-        // Hide the keyboard button so the same physical letter can't be used twice
         document.getElementById(id)?.classList.add("invisible");
         this._renderInputWord__();
+    }
+
+    private _onKeyDown__(e: KeyboardEvent): void {
+        if (e.key === "Backspace") this._deleteLastLetter__();
+        if (e.key === "Enter")     this._submit__();
+    }
+
+    private _onKeyUp__(e: KeyboardEvent): void {
+        const letter = KEY_MAP[e.keyCode];
+        if (!letter || !this._gameData.letters.includes(letter)) return;
+
+        const btn = Array.from(
+            document.querySelectorAll<HTMLElement>(".letter-btn")
+        ).find(el =>
+            el.textContent === letter && !el.classList.contains("invisible")
+        );
+
+        if (btn) {
+            this._clearStatus__();
+            this._inputWord.push({ letter, id: btn.id });
+            btn.classList.add("invisible");
+            this._renderInputWord__();
+        }
+    }
+
+    private _onWordCheckResult__(data: { validated: boolean }): void {
+        if (data.validated) {
+            this._setStatus__(`<span class="text-[#23a55a]">👍 Reč je prihvaćena</span>`);
+        } else {
+            this._setStatus__(`<span class="text-[#f23f42]">❌ Reč nije prihvaćena</span>`);
+        }
     }
 
     private _deleteLastLetter__(): void {
         if (this._inputWord.length === 0) return;
         this._clearStatus__();
-
         const last = this._inputWord.pop()!;
-        // Restore the keyboard button
         document.getElementById(last.id)?.classList.remove("invisible");
         this._renderInputWord__();
     }
-
-    // ─── Word actions ──────────────────────────────────────────────────────────
 
     private _checkWord__(): void {
         const word = this._getWord__();
@@ -172,7 +185,6 @@ export class Slagalica extends Page {
             word,
         });
 
-        // Show spinner while waiting
         this._setStatus__(
             `<span class="inline-flex gap-1">
                 <span class="w-1.5 h-1.5 bg-[#5865f2] rounded-full animate-bounce"></span>
@@ -187,68 +199,12 @@ export class Slagalica extends Page {
 
         this.onGameComplete__("Potvrdi rezultat", () => {
             this._submitted = true;
-            const word = this._getWord__();
-
             this._socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUBMIT, {
                 gameId: this._store.getState__()?.gameId,
-                word,
+                word:   this._getWord__(),
             });
-
-            // Clean up keyboard & body listeners — game is over
-            this._removeBodyListeners__();
-            //this.go(VIEWS.MOJ_BROJ);
         });
     }
-
-    // ─── Event binding ─────────────────────────────────────────────────────────
-
-    private _bindEvents__(): void {
-        // Button events (managed by Page.addEvents__ for auto-cleanup)
-        this.addEvents__(this._localDom.clearBtn,     "click", () => this._deleteLastLetter__());
-        this.addEvents__(this._localDom.checkWord,    "click", () => this._checkWord__());
-        this.addEvents__(this._localDom.submitAnswer, "click", () => this._submit__());
-
-
-        // Socket listener
-        this._onWordCheckResult = (data: { validated: boolean }) => {
-            if (data.validated) {
-                this._setStatus__(`<span class="text-[#23a55a]">👍 Reč je prihvaćena</span>`);
-            } else {
-                this._setStatus__(`<span class="text-[#f23f42]">❌ Reč nije prihvaćena</span>`);
-            }
-        };
-         this._socket.on("wordCheckResult", this._onWordCheckResult);
-
-        // Keyboard shortcuts
-        this._onKeyDown = (e: KeyboardEvent) => {
-            if (e.key === "Backspace") this._deleteLastLetter__();
-            if (e.key === "Enter")     this._submit__();
-        };
-
-        this._onKeyUp = (e: KeyboardEvent) => {
-            const letter = KEY_MAP[e.keyCode];
-            if (!letter || !this._gameData.letters.includes(letter)) return;
-
-            // Find the first visible keyboard button for this letter
-            const btn = Array.from(
-                document.querySelectorAll<HTMLElement>(".letter-btn")
-            ).find(el =>
-                el.textContent === letter && !el.classList.contains("invisible")
-            );
-
-            if (btn) {
-                this._clearStatus__();
-                this._inputWord.push({ letter, id: btn.id });
-                btn.classList.add("invisible");
-                this._renderInputWord__();
-            }
-        };
-
-        document.body.addEventListener("keydown", this._onKeyDown);
-        document.body.addEventListener("keyup",   this._onKeyUp);
-    }
-
-    // ─── Helpers ───────────────────────────────────────────────────────────────
 
     private _getWord__(): string {
         return this._inputWord.map(l => l.letter).join("");
@@ -262,20 +218,5 @@ export class Slagalica extends Page {
 
     private _clearStatus__(): void {
         this._setStatus__("");
-    }
-
-    private _removeBodyListeners__(): void {
-        document.body.removeEventListener("keydown", this._onKeyDown);
-        document.body.removeEventListener("keyup",   this._onKeyUp);
-        // this._socket.off(SOCKET_EVENTS.WORD_CHECK_RESULT, this._onWordCheckResult);
-    }
-
-    /**
-     * Called by Page.dispose__() on route change — cleans up body listeners
-     * and socket subscriptions that aren't managed by Page's _events array.
-     */
-    override dispose__(): void {
-        this._removeBodyListeners__();
-        super.dispose__();
     }
 }
