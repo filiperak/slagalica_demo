@@ -15,6 +15,6 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["server/**/*", "app/**/*.ts"],
-  "exclude": ["node_modules", "dist", "public"]
+  "include": ["server/**/*"],
+  "exclude": ["node_modules", "dist", "app"]
 }

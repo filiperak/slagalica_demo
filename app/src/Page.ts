@@ -1,8 +1,8 @@
-import { Socket } from "socket.io";
-import { Store, GameState, GameEventMap } from "./Store.js";
-import { VIEWS } from "./util/ClientConstants.js";
-import { Partial } from "./util/Partials.js";
-import { RouerFn } from "./util/Types.js";
+import { Socket } from "socket.io-client";
+import { Store, GameState, GameEventMap } from "./Store";
+import { VIEWS } from "./util/ClientConstants";
+import { Partial } from "./util/Partials";
+import { RouerFn } from "./util/Types";
 
 interface PageEvent {
     element: HTMLElement | null;

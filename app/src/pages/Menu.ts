@@ -1,10 +1,10 @@
-import { Socket } from "socket.io";
-import Page from "../Page.js";
-import { FetchHTML } from "../util/FetchHTML.js";
-import { Store, GameState } from "../Store.js";
-import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants.js";
-import { RouerFn } from "../util/Types.js";
-import { Partial } from "../util/Partials.js";
+import { Socket } from "socket.io-client";
+import Page from "../Page";
+import { FetchHTML } from "../util/FetchHTML";
+import { Store, GameState } from "../Store";
+import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
+import { RouerFn } from "../util/Types";
+import { Partial } from "../util/Partials";
 
 interface LocalDomElements {
     leaveBtn: HTMLElement;
@@ -44,7 +44,7 @@ export class Menu extends Page {
     async init() {
         super.init();
         
-        const menuHTML = await FetchHTML("../views/menu.html");
+        const menuHTML = await FetchHTML("/views/menu.html");
         this._domElements.gameContainer.innerHTML = menuHTML;
 
         // Initialize local DOM references

@@ -1,14 +1,12 @@
-import Loby from "./pages/Loby.js";
-import { Socket } from "socket.io";
-import { Menu } from "./pages/Menu.js";
-import { SOCKET_EVENTS, VIEWS } from "./util/ClientConstants.js";
-import Page from "./Page.js";
-import { Partial } from "./util/Partials.js";
-import { Store } from "./Store.js";
-import { Slagalica } from "./pages/Slagalica.js";
-import { MojBroj } from "./pages/MojBroj.js";
-
-declare const io: any;
+import { io, Socket } from "socket.io-client";
+import Loby from "./pages/Loby";
+import { Menu } from "./pages/Menu";
+import { SOCKET_EVENTS, VIEWS } from "./util/ClientConstants";
+import Page from "./Page";
+import { Partial } from "./util/Partials";
+import { Store } from "./Store";
+import { Slagalica } from "./pages/Slagalica";
+import { MojBroj } from "./pages/MojBroj";
 
 interface Views {
     loby: Loby;
@@ -18,16 +16,14 @@ interface Views {
 }
 
 export default class App {
-    private _ioUrl: string;
     private _socket: Socket;
     private _previousView: Page | null;
     private _views: Views;
     private _partial: Partial;
     private _store: Store;
 
-    constructor(ioUrl: string) {
-        this._ioUrl = ioUrl;
-        this._socket = io(ioUrl);
+    constructor() {
+        this._socket = io(); // relative — Vite proxy handles dev, same-origin handles prod
         this._previousView = null;
         this._partial = new Partial();
         this._store = new Store();
@@ -68,29 +64,19 @@ export default class App {
         this._socket.on(SOCKET_EVENTS.STATE.GAME_DATA, ({ gameKey, gameState }) => {
             console.log("Received game data:", gameKey, gameState);
             this.go(gameKey as keyof Views);
-            // this._store.setState__((prevState:any) => {
-            //     if (!prevState) return null;
-            //     return {
-            //         ...prevState,
-            //         gameState: {
-            //             ...prevState.gameState,
-            //             [gameKey]: gameState,
-            //         },
-            //     };
-            // });
         });
 
         this._socket.on(SOCKET_EVENTS.STATE.PLAYERS_STATE, (state) => {
             this._store.setState__(state);
             console.log(state);
-        })
+        });
 
         this._socket.on(SOCKET_EVENTS.CORE.OPPONENT_LEFT, () => {
-            alert("Opponent left the game!!!")
-        })
+            alert("Opponent left the game!!!");
+        });
 
         this._socket.on(SOCKET_EVENTS.STATE.NOTIFICATION, (msg) => {
-            console.error("NOTIFICATION!!!:" + msg)
-        })
+            console.error("NOTIFICATION!!!:" + msg);
+        });
     }
 }

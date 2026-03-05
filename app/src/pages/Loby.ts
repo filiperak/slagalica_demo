@@ -1,10 +1,10 @@
-import { Socket } from "socket.io";
-import Page from "../Page.js";
-import { FetchHTML } from "../util/FetchHTML.js";
-import { Partial } from "../util/Partials.js";
-import { SOCKET_EVENTS } from "../util/ClientConstants.js";
-import { Store } from "../Store.js";
-import { RouerFn } from "../util/Types.js";
+import { Socket } from "socket.io-client";
+import Page from "../Page";
+import { FetchHTML } from "../util/FetchHTML";
+import { Partial } from "../util/Partials";
+import { SOCKET_EVENTS } from "../util/ClientConstants";
+import { Store } from "../Store";
+import { RouerFn } from "../util/Types";
 
 interface LocalDomElements {
     createGameBtn: HTMLElement;
@@ -31,7 +31,7 @@ export default class Loby extends Page {
     }
 
     async init() {
-        const lobyHTML = await FetchHTML("../views/loby.html");
+        const lobyHTML = await FetchHTML("/views/loby.html");
         this._domElements.gameContainer.innerHTML = lobyHTML;
 
         this._localDom = {

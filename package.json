@@ -6,12 +6,12 @@
   "type": "module",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "dev": "nodemon",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "nodemon",
+    "dev:client": "vite --config app/vite.config.ts",
     "start": "node dist/server/Index.js",
     "start:dev": "tsx server/Index.ts",
-    "build": "tsc && npm run build:css && cpy \"app/public/**/*\" dist/app",
-    "build:css": "tailwindcss -i ./app/public/style.css -o ./dist/app/output.css",
-    "build:watch": "tsc --watch",
+    "build": "tsc && vite build --config app/vite.config.ts",
     "format": "prettier --write \"{server,app}/**/*.ts\"",
     "format:check": "prettier --check \"{server,app}/**/*.ts\""
   },
@@ -30,11 +30,13 @@
     "@babel/core": "^7.26.9",
     "@babel/preset-env": "^7.26.9",
     "@tailwindcss/cli": "^4.1.18",
+    "@tailwindcss/vite": "^4.2.1",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.1.0",
     "@types/socket.io": "^3.0.1",
     "babel-jest": "^29.7.0",
+    "concurrently": "^9.2.1",
     "cpy-cli": "^7.0.0",
     "daisyui": "^5.5.18",
     "jest": "^29.7.0",
@@ -43,6 +45,7 @@
     "tailwindcss": "^4.1.18",
     "ts-node": "^10.9.2",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
   }
 }

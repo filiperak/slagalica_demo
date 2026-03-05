@@ -1,8 +1,8 @@
-import { Socket } from "socket.io";
-import Page from "../Page.js";
-import { Store, GameState } from "../Store.js";
-import { RouerFn } from "../util/Types.js";
-import { Partial } from "../util/Partials.js";
+import { Socket } from "socket.io-client";
+import Page from "../Page";
+import { Store, GameState } from "../Store";
+import { RouerFn } from "../util/Types";
+import { Partial } from "../util/Partials";
 
 export class MojBroj extends Page {
 

@@ -1,10 +1,10 @@
-import { Socket } from "socket.io";
-import Page from "../Page.js";
-import { Store, GameState } from "../Store.js";
-import { RouerFn } from "../util/Types.js";
-import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants.js";
-import { Partial } from "../util/Partials.js";
-import { FetchHTML } from "../util/FetchHTML.js";
+import { Socket } from "socket.io-client";
+import Page from "../Page";
+import { Store, GameState } from "../Store";
+import { RouerFn } from "../util/Types";
+import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
+import { Partial } from "../util/Partials";
+import { FetchHTML } from "../util/FetchHTML";
 
 interface LocalDomElements {
     checkWord: HTMLButtonElement;
@@ -50,7 +50,7 @@ export class Slagalica extends Page {
         this._submitted = false;
         this._inputWord = [];
 
-        this._domElements.gameContainer.innerHTML = await FetchHTML("../views/slagalica.html");
+        this._domElements.gameContainer.innerHTML = await FetchHTML("/views/slagalica.html");
 
         this._localDom = {
             checkWord:      document.querySelector("#checkWord")!,
