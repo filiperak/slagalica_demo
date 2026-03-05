@@ -15,8 +15,13 @@ interface LocalDomElements {
     usernameInp: HTMLInputElement;
 }
 
+interface HeaderDomElements {
+
+}
+
 export default class Loby extends Page {
     private _localDom!: LocalDomElements;
+    private _headerDom!: HeaderDomElements;
     private _gameMode: string | null;
     private _gameId: string | null;
     private _username: string;
@@ -42,6 +47,30 @@ export default class Loby extends Page {
             randomGame: document.querySelector("#randomGame")!,
             usernameInp: document.querySelector(".username-inp")!,
         };
+
+        this._headerDom = {
+            settings: {
+                icon:"",
+                action:"",
+                option: ""
+            },
+            language: {
+                icon:"",
+                action:"",
+                option:"",
+            },
+            theme: {
+                icon:"",
+                action:"",
+                option:"", 
+            },
+            sound: {
+                icon:"",
+                action:"",
+                option:"", 
+            }
+
+        }
 
         this._setUsername__();
 
