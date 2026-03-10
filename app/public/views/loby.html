@@ -13,7 +13,7 @@
         </div>
 
         
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2" id="headerActions">
 
             <div class="tooltip tooltip-bottom" data-tip="Sound">
                 <button class="btn btn-circle">
@@ -23,19 +23,19 @@
 
             <div class="relative">
                 <div class="tooltip tooltip-bottom" data-tip="Language">
-                    <button class="btn btn-circle">
+                    <button class="btn btn-circle" id="languagePicker">
                         <img src="./assets/icon-lang.svg" class="h-5 w-5" />
                     </button>
                 </div>
-                <ul class="menu bg-base-200 rounded-box w-36 mt-0.5 absolute">
+                <ul class="menu bg-base-200 rounded-box w-36 mt-0.5 absolute hidden" id="languagePickerMenu">
                     <li>
-                        <a>
+                        <a data-lang="english">
 <img src="./assets/icon-flag-usa.svg" alt="" class="h-5 w-5">
                         English
                         </a>
                     </li>
                     <li>
-                        <a>
+                        <a data-lang="serbian">
 <img src="./assets/icon-flag-rs.svg" alt="" class="h-5 w-5">
 
                         Srpski

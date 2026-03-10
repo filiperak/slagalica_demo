@@ -13,6 +13,7 @@ interface LocalDomElements {
     singlePlayer: HTMLElement;
     randomGame: HTMLElement;
     usernameInp: HTMLInputElement;
+    headerActions: HTMLDivElement;
 }
 
 interface HeaderDomElements {
@@ -21,7 +22,7 @@ interface HeaderDomElements {
 
 export default class Loby extends Page {
     private _localDom!: LocalDomElements;
-    private _headerDom!: HeaderDomElements;
+    private _headerActions!: HeaderDomElements;
     private _gameMode: string | null;
     private _gameId: string | null;
     private _username: string;
@@ -46,9 +47,10 @@ export default class Loby extends Page {
             singlePlayer: document.querySelector("#singlePlayer")!,
             randomGame: document.querySelector("#randomGame")!,
             usernameInp: document.querySelector(".username-inp")!,
+            headerActions: document.querySelector("#headerActions")!,
         };
 
-        this._headerDom = {
+        this._headerActions = {
             settings: {
                 icon:"",
                 action:"",
@@ -77,6 +79,8 @@ export default class Loby extends Page {
         this.addEvents__(this._localDom.randomGame, "click", this._playRandomGame__.bind(this));
         this.addEvents__(this._localDom.usernameInp, "input", this._changeUsername__.bind(this));
         this.addEvents__(this._localDom.createGameBtn, "click", this._setGameId__.bind(this));
+
+        this._handleLangSelectionClick__()
     }
 
     _playRandomGame__() {
@@ -135,5 +139,29 @@ export default class Loby extends Page {
         this._gameId = null;
         this._gameMode = null;
         this._partial.hideModal__();
+    }
+
+    _handleLangSelectionClick__() {
+        const picker = this._localDom.headerActions.querySelector<HTMLButtonElement>("#languagePicker")!;
+        const menu = this._localDom.headerActions.querySelector<HTMLUListElement>("#languagePickerMenu")!;
+
+        this.addEvents__(picker, "click", (e) => {
+            e.stopPropagation(); 
+            menu.classList.toggle("hidden");
+        });
+
+        this.addEvents__(menu, "click", (e) => {
+            const option = (e.target as HTMLElement).closest<HTMLElement>("[data-lang]");
+            if (option) {
+                console.log(option.dataset.lang);
+                menu.classList.add("hidden");
+            }
+        });
+
+        document.addEventListener("click", (e) => {
+            if (!picker.contains(e.target as Node)) {
+                menu.classList.add("hidden");
+            }
+        }, { capture: true }); 
     }
 }
