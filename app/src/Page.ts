@@ -226,27 +226,27 @@ export default abstract class Page {
 
                 <button
                     id="header-back-btn"
-                    class="flex items-center gap-1.5 px-3 py-2 text-[#80848e] hover:text-white hover:bg-white/[0.08] active:bg-white/[0.12] text-sm font-semibold rounded transition-colors shrink-0"
+                    class="flex items-center gap-1.5 px-3 py-2 text-content-muted hover:text-white hover:bg-white/[0.08] active:bg-white/[0.12] text-sm font-semibold rounded transition-colors shrink-0"
                 >
                     <span>&#8592;</span>
                     <span>Nazad</span>
                 </button>
 
-                <div class="flex-1 h-1.5 bg-[#1e1f22] rounded-full overflow-hidden">
+                <div class="flex-1 h-1.5 bg-surface rounded-full overflow-hidden">
                     <div
                         id="header-progress-bar"
-                        class="h-full bg-[#5865f2] rounded-full transition-all duration-1000 ease-linear"
+                        class="h-full bg-brand rounded-full transition-all duration-1000 ease-linear"
                         style="width: 100%"
                     ></div>
                 </div>
 
-                <div class="flex items-center gap-2 px-3 py-2 bg-[#1e1f22] border border-white/[0.06] rounded shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-[#80848e]"
+                <div class="flex items-center gap-2 px-3 py-2 bg-surface border border-white/[0.06] rounded shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-content-muted"
                          fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <polyline points="12 6 12 12 16 14"/>
                     </svg>
-                    <span id="header-timer-count" class="text-[#dbdee1] text-sm font-semibold min-w-[2ch] text-right">
+                    <span id="header-timer-count" class="text-content text-sm font-semibold min-w-[2ch] text-right">
                         ${duration}
                     </span>
                 </div>

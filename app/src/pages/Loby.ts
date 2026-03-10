@@ -5,6 +5,7 @@ import { Partial } from "../util/Partials";
 import { SOCKET_EVENTS } from "../util/ClientConstants";
 import { Store } from "../Store";
 import { RouerFn } from "../util/Types";
+import { ThemeService } from "../ThemeService";
 
 interface LocalDomElements {
     createGameBtn: HTMLElement;
@@ -14,6 +15,7 @@ interface LocalDomElements {
     randomGame: HTMLElement;
     usernameInp: HTMLInputElement;
     headerActions: HTMLDivElement;
+    themeToggleBtn: HTMLButtonElement;
 }
 
 interface HeaderDomElements {
@@ -48,6 +50,7 @@ export default class Loby extends Page {
             randomGame: document.querySelector("#randomGame")!,
             usernameInp: document.querySelector(".username-inp")!,
             headerActions: document.querySelector("#headerActions")!,
+            themeToggleBtn: document.querySelector("#themeToggleBtn")!,
         };
 
         this._headerActions = {
@@ -80,6 +83,7 @@ export default class Loby extends Page {
         this.addEvents__(this._localDom.usernameInp, "input", this._changeUsername__.bind(this));
         this.addEvents__(this._localDom.createGameBtn, "click", this._setGameId__.bind(this));
 
+        this.addEvents__(this._localDom.themeToggleBtn, "click", () => ThemeService.toggle());
         this._handleLangSelectionClick__()
     }
 

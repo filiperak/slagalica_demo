@@ -1,4 +1,4 @@
-<main id="slagalicaContainer" class="bg-[#1e1f22] flex flex-col items-center pt-6 pb-10 px-4 h-full">
+<main id="slagalicaContainer" class="bg-surface flex flex-col items-center pt-6 pb-10 px-4 h-full">
     <div class="w-full flex-1 flex flex-col max-w-2xl mx-auto">
 
         <!-- Title — anchored top, pushes all content to bottom -->
@@ -15,7 +15,7 @@
                     <div id="tilesRow" class="flex items-center justify-center gap-2 min-h-[56px] flex-wrap px-10"></div>
 
                     <!-- Clear button -->
-                    <button id="clearBtn" class="absolute right-0 bottom-8 w-9 h-9 flex items-center justify-center bg-[#2b2d31] border border-white/[0.06] hover:border-[#f23f42]/50 hover:bg-[#f23f42]/10 rounded text-[#80848e] hover:text-[#f23f42] transition-all hidden">
+                    <button id="clearBtn" class="absolute right-0 bottom-8 w-9 h-9 flex items-center justify-center bg-surface-raised border border-white/[0.06] hover:border-negative/50 hover:bg-negative/10 rounded text-content-muted hover:text-negative transition-all hidden">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 5H9l-7 7 7 7h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/><line x1="18" y1="9" x2="12" y2="15"/><line x1="12" y1="9" x2="18" y2="15"/>
                         </svg>
@@ -36,15 +36,15 @@
             <!-- Actions -->
             <div id="actionsContainer" class="flex flex-col gap-2 w-full">
 
-                <button id="checkWord" class="w-full py-3 bg-[#2b2d31] border border-white/[0.06] hover:border-[#5865f2]/50 hover:bg-[#313338] text-[#dbdee1] hover:text-white text-sm font-semibold rounded-lg transition-all hover:-translate-y-px active:translate-y-0 tracking-wide">
+                <button id="checkWord" class="w-full py-3 bg-surface-raised border border-white/[0.06] hover:border-brand/50 hover:bg-surface-overlay text-content hover:text-white text-sm font-semibold rounded-lg transition-all hover:-translate-y-px active:translate-y-0 tracking-wide">
                     Proveri Reč
                 </button>
 
-                <button id="checkWord" class="w-full py-3 bg-[#2b2d31] border border-white/[0.06] hover:border-[#5865f2]/50 hover:bg-[#313338] text-[#dbdee1] hover:text-white text-sm font-semibold rounded-lg transition-all hover:-translate-y-px active:translate-y-0 tracking-wide">
+                <button id="checkWord" class="w-full py-3 bg-surface-raised border border-white/[0.06] hover:border-brand/50 hover:bg-surface-overlay text-content hover:text-white text-sm font-semibold rounded-lg transition-all hover:-translate-y-px active:translate-y-0 tracking-wide">
                     Proveri Reč
                 </button>
 
-                <button id="submitAnswer" class="w-full py-3 bg-[#5865f2] hover:bg-[#4752c4] active:bg-[#3c45a5] text-white text-sm font-semibold rounded-lg transition-all hover:-translate-y-px active:translate-y-0 tracking-wide shadow-[0_2px_12px_rgba(88,101,242,0.3)]">
+                <button id="submitAnswer" class="w-full py-3 bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-sm font-semibold rounded-lg transition-all hover:-translate-y-px active:translate-y-0 tracking-wide shadow-[0_2px_12px_rgba(88,101,242,0.3)]">
                     Potvrdi
                 </button>
 

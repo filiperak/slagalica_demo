@@ -99,9 +99,9 @@ export class Slagalica extends Page {
             btn.className = [
                 "letter-btn",
                 "w-16 h-14 flex items-center justify-center",
-                "bg-[#2b2d31] border border-white/[0.06]",
-                "hover:border-[#5865f2]/60 hover:bg-[#313338]",
-                "rounded-lg text-[#dbdee1] hover:text-white",
+                "bg-surface-raised border border-white/[0.06]",
+                "hover:border-brand/60 hover:bg-surface-overlay",
+                "rounded-lg text-content hover:text-white",
                 "font-bold text-base transition-all active:scale-95 shadow-sm",
             ].join(" ");
 
@@ -121,7 +121,7 @@ export class Slagalica extends Page {
             const tile = document.createElement("div");
             tile.className = [
                 "w-11 h-11 flex items-center justify-center",
-                "bg-[#313338] border border-[#5865f2]/60 rounded",
+                "bg-surface-overlay border border-brand/60 rounded",
                 "text-white font-bold text-lg",
                 "shadow-[0_0_8px_rgba(88,101,242,0.2)]",
             ].join(" ");
@@ -162,9 +162,9 @@ export class Slagalica extends Page {
 
     private _onWordCheckResult__(data: { validated: boolean }): void {
         if (data.validated) {
-            this._setStatus__(`<span class="text-[#23a55a]">👍 Reč je prihvaćena</span>`);
+            this._setStatus__(`<span class="text-positive">👍 Reč je prihvaćena</span>`);
         } else {
-            this._setStatus__(`<span class="text-[#f23f42]">❌ Reč nije prihvaćena</span>`);
+            this._setStatus__(`<span class="text-negative">❌ Reč nije prihvaćena</span>`);
         }
     }
 
@@ -187,9 +187,9 @@ export class Slagalica extends Page {
 
         this._setStatus__(
             `<span class="inline-flex gap-1">
-                <span class="w-1.5 h-1.5 bg-[#5865f2] rounded-full animate-bounce"></span>
-                <span class="w-1.5 h-1.5 bg-[#5865f2] rounded-full animate-bounce [animation-delay:150ms]"></span>
-                <span class="w-1.5 h-1.5 bg-[#5865f2] rounded-full animate-bounce [animation-delay:300ms]"></span>
+                <span class="w-1.5 h-1.5 bg-brand rounded-full animate-bounce"></span>
+                <span class="w-1.5 h-1.5 bg-brand rounded-full animate-bounce [animation-delay:150ms]"></span>
+                <span class="w-1.5 h-1.5 bg-brand rounded-full animate-bounce [animation-delay:300ms]"></span>
             </span>`
         );
     }

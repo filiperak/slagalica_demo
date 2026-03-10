@@ -1,4 +1,5 @@
 import { io, Socket } from "socket.io-client";
+import { ThemeService } from "./ThemeService";
 import Loby from "./pages/Loby";
 import { Menu } from "./pages/Menu";
 import { SOCKET_EVENTS, VIEWS } from "./util/ClientConstants";
@@ -23,6 +24,7 @@ export default class App {
     private _store: Store;
 
     constructor() {
+        ThemeService.apply(ThemeService.get());
         this._socket = io(); // relative — Vite proxy handles dev, same-origin handles prod
         this._previousView = null;
         this._partial = new Partial();

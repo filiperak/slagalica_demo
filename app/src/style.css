@@ -1,6 +1,48 @@
 @import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: light, dark;
+}
+
+@theme inline {
+  --color-surface:          var(--surface);
+  --color-surface-raised:   var(--surface-raised);
+  --color-surface-overlay:  var(--surface-overlay);
+
+  --color-content:          var(--content);
+  --color-content-muted:    var(--content-muted);
+  --color-content-subtle:   var(--content-subtle);
+
+  --color-dim:              var(--dim);
+
+  --color-brand:            #5865f2;
+  --color-brand-hover:      #4752c4;
+  --color-brand-active:     #3c45a5;
+  --color-positive:         #23a55a;
+  --color-positive-hover:   #1a8046;
+  --color-positive-active:  #158040;
+  --color-negative:         #f23f42;
+}
+
+[data-theme="dark"] {
+  --surface:          #1e1f22;
+  --surface-raised:   #2b2d31;
+  --surface-overlay:  #313338;
+  --content:          #dbdee1;
+  --content-muted:    #80848e;
+  --content-subtle:   #b5bac1;
+  --dim:              #4e5058;
+}
+
+[data-theme="light"] {
+  --surface:          #f2f3f5;
+  --surface-raised:   #e3e5e8;
+  --surface-overlay:  #d9dadc;
+  --content:          #1e1f22;
+  --content-muted:    #4e5058;
+  --content-subtle:   #6d6f78;
+  --dim:              #c3c5ca;
+}
 
 
 * {
