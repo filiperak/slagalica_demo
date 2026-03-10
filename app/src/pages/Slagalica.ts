@@ -123,7 +123,7 @@ export class Slagalica extends Page {
                 "w-11 h-11 flex items-center justify-center",
                 "bg-surface-overlay border border-brand/60 rounded",
                 "text-white font-bold text-lg",
-                "shadow-[0_0_8px_rgba(88,101,242,0.2)]",
+                "shadow-brand-glow",
             ].join(" ");
             tile.textContent = letter;
             tilesRow.appendChild(tile);

@@ -5,7 +5,7 @@ import { Partial } from "../util/Partials";
 import { SOCKET_EVENTS } from "../util/ClientConstants";
 import { Store } from "../Store";
 import { RouerFn } from "../util/Types";
-import { ThemeService } from "../ThemeService";
+import { ThemeService } from "../util/ThemeService";
 
 interface LocalDomElements {
     createGameBtn: HTMLElement;
