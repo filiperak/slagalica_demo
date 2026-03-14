@@ -9,6 +9,7 @@ import { FetchHTML } from "../util/FetchHTML";
 interface LocalDomElements {
     checkWord: HTMLButtonElement;
     submitAnswer: HTMLButtonElement;
+    stopShufle: HTMLButtonElement;
     clearBtn: HTMLButtonElement;
     keyboard: HTMLElement;
     inputContainer: HTMLElement;
@@ -34,12 +35,13 @@ const KEY_MAP: Record<number, string> = {
 };
 
 export class Slagalica extends Page {
-
     private _localDom!: LocalDomElements;
     private _gameData!: GameData;
 
     private _inputWord: InputLetter[] = [];
     private _submitted: boolean = false;
+    private _shuffleIntervals: ReturnType<typeof setInterval>[] = [];
+    private _shuffling: boolean = true;
 
     constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
         super(socket, store, router, partial);
@@ -53,49 +55,69 @@ export class Slagalica extends Page {
         this._domElements.gameContainer.innerHTML = await FetchHTML("/views/slagalica.html");
 
         this._localDom = {
-            checkWord:      document.querySelector("#checkWord")!,
-            submitAnswer:   document.querySelector("#submitAnswer")!,
-            clearBtn:       document.querySelector("#clearBtn")!,
-            keyboard:       document.querySelector("#keyboard")!,
+            checkWord: document.querySelector("#checkWord")!,
+            stopShufle: document.querySelector("#stopShufle")!,
+            submitAnswer: document.querySelector("#submitAnswer")!,
+            clearBtn: document.querySelector("#clearBtn")!,
+            keyboard: document.querySelector("#keyboard")!,
             inputContainer: document.querySelector("#input")!,
-            wordStatus:     document.querySelector("#wordStatus")!,
+            wordStatus: document.querySelector("#wordStatus")!,
         };
 
         const state = this._store.getState__();
         this._gameData = {
-            letters:    state?.gameState.slagalica.letterComb ?? [],
+            letters: state?.gameState.slagalica.letterComb ?? [],
             targetWord: state?.gameState.slagalica.word ?? "",
-            gameId:     state?.gameId ?? "",
+            gameId: state?.gameId ?? "",
         };
 
         this._renderKeyboard__();
         this._renderInputWord__();
 
-        this.addEvents__(this._localDom.clearBtn,     "click", this._deleteLastLetter__.bind(this));
-        this.addEvents__(this._localDom.checkWord,    "click", this._checkWord__.bind(this));
+        this.addEvents__(this._localDom.clearBtn, "click", this._deleteLastLetter__.bind(this));
+        this.addEvents__(this._localDom.checkWord, "click", this._checkWord__.bind(this));
         this.addEvents__(this._localDom.submitAnswer, "click", this._submit__.bind(this));
+        this.addEvents__(this._localDom.stopShufle, "click", this._stopShuffle__.bind(this));
         this.addEvents__(document.body, "keydown", this._onKeyDown__.bind(this) as EventListener);
-        this.addEvents__(document.body, "keyup",   this._onKeyUp__.bind(this) as EventListener);
+        this.addEvents__(document.body, "keyup", this._onKeyUp__.bind(this) as EventListener);
 
         this.addSocketEvents__("wordCheckResult", this._onWordCheckResult__.bind(this));
 
         this.initHeader__({
             durationSeconds: 90,
-            timeoutMessage:  "Vreme za Slagalicu je isteklo!",
-            description:     "Slagalica",
-            backMessage:     "Da li ste sigurni da želite da napustite Slagalicu?",
+            timeoutMessage: "Vreme za Slagalicu je isteklo!",
+            description: "Slagalica",
+            backMessage: "Da li ste sigurni da želite da napustite Slagalicu?",
         });
     }
 
+    private _stopShuffle__(): void {
+        this._shuffleIntervals.forEach(clearInterval);
+        this._shuffleIntervals = [];
+        this._shuffling = false;
+
+        const buttons = Array.from(this._localDom.keyboard.querySelectorAll<HTMLButtonElement>(".letter-btn"));
+        buttons.forEach((btn, index) => {
+            btn.textContent = this._gameData.letters[index];
+            btn.disabled = false;
+        });
+
+        this._localDom.stopShufle.classList.add("hidden");
+        this._localDom.checkWord.classList.remove("hidden");
+        this._localDom.submitAnswer.classList.remove("hidden");
+    }
 
     private _renderKeyboard__(): void {
         this._localDom.keyboard.innerHTML = "";
+        this._shuffleIntervals = [];
+        this._shuffling = true;
 
         this._gameData.letters.forEach((letter, index) => {
             const btn = document.createElement("button");
             const id = `letter-${index}`;
             btn.id = id;
-            btn.textContent = letter;
+            btn.disabled = true;
+            btn.textContent = this._gameData.letters[Math.floor(Math.random() * this._gameData.letters.length)];
             btn.className = [
                 "letter-btn",
                 "w-16 h-14 flex items-center justify-center",
@@ -107,6 +129,11 @@ export class Slagalica extends Page {
 
             this.addEvents__(btn, "click", this._onLetterClick__.bind(this, letter, id));
             this._localDom.keyboard.appendChild(btn);
+
+            const interval = setInterval(() => {
+                btn.textContent = this._gameData.letters[Math.floor(Math.random() * this._gameData.letters.length)];
+            }, 100);
+            this._shuffleIntervals.push(interval);
         });
     }
 
@@ -138,18 +165,18 @@ export class Slagalica extends Page {
     }
 
     private _onKeyDown__(e: KeyboardEvent): void {
+        if (this._shuffling) return;
         if (e.key === "Backspace") this._deleteLastLetter__();
-        if (e.key === "Enter")     this._submit__();
+        if (e.key === "Enter") this._submit__();
     }
 
     private _onKeyUp__(e: KeyboardEvent): void {
+        if (this._shuffling) return;
         const letter = KEY_MAP[e.keyCode];
         if (!letter || !this._gameData.letters.includes(letter)) return;
 
-        const btn = Array.from(
-            document.querySelectorAll<HTMLElement>(".letter-btn")
-        ).find(el =>
-            el.textContent === letter && !el.classList.contains("invisible")
+        const btn = Array.from(document.querySelectorAll<HTMLElement>(".letter-btn")).find(
+            (el) => el.textContent === letter && !el.classList.contains("invisible")
         );
 
         if (btn) {
@@ -201,13 +228,13 @@ export class Slagalica extends Page {
             this._submitted = true;
             this._socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUBMIT, {
                 gameId: this._store.getState__()?.gameId,
-                word:   this._getWord__(),
+                word: this._getWord__(),
             });
         });
     }
 
     private _getWord__(): string {
-        return this._inputWord.map(l => l.letter).join("");
+        return this._inputWord.map((l) => l.letter).join("");
     }
 
     private _setStatus__(html: string): void {

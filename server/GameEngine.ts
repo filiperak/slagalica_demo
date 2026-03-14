@@ -315,6 +315,7 @@ export class Game {
     }
 
     solveMojBroj(numbers: number[], target: number) {
+        return "Nemamo broj Trenutno"
         let bestSolution = null;
         let closestDiff = Infinity;
         const memo = new Map();

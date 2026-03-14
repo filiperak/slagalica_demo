@@ -15,14 +15,8 @@
 
         <div class="flex items-center gap-2" id="headerActions">
 
-            <div class="tooltip" data-tip="Sound">
-                <button class="btn btn-circle">
-                    <img src="./assets/icon-sound-off.svg" class="h-5 w-5" />
-                </button>
-            </div>
-
             <div class="relative">
-                <div class="tooltip" data-tip="Language">
+                <div class="tooltip tooltip-left" data-tip="Language">
                     <button class="btn btn-circle" id="languagePicker">
                         <img src="./assets/icon-lang.svg" class="h-5 w-5" />
                     </button>
@@ -44,13 +38,20 @@
                 </ul>
             </div>
 
-            <div class="tooltip" data-tip="Theme">
+            <div class="tooltip tooltip-bottom" data-tip="Sound">
+                <button class="btn btn-circle">
+                    <img src="./assets/icon-sound-off.svg" class="h-5 w-5" />
+                </button>
+            </div>
+
+
+            <div class="tooltip tooltip-bottom" data-tip="Theme">
                 <button class="btn btn-circle" id="themeToggleBtn">
                     <img src="./assets/icon-theme-dark.svg" class="h-5 w-5" />
                 </button>
             </div>
 <!-- 
-            <div class="tooltip" data-tip="Settings">
+            <div class="tooltip tooltip-bottom" data-tip="Settings">
                 <button class="btn btn-circle">
                     <img src="./assets/icon-settings.svg" class="h-5 w-5" />
                 </button>
