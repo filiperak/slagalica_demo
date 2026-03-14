@@ -18,7 +18,6 @@ interface LocalDomElements {
 
 interface GameData {
     letters: string[];
-    targetWord: string;
     gameId: string;
 }
 
@@ -69,12 +68,13 @@ export class Slagalica extends Page {
         const state = this._store.getState__();
         this._gameData = {
             letters: state?.gameState.slagalica.letterComb ?? [],
-            targetWord: state?.gameState.slagalica.word ?? "",
             gameId: state?.gameId ?? "",
         };
 
         this._renderKeyboard__();
         this._renderInputWord__();
+        this.initHeader__();
+        this._reciveResult__();
 
         this.addEvents__(this._localDom.clearBtn, "click", this._deleteLastLetter__.bind(this));
         this.addEvents__(this._localDom.checkWord, "click", this._checkWord__.bind(this));
@@ -82,13 +82,9 @@ export class Slagalica extends Page {
         this.addEvents__(this._localDom.stopShufle, "click", this._stopShuffle__.bind(this));
         this.addEvents__(document.body, "keydown", this._onKeyDown__.bind(this) as EventListener);
         this.addEvents__(document.body, "keyup", this._onKeyUp__.bind(this) as EventListener);
-
         this.addEvents__(document.body, "timeExpired", this._timeExpired__.bind(this))
 
         this.addSocketEvents__("wordCheckResult", this._onWordCheckResult__.bind(this));
-
-        this.initHeader__();
-        this._reciveResult__();
     }
 
     private _stopShuffle__(): void {
@@ -165,13 +161,13 @@ export class Slagalica extends Page {
     }
 
     private _onKeyDown__(e: KeyboardEvent): void {
-        if (this._shuffling) return;
+        if (this._shuffling || this._submitted) return;
         if (e.key === "Backspace") this._deleteLastLetter__();
         if (e.key === "Enter") this._submit__();
     }
 
     private _onKeyUp__(e: KeyboardEvent): void {
-        if (this._shuffling) return;
+        if (this._shuffling || this._submitted) return;
         const letter = KEY_MAP[e.keyCode];
         if (!letter || !this._gameData.letters.includes(letter)) return;
 
@@ -224,19 +220,10 @@ export class Slagalica extends Page {
         if (this._submitted) return;
 
         this._clearTimer__();
-        this._partial.showModal__({
-            title: "Potvrdi rezultat",
-            text: "Da li ste sigurni da želite da potvrdite rezultat?",
-            primaryText: "Odustani",
-            secondaryText: "Potvrdi",
-            primaryAction: () => {},
-            secondaryAction: () => {
-                this._submitted = true;
-                this._socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUBMIT, {
-                    gameId: this._store.getState__()?.gameId,
-                    word: this._getWord__(),
-                });
-            },
+        this._submitted = true;
+        this._socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUBMIT, {
+            gameId: this._gameData.gameId,
+            word: this._getWord__(),
         });
     }
 
@@ -244,22 +231,29 @@ export class Slagalica extends Page {
         return this._inputWord.map((l) => l.letter).join("");
     }
 
-    private _clearStatus__(): void {
+    private _clearStatus__() :void{
         this._localDom.wordStatus.innerHTML = "";
     }
 
-    private _timeExpired__(){
+    private _timeExpired__() :void{
        console.log("times up");
+       this._submitted = true;
         this._socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUBMIT, {
-            gameId: this._store.getState__()?.gameId,
-            work: ""
+            gameId: this._gameData.gameId,
+            word: ""
         })
     }
 
-    private _reciveResult__(){
+    private _reciveResult__() :void{
         this._socket.on(SOCKET_EVENTS.GAMES.SLAGALICA.SUCCESS, (result) => {
-            console.log(result);
-            
+            console.log(result); 
+            this._partial.showModal__({
+                title:"Igra gotova!",
+                text: `Osvojili ste ${result.data} poena`,
+                primaryText: "Zatvori",
+                secondaryText:"Sledeće",
+                secondaryAction: () => this.go(VIEWS.MOJ_BROJ)
+            })
         })
     }
 }
