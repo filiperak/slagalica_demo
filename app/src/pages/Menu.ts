@@ -3,8 +3,8 @@ import Page from "../Page";
 import { FetchHTML } from "../util/Util";
 import { Store, GameState } from "../Store";
 import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
-import { RouerFn } from "../util/Types";
 import { Partial } from "../util/Partials";
+import App from "../App";
 
 interface LocalDomElements {
     leaveBtn: HTMLElement;
@@ -37,8 +37,8 @@ export class Menu extends Page {
     private _localDom!: LocalDomElements;
     private _partial: Partial;
 
-    constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
-        super(socket, store, router);
+    constructor(socket: Socket, store: Store, app:App, partial: Partial) {
+        super(socket, store, app);
         this._partial = partial;
     }
 
@@ -169,7 +169,7 @@ export class Menu extends Page {
             secondaryText: "Ne",
             primaryAction: () => {
                 this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
-                this.go(VIEWS.LOBY);
+                this._app.go(VIEWS.LOBY);
             },
             secondaryAction: () => {}
         });

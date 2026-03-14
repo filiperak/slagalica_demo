@@ -4,8 +4,8 @@ import { FetchHTML } from "../util/Util";
 import { Partial } from "../util/Partials";
 import { SOCKET_EVENTS } from "../util/ClientConstants";
 import { Store } from "../Store";
-import { RouerFn } from "../util/Types";
 import { ThemeService } from "../util/ThemeService";
+import App from "../App";
 
 interface LocalDomElements {
     createGameBtn: HTMLElement;
@@ -31,8 +31,8 @@ export default class Loby extends Page {
 
     private _partial: Partial;
 
-    constructor(socket: Socket, partial: Partial, store: Store, router: RouerFn) {
-        super(socket, store, router);
+    constructor(socket: Socket, partial: Partial, store: Store, app:App) {
+        super(socket, store, app);
         this._partial = partial;
 
         this._gameMode = null;

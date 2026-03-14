@@ -31,10 +31,10 @@ export default class App {
         this._store = new Store();
 
         this._views = {
-            loby: new Loby(this._socket, this._partial, this._store, this.go.bind(this)),
-            menu: new Menu(this._socket, this._store, this.go.bind(this), this._partial),
-            slagalica: new Slagalica(this._socket, this._store, this.go.bind(this), this._partial),
-            mojBroj: new MojBroj(this._socket, this._store, this.go.bind(this)),
+            loby: new Loby(this._socket, this._partial, this._store, this),
+            menu: new Menu(this._socket, this._store, this, this._partial),
+            slagalica: new Slagalica(this._socket, this._store, this, this._partial),
+            mojBroj: new MojBroj(this._socket, this._store, this),
         };
 
         this._addSocketEvents__();

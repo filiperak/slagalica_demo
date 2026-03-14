@@ -1,8 +1,8 @@
 import { Socket } from "socket.io-client";
 import { Store, GameState } from "./Store";
-import { RouerFn } from "./util/Types";
 import { VIEWS } from "./util/ClientConstants";
 import { ping } from "./util/Util";
+import App from "./App";
 
 interface PageEvent {
     element: HTMLElement | null;
@@ -26,7 +26,7 @@ export default abstract class Page {
     protected _domElements: AppDomElements;
     protected _socket: Socket;
     protected _store: Store;
-    protected go: RouerFn;
+    protected _app: App;
 
     private _unsubStore: (() => void) | null = null;
     private _timerInterval: ReturnType<typeof setInterval> | null = null;
@@ -35,10 +35,10 @@ export default abstract class Page {
     private _headerTimerEl: HTMLElement | null = null;
     private _headerProgressEl: HTMLElement | null = null;
 
-    constructor(socket: Socket, store: Store, router: RouerFn) {
+    constructor(socket: Socket, store: Store, app: App) {
         this._socket = socket;
         this._store = store;
-        this.go = router;
+        this._app = app;
 
         this._domElements = {
             gameContainer: document.querySelector("#gameContainer") as HTMLElement,
@@ -91,9 +91,9 @@ export default abstract class Page {
         ping("timeExpired")
     }
 
-    protected _next__(): void {
-        console.warn("_next__() not yet implemented — add logic here.");
-    }
+    // protected _next__(): void {
+    //     console.warn("_next__() not yet implemented — add logic here.");
+    // }
 
     protected initHeader__(duration: number = 90): void {
         this._timerDuration = duration;
@@ -104,7 +104,7 @@ export default abstract class Page {
         this._headerProgressEl = this._domElements.gameHeader.querySelector("#header-progress-bar");
 
         const backBtn = this._domElements.gameHeader.querySelector("#header-back-btn") as HTMLElement;
-        this.addEvents__(backBtn, "click", () => this.go(VIEWS.MENU));
+        this.addEvents__(backBtn, "click", () => this._app.go(VIEWS.MENU));
 
 
         this._timerInterval = setInterval(() => {

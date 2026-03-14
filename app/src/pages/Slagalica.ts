@@ -1,10 +1,10 @@
 import { Socket } from "socket.io-client";
 import Page from "../Page";
 import { Store } from "../Store";
-import { RouerFn } from "../util/Types";
 import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
+import App from "../App";
 
 interface LocalDomElements {
     checkWord: HTMLButtonElement;
@@ -43,8 +43,8 @@ export class Slagalica extends Page {
     private _shuffleIntervals: ReturnType<typeof setInterval>[] = [];
     private _shuffling: boolean = true;
 
-    constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
-        super(socket, store, router);
+    constructor(socket: Socket, store: Store, app: App, partial: Partial) {
+        super(socket, store, app);
         this._partial = partial;
     }
 
@@ -252,7 +252,7 @@ export class Slagalica extends Page {
                 text: `Osvojili ste ${result.data} poena`,
                 primaryText: "Zatvori",
                 secondaryText:"Sledeće",
-                secondaryAction: () => this.go(VIEWS.MOJ_BROJ)
+                secondaryAction: () => this._app.go(VIEWS.MOJ_BROJ)
             })
         })
     }

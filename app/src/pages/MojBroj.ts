@@ -1,12 +1,12 @@
 import { Socket } from "socket.io-client";
 import Page from "../Page";
 import { Store, GameState } from "../Store";
-import { RouerFn } from "../util/Types";
+import App from "../App";
 
 export class MojBroj extends Page {
 
-    constructor(socket: Socket, store: Store, router: RouerFn) {
-        super(socket, store, router);
+    constructor(socket: Socket, store: Store, app: App) {
+        super(socket, store, app);
     }
 
     init() {
