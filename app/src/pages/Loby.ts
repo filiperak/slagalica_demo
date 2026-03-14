@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 import Page from "../Page";
-import { FetchHTML } from "../util/FetchHTML";
+import { FetchHTML } from "../util/Util";
 import { Partial } from "../util/Partials";
 import { SOCKET_EVENTS } from "../util/ClientConstants";
 import { Store } from "../Store";
@@ -29,8 +29,11 @@ export default class Loby extends Page {
     private _gameId: string | null;
     private _username: string;
 
+    private _partial: Partial;
+
     constructor(socket: Socket, partial: Partial, store: Store, router: RouerFn) {
-        super(socket, store, router, partial);
+        super(socket, store, router);
+        this._partial = partial;
 
         this._gameMode = null;
         this._gameId = null;

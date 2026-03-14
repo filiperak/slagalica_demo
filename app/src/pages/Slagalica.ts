@@ -1,10 +1,10 @@
 import { Socket } from "socket.io-client";
 import Page from "../Page";
-import { Store, GameState } from "../Store";
+import { Store } from "../Store";
 import { RouerFn } from "../util/Types";
 import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
-import { FetchHTML } from "../util/FetchHTML";
+import { FetchHTML } from "../util/Util";
 
 interface LocalDomElements {
     checkWord: HTMLButtonElement;
@@ -37,6 +37,7 @@ const KEY_MAP: Record<number, string> = {
 export class Slagalica extends Page {
     private _localDom!: LocalDomElements;
     private _gameData!: GameData;
+    private _partial: Partial;
 
     private _inputWord: InputLetter[] = [];
     private _submitted: boolean = false;
@@ -44,7 +45,8 @@ export class Slagalica extends Page {
     private _shuffling: boolean = true;
 
     constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
-        super(socket, store, router, partial);
+        super(socket, store, router);
+        this._partial = partial;
     }
 
     async init() {
@@ -81,14 +83,12 @@ export class Slagalica extends Page {
         this.addEvents__(document.body, "keydown", this._onKeyDown__.bind(this) as EventListener);
         this.addEvents__(document.body, "keyup", this._onKeyUp__.bind(this) as EventListener);
 
+        this.addEvents__(document.body, "timeExpired", this._timeExpired__.bind(this))
+
         this.addSocketEvents__("wordCheckResult", this._onWordCheckResult__.bind(this));
 
-        this.initHeader__({
-            durationSeconds: 90,
-            timeoutMessage: "Vreme za Slagalicu je isteklo!",
-            description: "Slagalica",
-            backMessage: "Da li ste sigurni da želite da napustite Slagalicu?",
-        });
+        this.initHeader__();
+        this._reciveResult__();
     }
 
     private _stopShuffle__(): void {
@@ -189,9 +189,9 @@ export class Slagalica extends Page {
 
     private _onWordCheckResult__(data: { validated: boolean }): void {
         if (data.validated) {
-            this._setStatus__(`<span class="text-positive">👍 Reč je prihvaćena</span>`);
+            this._localDom.wordStatus.innerHTML = `<span class="text-positive">👍 Reč je prihvaćena</span>`;
         } else {
-            this._setStatus__(`<span class="text-negative">❌ Reč nije prihvaćena</span>`);
+            this._localDom.wordStatus.innerHTML = `<span class="text-negative">❌ Reč nije prihvaćena</span>`;
         }
     }
 
@@ -212,24 +212,31 @@ export class Slagalica extends Page {
             word,
         });
 
-        this._setStatus__(
+        this._localDom.wordStatus.innerHTML =
             `<span class="inline-flex gap-1">
                 <span class="w-1.5 h-1.5 bg-brand rounded-full animate-bounce"></span>
                 <span class="w-1.5 h-1.5 bg-brand rounded-full animate-bounce [animation-delay:150ms]"></span>
                 <span class="w-1.5 h-1.5 bg-brand rounded-full animate-bounce [animation-delay:300ms]"></span>
-            </span>`
-        );
+            </span>`;
     }
 
     private _submit__(): void {
         if (this._submitted) return;
 
-        this.onGameComplete__("Potvrdi rezultat", () => {
-            this._submitted = true;
-            this._socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUBMIT, {
-                gameId: this._store.getState__()?.gameId,
-                word: this._getWord__(),
-            });
+        this._clearTimer__();
+        this._partial.showModal__({
+            title: "Potvrdi rezultat",
+            text: "Da li ste sigurni da želite da potvrdite rezultat?",
+            primaryText: "Odustani",
+            secondaryText: "Potvrdi",
+            primaryAction: () => {},
+            secondaryAction: () => {
+                this._submitted = true;
+                this._socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUBMIT, {
+                    gameId: this._store.getState__()?.gameId,
+                    word: this._getWord__(),
+                });
+            },
         });
     }
 
@@ -237,13 +244,22 @@ export class Slagalica extends Page {
         return this._inputWord.map((l) => l.letter).join("");
     }
 
-    private _setStatus__(html: string): void {
-        if (this._localDom.wordStatus) {
-            this._localDom.wordStatus.innerHTML = html;
-        }
+    private _clearStatus__(): void {
+        this._localDom.wordStatus.innerHTML = "";
     }
 
-    private _clearStatus__(): void {
-        this._setStatus__("");
+    private _timeExpired__(){
+       console.log("times up");
+        this._socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUBMIT, {
+            gameId: this._store.getState__()?.gameId,
+            work: ""
+        })
+    }
+
+    private _reciveResult__(){
+        this._socket.on(SOCKET_EVENTS.GAMES.SLAGALICA.SUCCESS, (result) => {
+            console.log(result);
+            
+        })
     }
 }

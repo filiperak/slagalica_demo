@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 import Page from "../Page";
-import { FetchHTML } from "../util/FetchHTML";
+import { FetchHTML } from "../util/Util";
 import { Store, GameState } from "../Store";
 import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
 import { RouerFn } from "../util/Types";
@@ -35,10 +35,11 @@ interface LocalDomElements {
 export class Menu extends Page {
     private _unsub: (() => void) | null = null;
     private _localDom!: LocalDomElements;
+    private _partial: Partial;
 
     constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
-        // _socket is now handled by the base Page class
-        super(socket, store, router, partial);
+        super(socket, store, router);
+        this._partial = partial;
     }
 
     async init() {
@@ -164,8 +165,8 @@ export class Menu extends Page {
         this._partial.showModal__({
             title: "Napuštanje",
             text: "Da li ste sigurni da želite da napustite partiju?",
-            primaryText: "Izađi",
-            secondaryText: "Ondustani",
+            primaryText: "Da",
+            secondaryText: "Ne",
             primaryAction: () => {
                 this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
                 this.go(VIEWS.LOBY);

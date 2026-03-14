@@ -1,8 +1,8 @@
 import { Socket } from "socket.io-client";
-import { Store, GameState, GameEventMap } from "./Store";
-import { VIEWS } from "./util/ClientConstants";
-import { Partial } from "./util/Partials";
+import { Store, GameState } from "./Store";
 import { RouerFn } from "./util/Types";
+import { VIEWS } from "./util/ClientConstants";
+import { ping } from "./util/Util";
 
 interface PageEvent {
     element: HTMLElement | null;
@@ -15,13 +15,6 @@ interface AppDomElements {
     gameHeader: HTMLElement;
 }
 
-interface HeaderOptions {
-    durationSeconds: number;
-    timeoutMessage: string;
-    description: string;
-    backMessage: string;
-}
-
 interface SocketEvents {
     eventName: string;
     eventHandler: () => void;
@@ -30,12 +23,10 @@ interface SocketEvents {
 export default abstract class Page {
     protected _events: PageEvent[] = [];
     protected _socketEvents: SocketEvents[] = [];
-    private _busUnsubs: Array<() => void> = [];
     protected _domElements: AppDomElements;
     protected _socket: Socket;
     protected _store: Store;
     protected go: RouerFn;
-    protected _partial: Partial;
 
     private _unsubStore: (() => void) | null = null;
     private _timerInterval: ReturnType<typeof setInterval> | null = null;
@@ -44,11 +35,10 @@ export default abstract class Page {
     private _headerTimerEl: HTMLElement | null = null;
     private _headerProgressEl: HTMLElement | null = null;
 
-    constructor(socket: Socket, store: Store, router: RouerFn, partial: Partial) {
+    constructor(socket: Socket, store: Store, router: RouerFn) {
         this._socket = socket;
         this._store = store;
         this.go = router;
-        this._partial = partial;
 
         this._domElements = {
             gameContainer: document.querySelector("#gameContainer") as HTMLElement,
@@ -73,9 +63,6 @@ export default abstract class Page {
         this._events = [];
         this._socketEvents = [];
 
-        this._busUnsubs.forEach(unsub => unsub());
-        this._busUnsubs = [];
-
         if (this._unsubStore) {
             this._unsubStore();
             this._unsubStore = null;
@@ -99,102 +86,26 @@ export default abstract class Page {
         this._socket.on(name, callback);
     }
 
-    addBusEvent__<K extends keyof GameEventMap>(
-        event: K,
-        handler: (payload: GameEventMap[K]) => void,
-    ): void {
-        const unsub = this._store.bus.on(event, handler);
-        this._busUnsubs.push(unsub);
-    }
-
-    /**
-     * Scenario 1 — Timer expired.
-     * Shows "Time's up" with Nazad (→ menu) and Sledeće (→ next()).
-     */
-    private _onTimerExpired__(timeoutMessage: string): void {
+    private _onTimerExpired__(): void {
         this._clearTimer__();
-        this._partial.showModal__({
-            title: timeoutMessage,
-            text: "Vreme je isteklo.",
-            primaryText: "Nazad",
-            secondaryText: "Sledeće",
-            primaryAction: () => this.go(VIEWS.MENU),
-            // Replace this.next__() once the method is implemented
-            secondaryAction: () => this._next__(),
-        });
+        ping("timeExpired")
     }
 
-    /**
-     * Scenario 2 — User pressed the header back button.
-     * Shows a confirmation modal. Confirm navigates to menu; cancel just closes.
-     */
-    private _onBackButtonPressed__(backMessage: string): void {
-        this._partial.showModal__({
-            title: backMessage,
-            text: "Da li ste sigurni da želite da napustite igru?",
-            primaryText: "Odustani",   // closes modal, no navigation
-            secondaryText: "Potvrdi",  // navigates away
-            primaryAction: () => {},   // modal auto-closes; nothing else needed
-            secondaryAction: () => {
-                this._clearTimer__();
-                this.go(VIEWS.MENU);
-            },
-        });
-    }
-
-    /**
-     * Scenario 3 — Mini-game completed and result submitted.
-     * Subclasses call this after the user submits their answer.
-     * primaryAction: close modal (stay). secondaryAction: proceed with completion flow.
-     */
-    protected onGameComplete__(completionMessage: string = "Rezultat potvrđen!", onProceed?: () => void): void {
-        this._clearTimer__();
-        this._partial.showModal__({
-            title: completionMessage,
-            text: "Da li ste sigurni da želite da potvrdite rezultat?",
-            primaryText: "Odustani",
-            secondaryText: "Potvrdi",
-            primaryAction: () => {},   // modal auto-closes; player can reconsider
-            secondaryAction: () => {
-                if (onProceed) {
-                    onProceed();
-                } else {
-                    // Placeholder: replace with real completion flow
-                    this._next__();
-                }
-            },
-        });
-    }
-
-    /**
-     * Placeholder for the next() navigation. Replace with real implementation.
-     */
     protected _next__(): void {
         console.warn("_next__() not yet implemented — add logic here.");
-        this.go(VIEWS.MOJ_BROJ);
     }
 
-    protected initHeader__(options: HeaderOptions): void {
-        const {
-            durationSeconds = 90,
-            description = "",
-            timeoutMessage = "Vreme je isteklo!",
-            backMessage = "Napusti igru?",
-        } = options;
+    protected initHeader__(duration: number = 90): void {
+        this._timerDuration = duration;
+        this._timerRemaining = duration;
 
-        this._timerDuration = durationSeconds;
-        this._timerRemaining = durationSeconds;
-        this._domElements.gameHeader.innerHTML = this._buildHeaderHTML__(durationSeconds);
+        this._domElements.gameHeader.innerHTML = this._buildHeaderHTML__(duration);
         this._headerTimerEl = this._domElements.gameHeader.querySelector("#header-timer-count");
         this._headerProgressEl = this._domElements.gameHeader.querySelector("#header-progress-bar");
 
         const backBtn = this._domElements.gameHeader.querySelector("#header-back-btn") as HTMLElement;
-        if (backBtn) {
-            // Scenario 2 — back button click
-            this.addEvents__(backBtn, "click", () => {
-                this._onBackButtonPressed__(backMessage);
-            });
-        }
+        this.addEvents__(backBtn, "click", () => this.go(VIEWS.MENU));
+
 
         this._timerInterval = setInterval(() => {
             this._timerRemaining--;
@@ -204,6 +115,7 @@ export default abstract class Page {
             }
 
             if (this._headerProgressEl) {
+
                 const pct = (this._timerRemaining / this._timerDuration) * 100;
                 this._headerProgressEl.style.width = `${pct}%`;
 
@@ -214,8 +126,7 @@ export default abstract class Page {
             }
 
             if (this._timerRemaining <= 0) {
-                // Scenario 1 — timer expired
-                this._onTimerExpired__(timeoutMessage);
+                this._onTimerExpired__();
             }
         }, 1000);
     }
@@ -255,7 +166,7 @@ export default abstract class Page {
         `;
     }
 
-    private _clearTimer__(): void {
+    protected _clearTimer__(): void {
         if (this._timerInterval !== null) {
             clearInterval(this._timerInterval);
             this._timerInterval = null;

@@ -52,3 +52,24 @@ const sanitizeHTML = (html: string): string => {
 
     return doc.body.innerHTML;
 };
+
+/**
+ * Dispatches a custom event from a target (defaulting to window).
+ * @param name - The unique string name of the event.
+ * @param detail - The data payload to include in the event.
+ * @param target - The DOM element to dispatch from (optional).
+ */
+export function emit<T>(name: string, detail: T, target: EventTarget = window): void {
+  const event = new CustomEvent<T>(name, {
+    detail,
+    bubbles: true,
+    cancelable: true,
+    composed: true, 
+  });
+
+  target.dispatchEvent(event);
+}
+
+export function ping(name: string, target: EventTarget = document.body): void {
+  target.dispatchEvent(new Event(name, { bubbles: true }));
+}
