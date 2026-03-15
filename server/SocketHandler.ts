@@ -188,7 +188,7 @@ export class SocketHandler {
             }
 
             const gameId = this.createGameId(true);
-            console.log(`Single player game created: ${gameId}`);
+            console.log(`Single player game created: ${gameId} for singlegame`);
 
             const singlePlayerGame = new Game(gameId);
             this.games[gameId] = singlePlayerGame;
@@ -239,6 +239,12 @@ export class SocketHandler {
             };
 
             socket.emit(SOCKET_EVENTS.STATE.GAME_DATA, response);
+
+            if (this.isSinglePlayerGame(gameId)) {
+                socket.emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, currentGame);
+            } else {
+                this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, currentGame);
+            }
         } catch (error) {
             console.error("Error in handleOpenGame:", error);
             socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to open game");

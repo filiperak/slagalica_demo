@@ -84,7 +84,12 @@ export class Menu extends Page {
 
         // Initial render
         const initialState = this._store.getState__();
-        if (initialState) this.render__(initialState);
+        if (initialState) {
+            if (initialState.gameId?.startsWith("sg")) {
+                this._applySinglePlayerLayout__();
+            }
+            this.render__(initialState);
+        }
 
         // Events
         this.addEvents__(this._localDom.leaveBtn, "click", this._leaveGame__.bind(this));
@@ -158,6 +163,22 @@ export class Menu extends Page {
             this._unsub();
             this._unsub = null;
         }
+    }
+
+    _applySinglePlayerLayout__() {
+        document.querySelectorAll<HTMLElement>("[data-p1]").forEach(el => {
+            el.classList.add("hidden");
+        });
+
+        document.querySelectorAll<HTMLElement>(".game-row").forEach(row => {
+            row.style.gridTemplateColumns = "1fr 5rem";
+        });
+
+        const playerHeaders = document.querySelector<HTMLElement>("#player-headers");
+        if (playerHeaders) playerHeaders.style.gridTemplateColumns = "1fr";
+
+        const totalsSection = document.querySelector<HTMLElement>("#totals-section");
+        if (totalsSection) totalsSection.style.gridTemplateColumns = "1fr";
     }
 
     _leaveGame__() {

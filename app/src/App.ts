@@ -63,6 +63,12 @@ export default class App {
             this.go(VIEWS.MENU);
         });
 
+        this._socket.on(SOCKET_EVENTS.STATE.START_SINGLE_PLAYER, ({ game }) => {
+            this._store.setState__(game);
+            this._partial.hideModal__();
+            this.go(VIEWS.MENU);
+        });
+
         this._socket.on(SOCKET_EVENTS.STATE.GAME_DATA, ({ gameKey, gameState }) => {
             console.log("Received game data:", gameKey, gameState);
             this.go(gameKey as keyof Views);

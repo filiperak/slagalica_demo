@@ -61,7 +61,7 @@
 
     <div class="flex flex-col items-center mb-8 gap-3">
         <img src="./assets/owl_logo.png" class="logo-img w-20 h-20 drop-shadow-brand mb-1" />
-        <h3 class="text-2xl font-black tracking-[.18em] uppercase text-white">SLAGALICA</h3>
+        <h3 class="text-2xl font-black tracking-[.18em] uppercase text-content">SLAGALICA</h3>
         <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/[0.08] text-content-muted text-[11px] font-semibold uppercase tracking-wider">
             <span class="w-1.5 h-1.5 rounded-full bg-positive inline-block"></span>
             Online · Spreman za igru
@@ -79,14 +79,14 @@
         </div>
     </button>
 
-    <button id="singlePlayer" class="menu-button w-full max-w-md bg-brand hover:bg-brand-hover active:bg-brand-active rounded-lg px-5 py-3.5 flex items-center justify-start gap-4 shadow-brand-md hover:shadow-brand-lg hover:-translate-y-px active:translate-y-0 transition-all mb-5 group relative overflow-hidden border-0">
+    <button id="singlePlayer" class="menu-button w-full max-w-md bg-brand-secondary hover:bg-brand-secondary-hover active:bg-brand-secondary-active rounded-lg px-5 py-3.5 flex items-center justify-start gap-4 shadow-brand-secondary-md hover:shadow-brand-secondary-lg hover:-translate-y-px active:translate-y-0 transition-all mb-5 group relative overflow-hidden border-0">
         <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent pointer-events-none"></div>
         <div class="w-11 h-11 rounded-full bg-white/15 group-hover:bg-white/20 group-hover:scale-105 transition-all flex items-center justify-center flex-shrink-0">
-            <img src="./assets/icon-sound-on.svg" class="w-5 h-5" />
+            <img src="./assets/icon-singleplayer.svg" class="w-5 h-5" />
         </div>
         <div class="text-left">
-            <span class="block text-base font-bold text-white">Započni Igru</span>
-            <span class="block text-xs text-white/70 font-medium mt-0.5">Multi Player režim</span>
+            <span class="block text-base font-bold text-white">Trening</span>
+            <span class="block text-xs text-white/70 font-medium mt-0.5">Single Player režim</span>
         </div>
     </button>
 
@@ -111,8 +111,8 @@
                 <span class="font-bold text-sm text-content">Pridruži se</span>
             </div>
             <div class="h-px bg-white/[0.06] -mx-5"></div>
-            <input type="text" id="gameId" placeholder="Unesi kod..." class="menu-input w-full bg-surface border border-dim focus:border-brand rounded text-sm font-medium text-content placeholder-content-muted py-2.5 px-3 text-center focus:outline-none transition-colors tracking-widest uppercase">
-            <button id="joinGame" class="menu-button w-full py-2.5 px-4 rounded text-sm font-semibold bg-positive hover:bg-positive-hover active:bg-positive-active text-white hover:-translate-y-px active:translate-y-0 transition-all border-0">Uđi</button>
+            <input type="text" id="gameIdInput" placeholder="Unesi kod..." class="menu-input w-full bg-surface border border-dim focus:border-brand rounded text-sm font-medium text-content placeholder-content-muted py-2.5 px-3 text-center focus:outline-none transition-colors tracking-widest uppercase">
+            <button id="joinGame" class="menu-button w-full py-2.5 px-4 rounded text-sm font-semibold bg-brand hover:bg-brand-hover active:bg-brand-active text-white hover:-translate-y-px active:translate-y-0 transition-all border-0">Uđi</button>
         </div>
 
     </div>

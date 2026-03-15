@@ -28,6 +28,7 @@ export default class Loby extends Page {
     private _gameMode: string | null;
     private _gameId: string | null;
     private _username: string;
+    private _dedicatedGameId: string | null;
 
     private _partial: Partial;
 
@@ -37,6 +38,7 @@ export default class Loby extends Page {
 
         this._gameMode = null;
         this._gameId = null;
+        this._dedicatedGameId = null;
         this._socket = socket;
         this._username = `User-${Date.now()}`;
     }
@@ -83,10 +85,16 @@ export default class Loby extends Page {
         this._setUsername__();
 
         this.addEvents__(this._localDom.randomGame, "click", this._playRandomGame__.bind(this));
+        this.addEvents__(this._localDom.singlePlayer, "click", this._playSinglePlayer__.bind(this));
+        this.addEvents__(this._localDom.joinGame, "click", this._joinViaCode__.bind(this));
         this.addEvents__(this._localDom.usernameInp, "input", this._changeUsername__.bind(this));
         this.addEvents__(this._localDom.createGameBtn, "click", this._setGameId__.bind(this));
 
-        this.addEvents__(this._localDom.themeToggleBtn, "click", () => ThemeService.toggle());
+        this._updateThemeIcon__();
+        this.addEvents__(this._localDom.themeToggleBtn, "click", () => {
+            ThemeService.toggle();
+            this._updateThemeIcon__();
+        });
         this._handleLangSelectionClick__()
     }
 
@@ -109,6 +117,46 @@ export default class Loby extends Page {
         }
     }
 
+    _playSinglePlayer__() {
+        if (this._localDom.usernameInp && this._localDom.usernameInp.value) {
+            this._socket.emit(SOCKET_EVENTS.CORE.ENTER_SINGLE_PLAYER, {
+                name: this._localDom.usernameInp.value,
+                game: null,
+            });
+
+            this._partial.showModal__({
+                title: "Čekamo protivnika!",
+                text: `Podelite ovaj kod: ${this._dedicatedGameId} sa saigračem`,
+                primaryText: "Odustani",
+                spinner: true,
+                primaryAction: this._leaveGame__.bind(this),
+            });
+        } else {
+            this._localDom.usernameInp?.classList.add("missing-username-input");
+            this._localDom.usernameInp?.setAttribute("placeholder", "Enter username");
+        }
+    }
+
+    _joinViaCode__(){
+        if (this._localDom.usernameInp && this._localDom.usernameInp.value) {
+            this._socket.emit(SOCKET_EVENTS.CORE.ENTER_ROOM, {
+                name: this._localDom.usernameInp.value,
+                game: this._localDom.gameIdInput.value,
+            });
+
+            this._partial.showModal__({
+                title: "Igra se učitava!",
+                text: `Podelite ovaj kod: ${this._dedicatedGameId} sa saigračem`,
+                primaryText: "Odustani",
+                spinner: true,
+                primaryAction: this._leaveGame__.bind(this),
+            });
+        } else {
+            this._localDom.usernameInp?.classList.add("missing-username-input");
+            this._localDom.usernameInp?.setAttribute("placeholder", "Enter username");
+        }
+    }
+
     _setUsername__() {
         const saved = localStorage.getItem("slagalicaUsername");
 
@@ -118,7 +166,6 @@ export default class Loby extends Page {
             this._username = `User-${Date.now()}`;
             localStorage.setItem("slagalicaUsername", this._username);
         }
-        this;
         this._localDom.usernameInp.value = this._username;
     }
 
@@ -137,8 +184,16 @@ export default class Loby extends Page {
     }
 
     _setGameId__() {
-        this._gameId = this._createGameId__();
-        this._localDom.gameIdInput.value = this._gameId;
+        this._dedicatedGameId = this._createGameId__();
+        console.log(this._localDom.gameIdInput);
+        
+        this._localDom.gameIdInput.value = this._dedicatedGameId;
+    }
+
+    _updateThemeIcon__() {
+        const img = this._localDom.themeToggleBtn.querySelector("img")!;
+        const theme = ThemeService.get();
+        img.src = theme === "dark" ? "./assets/icon-theme-dark.svg" : "./assets/icon-theme-light.svg";
     }
 
     _leaveGame__() {
