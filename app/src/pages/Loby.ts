@@ -9,6 +9,7 @@ import App from "../App";
 
 interface LocalDomElements {
     createGameBtn: HTMLElement;
+    avatarName: HTMLElement;
     joinGame: HTMLElement;
     gameIdInput: HTMLInputElement;
     singlePlayer: HTMLElement;
@@ -56,6 +57,7 @@ export default class Loby extends Page {
             usernameInp: document.querySelector(".username-inp")!,
             headerActions: document.querySelector("#headerActions")!,
             themeToggleBtn: document.querySelector("#themeToggleBtn")!,
+            avatarName: document.querySelector("#avatarName")!,
         };
 
         this._headerActions = {
@@ -174,6 +176,7 @@ export default class Loby extends Page {
         console.log(newUsername);
 
         localStorage.setItem("slagalicaUsername", newUsername);
+        this._localDom.avatarName.innerText = newUsername.trim().slice(0,2)
     }
 
     _createGameId__() {

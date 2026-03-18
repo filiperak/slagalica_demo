@@ -119,7 +119,7 @@ export class Slagalica extends Page {
                 "w-16 h-14 flex items-center justify-center",
                 "bg-surface-raised border border-white/[0.06]",
                 "hover:border-brand/60 hover:bg-surface-overlay",
-                "rounded-lg text-content hover:text-white",
+                "rounded-lg text-content",
                 "font-bold text-base transition-all active:scale-95 shadow-sm",
             ].join(" ");
 
