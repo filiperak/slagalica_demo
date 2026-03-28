@@ -7,15 +7,15 @@ import { FetchHTML } from "../util/Util";
 import App from "../App";
 
 const SYMBOL_IMGS = [
-    "/assets/star.png",
-    "/assets/herz.png",
+    "/assets/owl_logo.png",
     "/assets/tref.png",
     "/assets/caro.png",
     "/assets/spades.png",
-    "/assets/owl_logo.png",
+    "/assets/herz.png",
+    "/assets/star.png",
 ];
 
-const SYMBOL_NAMES = ["zvezda", "herc", "tref", "karo", "pik", "sova"];
+const SYMBOL_NAMES = ["sova", "tref", "karo", "pik", "herc", "zvezda"];
 
 const ROWS = 6;
 const COLS = 4;
@@ -65,19 +65,19 @@ export class Skocko extends Page {
             palette: document.querySelector("#skockoPalette")!,
         };
 
-        const state = this._store.getState__();
+        const state = this._store.getState();
         this._gameData = { gameId: state?.gameId ?? "" };
 
-        this._buildBoard__();
-        this._buildPalette__();
-        this.initHeader__();
-        this._receiveCheckResult__();
-        this._receiveResult__();
+        this._buildBoard();
+        this._buildPalette();
+        this.initHeader();
+        this._receiveCheckResult();
+        this._receiveResult();
 
-        this.addEvents__(document.body, "timeExpired", this._timeExpired__.bind(this));
+        this.addEvents(document.body, "timeExpired", this._timeExpired.bind(this));
     }
 
-    private _buildBoard__(): void {
+    private _buildBoard(): void {
         for (let i = 0; i < ROWS; i++) {
             const row = document.createElement("div");
             row.className = "flex items-center gap-2";
@@ -92,7 +92,7 @@ export class Skocko extends Page {
                 ].join(" ");
                 slots.push(slot);
                 row.appendChild(slot);
-                this.addEvents__(slot, "click", () => this._onSlotClick__(i, j));
+                this.addEvents(slot, "click", () => this._onSlotClick(i, j));
             }
             this._boardSlots.push(slots);
 
@@ -112,7 +112,7 @@ export class Skocko extends Page {
         }
     }
 
-    private _buildPalette__(): void {
+    private _buildPalette(): void {
         SYMBOL_IMGS.forEach((src, index) => {
             const btn = document.createElement("button");
             btn.className = [
@@ -127,50 +127,50 @@ export class Skocko extends Page {
             img.className = "w-full h-full object-contain pointer-events-none";
             btn.appendChild(img);
 
-            this.addEvents__(btn, "click", () => this._onSymbolClick__(index));
+            this.addEvents(btn, "click", () => this._onSymbolClick(index));
             this._localDom.palette.appendChild(btn);
         });
     }
 
     // Places the symbol in the first empty slot of the current row
-    private _onSymbolClick__(symbolIndex: number): void {
+    private _onSymbolClick(symbolIndex: number): void {
         if (this._submitted || this._rowCounter >= ROWS) return;
 
         const emptySlot = this._currentComb.indexOf(null);
         if (emptySlot === -1) return;
 
         this._currentComb[emptySlot] = symbolIndex;
-        this._renderSlot__(this._rowCounter, emptySlot, symbolIndex);
+        this._renderSlot(this._rowCounter, emptySlot, symbolIndex);
         this._filledCount++;
 
         if (this._filledCount === COLS) {
-            this._submitRow__();
+            this._submitRow();
         }
     }
 
     // Clicking a filled slot empties it; next symbol input fills the first empty slot
-    private _onSlotClick__(row: number, col: number): void {
+    private _onSlotClick(row: number, col: number): void {
         if (this._submitted || row !== this._rowCounter) return;
         if (this._currentComb[col] === null) return;
 
         this._currentComb[col] = null;
         this._filledCount--;
-        this._clearSlot__(row, col);
+        this._clearSlot(row, col);
     }
 
-    private _renderSlot__(row: number, col: number, symbolIndex: number): void {
+    private _renderSlot(row: number, col: number, symbolIndex: number): void {
         const slot = this._boardSlots[row][col];
         slot.innerHTML = `<img src="${SYMBOL_IMGS[symbolIndex]}" class="w-10 h-10 object-contain pointer-events-none" />`;
         slot.classList.add("border-brand/40");
     }
 
-    private _clearSlot__(row: number, col: number): void {
+    private _clearSlot(row: number, col: number): void {
         const slot = this._boardSlots[row][col];
         slot.innerHTML = "";
         slot.classList.remove("border-brand/40");
     }
 
-    private _submitRow__(): void {
+    private _submitRow(): void {
         this._lastComb = this._currentComb as number[];
 
         this._socket.emit(SOCKET_EVENTS.GAMES.SKOCKO.CHECK, {
@@ -183,39 +183,42 @@ export class Skocko extends Page {
         this._filledCount = 0;
 
         if (this._rowCounter >= ROWS) {
-            this._submit__();
+            this._submit();
         }
     }
 
-    private _receiveCheckResult__(): void {
-        this.addSocketEvents__(SOCKET_EVENTS.GAMES.SKOCKO.RESULT, (data: { correctPositions: number; correctNumbers: number }) => {
-            const targetRow = this._rowCounter - 1;
-            if (targetRow < 0) return;
+    private _receiveCheckResult(): void {
+        this.addSocketEvents(
+            SOCKET_EVENTS.GAMES.SKOCKO.RESULT,
+            (data: { correctPositions: number; correctNumbers: number }) => {
+                const targetRow = this._rowCounter - 1;
+                if (targetRow < 0) return;
 
-            const circles = this._scoreCircles[targetRow];
-            let pos = data.correctPositions;
-            let num = data.correctNumbers;
+                const circles = this._scoreCircles[targetRow];
+                let pos = data.correctPositions;
+                let num = data.correctNumbers;
 
-            circles.forEach((circle) => {
-                if (pos > 0) {
-                    circle.className = "w-3 h-3 rounded-full bg-positive";
-                    pos--;
-                } else if (num > 0) {
-                    circle.className = "w-3 h-3 rounded-full bg-yellow-400";
-                    num--;
+                circles.forEach((circle) => {
+                    if (pos > 0) {
+                        circle.className = "w-3 h-3 rounded-full bg-positive";
+                        pos--;
+                    } else if (num > 0) {
+                        circle.className = "w-3 h-3 rounded-full bg-yellow-400";
+                        num--;
+                    }
+                });
+
+                if (data.correctPositions === COLS) {
+                    this._submit();
                 }
-            });
-
-            if (data.correctPositions === COLS) {
-                this._submit__();
             }
-        });
+        );
     }
 
-    private _submit__(): void {
+    private _submit(): void {
         if (this._submitted) return;
         this._submitted = true;
-        this._clearTimer__();
+        this.clearTimer();
 
         this._socket.emit(SOCKET_EVENTS.GAMES.SKOCKO.SUBMIT, {
             gameId: this._gameData.gameId,
@@ -223,25 +226,26 @@ export class Skocko extends Page {
         });
     }
 
-    private _timeExpired__(): void {
-        this._submit__();
+    private _timeExpired(): void {
+        this._submit();
     }
 
-    private _receiveResult__(): void {
-        this.addSocketEvents__(SOCKET_EVENTS.GAMES.SKOCKO.SUCCESS, (result) => {
-            const combination: number[] = this._store.getState__()?.gameState.skocko ?? [];
+    private _receiveResult(): void {
+        this.addSocketEvents(SOCKET_EVENTS.GAMES.SKOCKO.SUCCESS, (result) => {
+            const combination: number[] = this._store.getState()?.gameState.skocko ?? [];
             const combinationText = combination.map((i) => SYMBOL_NAMES[i]).join(" - ");
-            this._partial.showModal__({
+            this._partial.showModal({
                 title: "Igra gotova!",
                 text: `Osvojili ste ${result.data} poena`,
                 solution: `Kombinacija: ${combinationText}`,
                 primaryText: "Zatvori",
                 secondaryText: "Sledeće",
-                secondaryAction: () => this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
-                    gameId: this._gameData.gameId,
-                    gameKey: GAME_KEYS.KO_ZNA_ZNA,
-                    playerId: this._socket.id,
-                }),
+                secondaryAction: () =>
+                    this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
+                        gameId: this._gameData.gameId,
+                        gameKey: GAME_KEYS.KO_ZNA_ZNA,
+                        playerId: this._socket.id,
+                    }),
             });
         });
     }

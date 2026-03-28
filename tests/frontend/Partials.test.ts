@@ -22,51 +22,51 @@ beforeEach(() => {
     setupModalDOM();
 });
 
-// ── showModal__ ───────────────────────────────────────────────────────────────
+// ── showModal ───────────────────────────────────────────────────────────────
 
-describe("Partial.showModal__", () => {
+describe("Partial.showModal", () => {
     test("sets title and text", () => {
         const partial = new Partial();
-        partial.showModal__({ title: "Test Title", text: "Test Body" });
+        partial.showModal({ title: "Test Title", text: "Test Body" });
         expect(document.querySelector<HTMLElement>("#modalTitle")!.innerText).toBe("Test Title");
         expect(document.querySelector<HTMLElement>("#modalText")!.innerText).toBe("Test Body");
     });
 
     test("removes 'hidden' from the overlay", () => {
         const partial = new Partial();
-        partial.showModal__({ title: "T", text: "B" });
+        partial.showModal({ title: "T", text: "B" });
         expect(document.querySelector("#modalOverlay")!.classList.contains("hidden")).toBe(false);
     });
 
     test("shows solution box when solution is provided", () => {
         const partial = new Partial();
-        partial.showModal__({ title: "T", text: "B", solution: "42" });
+        partial.showModal({ title: "T", text: "B", solution: "42" });
         expect(document.querySelector("#modalSolution")!.classList.contains("hidden")).toBe(false);
         expect(document.querySelector<HTMLElement>("#modalSolutionText")!.innerText).toBe("42");
     });
 
     test("hides solution box when no solution is provided", () => {
         const partial = new Partial();
-        partial.showModal__({ title: "T", text: "B" });
+        partial.showModal({ title: "T", text: "B" });
         expect(document.querySelector("#modalSolution")!.classList.contains("hidden")).toBe(true);
     });
 
     test("shows spinner when spinner:true", () => {
         const partial = new Partial();
-        partial.showModal__({ title: "T", text: "B", spinner: true });
+        partial.showModal({ title: "T", text: "B", spinner: true });
         expect(document.querySelector("#modalLoadingAnimation")!.classList.contains("hidden")).toBe(false);
     });
 
     test("hides spinner by default", () => {
         const partial = new Partial();
-        partial.showModal__({ title: "T", text: "B" });
+        partial.showModal({ title: "T", text: "B" });
         expect(document.querySelector("#modalLoadingAnimation")!.classList.contains("hidden")).toBe(true);
     });
 
     test("shows primary button and fires primaryAction on click", () => {
         const partial = new Partial();
         const action = vi.fn();
-        partial.showModal__({ title: "T", text: "B", primaryText: "OK", primaryAction: action });
+        partial.showModal({ title: "T", text: "B", primaryText: "OK", primaryAction: action });
 
         const btn = document.querySelector<HTMLButtonElement>("#modalPrimary")!;
         expect(btn.classList.contains("hidden")).toBe(false);
@@ -78,21 +78,21 @@ describe("Partial.showModal__", () => {
 
     test("primary button click hides the modal", () => {
         const partial = new Partial();
-        partial.showModal__({ title: "T", text: "B", primaryText: "OK" });
+        partial.showModal({ title: "T", text: "B", primaryText: "OK" });
         document.querySelector<HTMLButtonElement>("#modalPrimary")!.click();
         expect(document.querySelector("#modalOverlay")!.classList.contains("hidden")).toBe(true);
     });
 
     test("hides primary button when no primaryText given", () => {
         const partial = new Partial();
-        partial.showModal__({ title: "T", text: "B" });
+        partial.showModal({ title: "T", text: "B" });
         expect(document.querySelector("#modalPrimary")!.classList.contains("hidden")).toBe(true);
     });
 
     test("shows secondary button and fires secondaryAction on click", () => {
         const partial = new Partial();
         const action = vi.fn();
-        partial.showModal__({
+        partial.showModal({
             title: "T",
             text: "B",
             secondaryText: "Cancel",
@@ -105,13 +105,13 @@ describe("Partial.showModal__", () => {
         expect(action).toHaveBeenCalledOnce();
     });
 
-    test("re-calling showModal__ clears old button listeners before adding new ones", () => {
+    test("re-calling showModal clears old button listeners before adding new ones", () => {
         const partial = new Partial();
         const first = vi.fn();
         const second = vi.fn();
 
-        partial.showModal__({ title: "T", text: "B", primaryText: "OK", primaryAction: first });
-        partial.showModal__({ title: "T", text: "B", primaryText: "OK", primaryAction: second });
+        partial.showModal({ title: "T", text: "B", primaryText: "OK", primaryAction: first });
+        partial.showModal({ title: "T", text: "B", primaryText: "OK", primaryAction: second });
 
         document.querySelector<HTMLButtonElement>("#modalPrimary")!.click();
 
@@ -120,18 +120,18 @@ describe("Partial.showModal__", () => {
     });
 });
 
-// ── hideModal__ ───────────────────────────────────────────────────────────────
+// ── hideModal ───────────────────────────────────────────────────────────────
 
-describe("Partial.hideModal__", () => {
+describe("Partial.hideModal", () => {
     test("adds 'hidden' class to the overlay", () => {
         const partial = new Partial();
-        partial.showModal__({ title: "T", text: "B" });
-        partial.hideModal__();
+        partial.showModal({ title: "T", text: "B" });
+        partial.hideModal();
         expect(document.querySelector("#modalOverlay")!.classList.contains("hidden")).toBe(true);
     });
 
-    test("calling hideModal__ without showModal__ does not throw", () => {
+    test("calling hideModal without showModal does not throw", () => {
         const partial = new Partial();
-        expect(() => partial.hideModal__()).not.toThrow();
+        expect(() => partial.hideModal()).not.toThrow();
     });
 });

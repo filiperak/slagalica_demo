@@ -57,21 +57,21 @@ export class KoZnaZna extends Page {
             skipBtn: document.querySelector("#skip-btn")!,
         };
 
-        const state = this._store.getState__();
+        const state = this._store.getState();
         this._gameData = {
             questions: state?.gameState.koznazna ?? [],
             gameId: state?.gameId ?? "",
         };
 
-        this.initHeader__();
-        this._renderQuestion__();
-        this._registerSocketEvents__();
+        this.initHeader();
+        this._renderQuestion();
+        this._registerSocketEvents();
 
-        this.addEvents__(this._localDom.skipBtn, "click", this._handleSkip__.bind(this));
-        this.addEvents__(document.body, "timeExpired", this._timeExpired__.bind(this));
+        this.addEvents(this._localDom.skipBtn, "click", this._handleSkip.bind(this));
+        this.addEvents(document.body, "timeExpired", this._timeExpired.bind(this));
     }
 
-    private _renderQuestion__(): void {
+    private _renderQuestion(): void {
         const q = this._gameData.questions[this._qCounter];
         const total = this._gameData.questions.length;
 
@@ -80,7 +80,7 @@ export class KoZnaZna extends Page {
         this._localDom.optionsContainer.innerHTML = "";
         this._locked = false;
 
-        const options = this._shuffle__([...q.wrong, q.answer]);
+        const options = this._shuffle([...q.wrong, q.answer]);
 
         options.forEach((option) => {
             const btn = document.createElement("button");
@@ -92,12 +92,12 @@ export class KoZnaZna extends Page {
                 "rounded-lg transition-all active:scale-95 text-center leading-snug",
             ].join(" ");
 
-            this.addEvents__(btn, "click", () => this._handleAnswer__(btn, option));
+            this.addEvents(btn, "click", () => this._handleAnswer(btn, option));
             this._localDom.optionsContainer.appendChild(btn);
         });
     }
 
-    private _handleAnswer__(btn: HTMLButtonElement, selected: string): void {
+    private _handleAnswer(btn: HTMLButtonElement, selected: string): void {
         if (this._locked || this._submitted) return;
         this._locked = true;
 
@@ -112,7 +112,7 @@ export class KoZnaZna extends Page {
             });
         } else {
             btn.classList.add("bg-negative/20", "border-negative", "text-negative");
-            this._highlightCorrect__(correct);
+            this._highlightCorrect(correct);
             this._socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUBMIT, {
                 gameId: this._gameData.gameId,
                 points: -1,
@@ -120,19 +120,19 @@ export class KoZnaZna extends Page {
         }
 
         this._localDom.skipBtn.disabled = true;
-        setTimeout(() => this._advance__(), 900);
+        setTimeout(() => this._advance(), 900);
     }
 
-    private _handleSkip__(): void {
+    private _handleSkip(): void {
         if (this._locked || this._submitted) return;
         this._locked = true;
 
-        this._highlightCorrect__(this._gameData.questions[this._qCounter].answer);
+        this._highlightCorrect(this._gameData.questions[this._qCounter].answer);
         this._localDom.skipBtn.disabled = true;
-        setTimeout(() => this._advance__(), 900);
+        setTimeout(() => this._advance(), 900);
     }
 
-    private _highlightCorrect__(correct: string): void {
+    private _highlightCorrect(correct: string): void {
         const btns = this._localDom.optionsContainer.querySelectorAll<HTMLButtonElement>("button");
         btns.forEach((b) => {
             if (b.textContent === correct) {
@@ -141,51 +141,55 @@ export class KoZnaZna extends Page {
         });
     }
 
-    private _advance__(): void {
+    private _advance(): void {
         this._qCounter++;
         if (this._qCounter < this._gameData.questions.length) {
             this._localDom.skipBtn.disabled = false;
-            this._renderQuestion__();
+            this._renderQuestion();
         } else {
-            this._finish__();
+            this._finish();
         }
     }
 
-    private _finish__(): void {
+    private _finish(): void {
         if (this._submitted) return;
         this._submitted = true;
-        this._clearTimer__();
+        this.clearTimer();
         this._socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.END, {
             gameId: this._gameData.gameId,
         });
     }
 
-    private _timeExpired__(): void {
-        this._finish__();
+    private _timeExpired(): void {
+        this._finish();
     }
 
-    private _registerSocketEvents__(): void {
-        this.addSocketEvents__(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.ADD_POINTS, (data: { data: number }) => {
-            this._score = data.data;
-            this._localDom.runningScore.textContent = `${this._score} poena`;
-        });
+    private _registerSocketEvents(): void {
+        this.addSocketEvents(
+            SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.ADD_POINTS,
+            (data: { data: number }) => {
+                this._score = data.data;
+                this._localDom.runningScore.textContent = `${this._score} poena`;
+            }
+        );
 
-        this.addSocketEvents__(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUCCESS, (result: { data: number }) => {
-            this._partial.showModal__({
+        this.addSocketEvents(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUCCESS, (result: { data: number }) => {
+            this._partial.showModal({
                 title: "Igra gotova!",
                 text: `Osvojili ste ${result.data} poena`,
                 primaryText: "Zatvori",
                 secondaryText: "Sledeće",
-                secondaryAction: () => this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
-                    gameId: this._gameData.gameId,
-                    gameKey: GAME_KEYS.ASOCIJACIJE,
-                    playerId: this._socket.id,
-                }),
+                secondaryAction: () =>
+                    this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
+                        gameId: this._gameData.gameId,
+                        gameKey: GAME_KEYS.ASOCIJACIJE,
+                        playerId: this._socket.id,
+                    }),
             });
         });
     }
 
-    private _shuffle__<T>(arr: T[]): T[] {
+    private _shuffle<T>(arr: T[]): T[] {
         return arr.sort(() => Math.random() - 0.5);
     }
 }

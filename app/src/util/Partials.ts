@@ -53,7 +53,7 @@ export class Partial {
         this._events = [];
     }
 
-    showModal__({
+    showModal({
         title,
         text,
         solution,
@@ -83,7 +83,7 @@ export class Partial {
             this._elements.primaryBtn.innerText = primaryText;
             toggle(this._elements.primaryBtn, true);
             this._addEvent(this._elements.primaryBtn, "click", () => {
-                this.hideModal__();
+                this.hideModal();
                 primaryAction?.();
             });
         } else {
@@ -94,7 +94,7 @@ export class Partial {
             this._elements.secondaryBtn.innerText = secondaryText;
             toggle(this._elements.secondaryBtn, true);
             this._addEvent(this._elements.secondaryBtn, "click", () => {
-                this.hideModal__();
+                this.hideModal();
                 secondaryAction?.();
             });
         } else {
@@ -104,12 +104,10 @@ export class Partial {
         this._elements.overlay.classList.remove("hidden");
     }
 
-    hideModal__() {
+    hideModal() {
         this._clearEvents();
         this._elements.overlay.classList.add("hidden");
     }
 
-    showBanner(){
-        
-    }
+    showBanner() {}
 }

@@ -7,24 +7,24 @@ describe('Store', () => {
         store = new Store();
     });
 
-    test('getState__ returns null initially', () => {
-        expect(store.getState__()).toBeNull();
+    test('getState returns null initially', () => {
+        expect(store.getState()).toBeNull();
     });
 
-    test('setState__ updates the state', () => {
+    test('setState updates the state', () => {
         const state = { gameId: 'g1' } as GameState;
-        store.setState__(state);
-        expect(store.getState__()).toBe(state);
+        store.setState(state);
+        expect(store.getState()).toBe(state);
     });
 
-    test('setState__ notifies all subscribers', () => {
+    test('setState notifies all subscribers', () => {
         const listenerA = vi.fn();
         const listenerB = vi.fn();
         store.subscribe(listenerA);
         store.subscribe(listenerB);
 
         const state = { gameId: 'g2' } as GameState;
-        store.setState__(state);
+        store.setState(state);
 
         expect(listenerA).toHaveBeenCalledOnce();
         expect(listenerA).toHaveBeenCalledWith(state);
@@ -37,7 +37,7 @@ describe('Store', () => {
         const unsub = store.subscribe(listener);
 
         unsub();
-        store.setState__({ gameId: 'g3' } as GameState);
+        store.setState({ gameId: 'g3' } as GameState);
 
         expect(listener).not.toHaveBeenCalled();
     });
@@ -49,7 +49,7 @@ describe('Store', () => {
         store.subscribe(listenerB);
 
         unsubA();
-        store.setState__({ gameId: 'g4' } as GameState);
+        store.setState({ gameId: 'g4' } as GameState);
 
         expect(listenerA).not.toHaveBeenCalled();
         expect(listenerB).toHaveBeenCalledOnce();

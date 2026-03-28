@@ -62,7 +62,7 @@ export class MojBroj extends Page {
             submitBtn: document.querySelector("#submitBtn")!,
         };
 
-        const state = this._store.getState__();
+        const state = this._store.getState();
         const mojBrojState = state?.gameState.mojBroj;
 
         this._gameData = {
@@ -71,33 +71,33 @@ export class MojBroj extends Page {
             gameId: state?.gameId ?? "",
         };
 
-        this._renderNumbers__();
-        this._renderOperators__();
-        this._startShuffle__();
-        this.initHeader__();
-        this._receiveResult__();
+        this._renderNumbers();
+        this._renderOperators();
+        this._startShuffle();
+        this.initHeader();
+        this._receiveResult();
 
-        this.addEvents__(this._localDom.deleteBtn, "click", this._deleteLast__.bind(this));
-        this.addEvents__(this._localDom.stopBtn, "click", this._stopShuffle__.bind(this));
-        this.addEvents__(this._localDom.submitBtn, "click", this._submit__.bind(this));
-        this.addEvents__(document.body, "keydown", this._onKeyDown__.bind(this) as EventListener);
-        this.addEvents__(document.body, "keypress", this._onKeyPress__.bind(this) as EventListener);
-        this.addEvents__(document.body, "timeExpired", this._timeExpired__.bind(this));
+        this.addEvents(this._localDom.deleteBtn, "click", this._deleteLast.bind(this));
+        this.addEvents(this._localDom.stopBtn, "click", this._stopShuffle.bind(this));
+        this.addEvents(this._localDom.submitBtn, "click", this._submit.bind(this));
+        this.addEvents(document.body, "keydown", this._onKeyDown.bind(this) as EventListener);
+        this.addEvents(document.body, "keypress", this._onKeyPress.bind(this) as EventListener);
+        this.addEvents(document.body, "timeExpired", this._timeExpired.bind(this));
     }
 
-    private _startShuffle__(): void {
+    private _startShuffle(): void {
         const targetInterval = setInterval(() => {
             this._localDom.targetNumber.textContent = String(Math.floor(Math.random() * 900) + 99);
         }, 100);
         this._shuffleIntervals.push(targetInterval);
     }
 
-    private _renderNumbers__(): void {
+    private _renderNumbers(): void {
         const firstRow = this._gameData.numbers.slice(0, 6);
         const secondRow = this._gameData.numbers.slice(6, 8);
 
         firstRow.forEach((num, index) => {
-            const btn = this._createNumberBtn__(num, index);
+            const btn = this._createNumberBtn(num, index);
             const interval = setInterval(() => {
                 btn.textContent = String(Math.floor(Math.random() * 8) + 1);
             }, 100);
@@ -106,7 +106,7 @@ export class MojBroj extends Page {
         });
 
         secondRow.forEach((num, index) => {
-            const btn = this._createNumberBtn__(num, 6 + index);
+            const btn = this._createNumberBtn(num, 6 + index);
             const largeNums = [10, 15, 20, 25, 50];
             const interval = setInterval(() => {
                 btn.textContent = String(largeNums[Math.floor(Math.random() * largeNums.length)]);
@@ -116,7 +116,7 @@ export class MojBroj extends Page {
         });
     }
 
-    private _createNumberBtn__(value: number, index: number): HTMLButtonElement {
+    private _createNumberBtn(value: number, index: number): HTMLButtonElement {
         const btn = document.createElement("button");
         btn.id = `num-btn-${index}`;
         btn.disabled = true;
@@ -131,12 +131,12 @@ export class MojBroj extends Page {
             "font-bold text-base transition-all active:scale-95 shadow-sm",
         ].join(" ");
 
-        this.addEvents__(btn, "click", () => this._pushNumber__(btn, value));
+        this.addEvents(btn, "click", () => this._pushNumber(btn, value));
         this._numberBtns.push(btn);
         return btn;
     }
 
-    private _renderOperators__(): void {
+    private _renderOperators(): void {
         OPERATORS.forEach((op) => {
             const btn = document.createElement("button");
             btn.textContent = op;
@@ -148,12 +148,12 @@ export class MojBroj extends Page {
                 "font-bold text-base transition-all active:scale-95",
             ].join(" ");
 
-            this.addEvents__(btn, "click", () => this._pushOperator__(op));
+            this.addEvents(btn, "click", () => this._pushOperator(op));
             this._localDom.operatorBtns.appendChild(btn);
         });
     }
 
-    private _stopShuffle__(): void {
+    private _stopShuffle(): void {
         this._shuffleIntervals.forEach(clearInterval);
         this._shuffleIntervals = [];
         this._shuffling = false;
@@ -168,28 +168,28 @@ export class MojBroj extends Page {
         this._localDom.submitBtn.classList.remove("hidden");
     }
 
-    private _pushNumber__(btn: HTMLButtonElement, value: number): void {
+    private _pushNumber(btn: HTMLButtonElement, value: number): void {
         if (this._shuffling || this._submitted) return;
 
         const last = this._combination[this._combination.length - 1];
-        if (!this._validateNext__(last, String(value))) return;
+        if (!this._validateNext(last, String(value))) return;
 
         this._combination.push(String(value));
         btn.classList.add("invisible");
-        this._renderExpression__();
+        this._renderExpression();
     }
 
-    private _pushOperator__(op: string): void {
+    private _pushOperator(op: string): void {
         if (this._shuffling || this._submitted) return;
 
         const last = this._combination[this._combination.length - 1];
-        if (!this._validateNext__(last, op)) return;
+        if (!this._validateNext(last, op)) return;
 
         this._combination.push(op);
-        this._renderExpression__();
+        this._renderExpression();
     }
 
-    private _deleteLast__(): void {
+    private _deleteLast(): void {
         if (this._combination.length === 0 || this._submitted) return;
 
         const last = this._combination.pop()!;
@@ -205,14 +205,14 @@ export class MojBroj extends Page {
             }
         }
 
-        this._renderExpression__();
+        this._renderExpression();
     }
 
-    private _renderExpression__(): void {
+    private _renderExpression(): void {
         this._localDom.expressionDisplay.textContent = this._combination.join(" ");
     }
 
-    private _validateNext__(last: string | undefined, next: string): boolean {
+    private _validateNext(last: string | undefined, next: string): boolean {
         const isNumber = (s: string) => !OPERATORS.includes(s);
 
         if (last === undefined) {
@@ -225,10 +225,10 @@ export class MojBroj extends Page {
         return isNumber(next) || next === "(";
     }
 
-    private _submit__(): void {
+    private _submit(): void {
         if (this._submitted) return;
         this._submitted = true;
-        this._clearTimer__();
+        this.clearTimer();
 
         this._socket.emit(SOCKET_EVENTS.GAMES.MOJ_BROJ.SUBMIT, {
             gameId: this._gameData.gameId,
@@ -236,25 +236,25 @@ export class MojBroj extends Page {
         });
     }
 
-    private _onKeyDown__(e: KeyboardEvent): void {
+    private _onKeyDown(e: KeyboardEvent): void {
         if (e.key === " " && this._shuffling) {
             e.preventDefault();
-            this._stopShuffle__();
+            this._stopShuffle();
             return;
         }
         if (this._shuffling || this._submitted) return;
-        if (e.key === "Backspace") this._deleteLast__();
-        if (e.key === "Enter") this._submit__();
+        if (e.key === "Backspace") this._deleteLast();
+        if (e.key === "Enter") this._submit();
     }
 
-    private _onKeyPress__(e: KeyboardEvent): void {
+    private _onKeyPress(e: KeyboardEvent): void {
         if (this._shuffling || this._submitted) return;
         if (["+", "-", "*", "/", "(", ")"].includes(e.key)) {
-            this._pushOperator__(e.key);
+            this._pushOperator(e.key);
         }
     }
 
-    private _timeExpired__(): void {
+    private _timeExpired(): void {
         this._submitted = true;
         this._socket.emit(SOCKET_EVENTS.GAMES.MOJ_BROJ.SUBMIT, {
             gameId: this._gameData.gameId,
@@ -262,20 +262,21 @@ export class MojBroj extends Page {
         });
     }
 
-    private _receiveResult__(): void {
-        this.addSocketEvents__(SOCKET_EVENTS.GAMES.MOJ_BROJ.SUCCESS, (result) => {
-            const solution = this._store.getState__()?.gameState.mojBroj?.solution ?? "";
-            this._partial.showModal__({
+    private _receiveResult(): void {
+        this.addSocketEvents(SOCKET_EVENTS.GAMES.MOJ_BROJ.SUCCESS, (result) => {
+            const solution = this._store.getState()?.gameState.mojBroj?.solution ?? "";
+            this._partial.showModal({
                 title: "Igra gotova!",
                 text: `Osvojili ste ${result.data} poena`,
                 solution: `Rešenje: ${solution}`,
                 primaryText: "Zatvori",
                 secondaryText: "Sledeće",
-                secondaryAction: () => this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
-                    gameId: this._gameData.gameId,
-                    gameKey: GAME_KEYS.SPOJNICE,
-                    playerId: this._socket.id,
-                }),
+                secondaryAction: () =>
+                    this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
+                        gameId: this._gameData.gameId,
+                        gameKey: GAME_KEYS.SPOJNICE,
+                        playerId: this._socket.id,
+                    }),
             });
         });
     }

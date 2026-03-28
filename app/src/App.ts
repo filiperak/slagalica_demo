@@ -49,7 +49,7 @@ export default class App {
             asocijacije: new Asocijacije(this._socket, this._store, this, this._partial),
         };
 
-        this._addSocketEvents__();
+        this.addSocketEvents();
     }
 
     init() {
@@ -59,7 +59,7 @@ export default class App {
 
     go(page: keyof Views) {
         if (this._previousView) {
-            this._previousView.dispose__();
+            this._previousView.dispose();
         }
 
         this._views[page].init();
@@ -68,16 +68,16 @@ export default class App {
 
     //IMPLEMENT NEXT(PAGE) AND CREATE nAVIGATORO CLASS
 
-    _addSocketEvents__() {
+    addSocketEvents() {
         this._socket.on(SOCKET_EVENTS.STATE.START_GAME, ({ game }) => {
-            this._store.setState__(game);
-            this._partial.hideModal__();
+            this._store.setState(game);
+            this._partial.hideModal();
             this.go(VIEWS.MENU);
         });
 
         this._socket.on(SOCKET_EVENTS.STATE.START_SINGLE_PLAYER, ({ game }) => {
-            this._store.setState__(game);
-            this._partial.hideModal__();
+            this._store.setState(game);
+            this._partial.hideModal();
             this.go(VIEWS.MENU);
         });
 
@@ -87,7 +87,7 @@ export default class App {
         });
 
         this._socket.on(SOCKET_EVENTS.STATE.PLAYERS_STATE, (state) => {
-            this._store.setState__(state);
+            this._store.setState(state);
             console.log(state);
         });
 

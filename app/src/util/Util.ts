@@ -60,16 +60,16 @@ const sanitizeHTML = (html: string): string => {
  * @param target - The DOM element to dispatch from (optional).
  */
 export function emit<T>(name: string, detail: T, target: EventTarget = window): void {
-  const event = new CustomEvent<T>(name, {
-    detail,
-    bubbles: true,
-    cancelable: true,
-    composed: true, 
-  });
+    const event = new CustomEvent<T>(name, {
+        detail,
+        bubbles: true,
+        cancelable: true,
+        composed: true,
+    });
 
-  target.dispatchEvent(event);
+    target.dispatchEvent(event);
 }
 
 export function ping(name: string, target: EventTarget = document.body): void {
-  target.dispatchEvent(new Event(name, { bubbles: true }));
+    target.dispatchEvent(new Event(name, { bubbles: true }));
 }

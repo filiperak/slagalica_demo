@@ -18,20 +18,20 @@ vi.mock("socket.io-client", () => ({
 }));
 
 // Mock every page class — each is a constructor that returns a spy object
-class MockPage { init = vi.fn(); dispose__ = vi.fn() }
+class MockPage { init = vi.fn(); dispose = vi.fn() }
 
-vi.mock("../../app/src/pages/Loby",        () => ({ default:     class { init = vi.fn(); dispose__ = vi.fn() } }));
-vi.mock("../../app/src/pages/Menu",        () => ({ Menu:        class { init = vi.fn(); dispose__ = vi.fn() } }));
-vi.mock("../../app/src/pages/Slagalica",   () => ({ Slagalica:   class { init = vi.fn(); dispose__ = vi.fn() } }));
-vi.mock("../../app/src/pages/MojBroj",     () => ({ MojBroj:     class { init = vi.fn(); dispose__ = vi.fn() } }));
-vi.mock("../../app/src/pages/Spojnice",    () => ({ Spojnice:    class { init = vi.fn(); dispose__ = vi.fn() } }));
-vi.mock("../../app/src/pages/Skocko",      () => ({ Skocko:      class { init = vi.fn(); dispose__ = vi.fn() } }));
-vi.mock("../../app/src/pages/Koznazna",    () => ({ KoZnaZna:    class { init = vi.fn(); dispose__ = vi.fn() } }));
-vi.mock("../../app/src/pages/Asocijacije", () => ({ Asocijacije: class { init = vi.fn(); dispose__ = vi.fn() } }));
+vi.mock("../../app/src/pages/Loby",        () => ({ default:     class { init = vi.fn(); dispose = vi.fn() } }));
+vi.mock("../../app/src/pages/Menu",        () => ({ Menu:        class { init = vi.fn(); dispose = vi.fn() } }));
+vi.mock("../../app/src/pages/Slagalica",   () => ({ Slagalica:   class { init = vi.fn(); dispose = vi.fn() } }));
+vi.mock("../../app/src/pages/MojBroj",     () => ({ MojBroj:     class { init = vi.fn(); dispose = vi.fn() } }));
+vi.mock("../../app/src/pages/Spojnice",    () => ({ Spojnice:    class { init = vi.fn(); dispose = vi.fn() } }));
+vi.mock("../../app/src/pages/Skocko",      () => ({ Skocko:      class { init = vi.fn(); dispose = vi.fn() } }));
+vi.mock("../../app/src/pages/Koznazna",    () => ({ KoZnaZna:    class { init = vi.fn(); dispose = vi.fn() } }));
+vi.mock("../../app/src/pages/Asocijacije", () => ({ Asocijacije: class { init = vi.fn(); dispose = vi.fn() } }));
 
-// Partial mock — only hideModal__ is used by App
+// Partial mock — only hideModal is used by App
 vi.mock("../../app/src/util/Partials", () => ({
-    Partial: class { showModal__ = vi.fn(); hideModal__ = vi.fn() },
+    Partial: class { showModal = vi.fn(); hideModal = vi.fn() },
 }));
 
 // ThemeService is called in constructor — mock to avoid DOM side-effects
@@ -56,24 +56,24 @@ describe("App.go", () => {
         expect(app._views.menu.init).toHaveBeenCalledOnce();
     });
 
-    test("calls dispose__() on the previously active view when navigating away", () => {
+    test("calls dispose() on the previously active view when navigating away", () => {
         const app = new App();
         app.go(VIEWS.MENU as any);
         // @ts-expect-error
         const menuPage = app._views.menu;
 
         app.go(VIEWS.SLAGALICA as any);
-        expect(menuPage.dispose__).toHaveBeenCalledOnce();
+        expect(menuPage.dispose).toHaveBeenCalledOnce();
     });
 
-    test("does not call dispose__ on the first navigation (no previous view)", () => {
+    test("does not call dispose on the first navigation (no previous view)", () => {
         const app = new App();
         // @ts-expect-error
         const lobyPage = app._views.loby;
 
         app.go(VIEWS.LOBY as any);
         // first go call — no previous view to dispose
-        expect(lobyPage.dispose__).not.toHaveBeenCalled();
+        expect(lobyPage.dispose).not.toHaveBeenCalled();
     });
 });
 
@@ -85,7 +85,7 @@ describe("App socket events", () => {
         socketHandlers[SOCKET_EVENTS.STATE.START_GAME]({ game: mockGame });
 
         // @ts-expect-error
-        expect(app._store.getState__()).toBe(mockGame);
+        expect(app._store.getState()).toBe(mockGame);
         // @ts-expect-error
         expect(app._views.menu.init).toHaveBeenCalled();
     });
@@ -97,7 +97,7 @@ describe("App socket events", () => {
         socketHandlers[SOCKET_EVENTS.STATE.START_SINGLE_PLAYER]({ game: mockGame });
 
         // @ts-expect-error
-        expect(app._store.getState__()).toBe(mockGame);
+        expect(app._store.getState()).toBe(mockGame);
         // @ts-expect-error
         expect(app._views.menu.init).toHaveBeenCalled();
     });
@@ -121,6 +121,6 @@ describe("App socket events", () => {
         socketHandlers[SOCKET_EVENTS.STATE.PLAYERS_STATE](state);
 
         // @ts-expect-error
-        expect(app._store.getState__()).toBe(state);
+        expect(app._store.getState()).toBe(state);
     });
 });

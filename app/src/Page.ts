@@ -51,7 +51,7 @@ export default abstract class Page {
         this._socketEvents = [];
     }
 
-    dispose__() {
+    dispose() {
         this._events.forEach(({ element, event, callback }) => {
             if (element) element.removeEventListener(event, callback);
         });
@@ -68,44 +68,45 @@ export default abstract class Page {
             this._unsubStore = null;
         }
 
-        this._clearTimer__();
+        this.clearTimer();
         this._domElements.gameHeader.innerHTML = "";
         this._headerTimerEl = null;
         this._headerProgressEl = null;
     }
 
-    render__(state: GameState): void {}
+    render(state: GameState): void {}
 
-    addEvents__(element: HTMLElement, event: string, callback: EventListener): void {
+    addEvents(element: HTMLElement, event: string, callback: EventListener): void {
         this._events.push({ element, event, callback });
         element.addEventListener(event, callback);
     }
 
-    addSocketEvents__(name: string, callback: (...args: any[]) => void): void {
+    addSocketEvents(name: string, callback: (...args: any[]) => void): void {
         this._socketEvents.push({ eventName: name, eventHandler: callback });
         this._socket.on(name, callback);
     }
 
-    private _onTimerExpired__(): void {
-        this._clearTimer__();
-        ping("timeExpired")
+    private _onTimerExpired(): void {
+        this.clearTimer();
+        ping("timeExpired");
     }
 
-    // protected _next__(): void {
-    //     console.warn("_next__() not yet implemented — add logic here.");
+    // protected _next(): void {
+    //     console.warn("_next() not yet implemented — add logic here.");
     // }
 
-    protected initHeader__(duration: number = 90): void {
+    protected initHeader(duration: number = 90): void {
         this._timerDuration = duration;
         this._timerRemaining = duration;
 
-        this._domElements.gameHeader.innerHTML = this._buildHeaderHTML__(duration);
+        this._domElements.gameHeader.innerHTML = this._buildHeaderHTML(duration);
         this._headerTimerEl = this._domElements.gameHeader.querySelector("#header-timer-count");
         this._headerProgressEl = this._domElements.gameHeader.querySelector("#header-progress-bar");
 
-        const backBtn = this._domElements.gameHeader.querySelector("#header-back-btn") as HTMLElement;
-        this.addEvents__(backBtn, "click", () => this._app.go(VIEWS.MENU));
-
+        const backBtn = this._domElements.gameHeader.querySelector(
+            "#header-back-btn"
+        ) as HTMLElement;
+        this.addEvents(backBtn, "click", () => this._app.go(VIEWS.MENU));
 
         this._timerInterval = setInterval(() => {
             this._timerRemaining--;
@@ -115,7 +116,6 @@ export default abstract class Page {
             }
 
             if (this._headerProgressEl) {
-
                 const pct = (this._timerRemaining / this._timerDuration) * 100;
                 this._headerProgressEl.style.width = `${pct}%`;
 
@@ -126,12 +126,12 @@ export default abstract class Page {
             }
 
             if (this._timerRemaining <= 0) {
-                this._onTimerExpired__();
+                this._onTimerExpired();
             }
         }, 1000);
     }
 
-    private _buildHeaderHTML__(duration: number): string {
+    private _buildHeaderHTML(duration: number): string {
         return `
             <div class="flex items-center gap-3 px-4 py-2 w-full max-w-2xl mx-auto border-b border-white/[0.06]">
 
@@ -166,18 +166,18 @@ export default abstract class Page {
         `;
     }
 
-    protected _clearTimer__(): void {
+    protected clearTimer(): void {
         if (this._timerInterval !== null) {
             clearInterval(this._timerInterval);
             this._timerInterval = null;
         }
     }
 
-    protected subscribeToStore__() {
+    protected subscribeToStore() {
         if (this._unsubStore) this._unsubStore();
-        this._unsubStore = this._store.subscribe((state) => this.render__(state));
+        this._unsubStore = this._store.subscribe((state) => this.render(state));
 
-        const currentState = this._store.getState__();
-        if (currentState) this.render__(currentState);
+        const currentState = this._store.getState();
+        if (currentState) this.render(currentState);
     }
 }

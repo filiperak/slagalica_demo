@@ -48,7 +48,7 @@ dist/           Build output — dist/server/ and dist/app/
 ### Client
 
 - **`App.ts`** — creates the Socket.io client, instantiates all `Page` subclasses, owns the `go(view)` router. Listens for game-level socket events and delegates to `Store`.
-- **`Page.ts`** — abstract base for every page. Owns event cleanup (`addEvents__` / `dispose__`), socket event cleanup, timer/header logic (`initHeader__`), and the store subscription pattern.
+- **`Page.ts`** — abstract base for every page. Owns event cleanup (`addEvents` / `dispose`), socket event cleanup, timer/header logic (`initHeader`), and the store subscription pattern.
 - **`Store.ts`** — holds `GameState`, a simple subscribe/notify pattern, and an `EventBus` for typed inter-component events.
 - **`pages/`** — one class per view (`Loby`, `Menu`, `Slagalica`, `MojBroj`). Each calls `super()`, then `init()` fetches its HTML partial, queries DOM into `_localDom`, and wires events.
 - **`ThemeService.ts`** — `get()` / `apply(theme)` / `toggle()`. Single source of truth for `data-theme` on `<html>` and `localStorage` key `user-theme`.
@@ -56,11 +56,11 @@ dist/           Build output — dist/server/ and dist/app/
 ### Page lifecycle
 
 ```
-App.go(view) → Page.dispose__() on previous  →  Page.init() on next
-                 removes all addEvents__ listeners     fetches HTML partial, queries DOM, adds events
+App.go(view) → Page.dispose() on previous  →  Page.init() on next
+                 removes all addEvents listeners     fetches HTML partial, queries DOM, adds events
 ```
 
-`addEvents__` registers listeners in `this._events[]`; `dispose__` removes them all. Always use `addEvents__` — never attach bare `addEventListener` on page elements (use bare `document.addEventListener` only for document-level concerns like closing dropdowns).
+`addEvents` registers listeners in `this._events[]`; `dispose` removes them all. Always use `addEvents` — never attach bare `addEventListener` on page elements (use bare `document.addEventListener` only for document-level concerns like closing dropdowns).
 
 ### HTML partials
 
@@ -89,6 +89,8 @@ Always reference `SOCKET_EVENTS` from `app/src/util/ClientConstants.ts` (client)
 
 ### Naming conventions
 
-- Private methods and private properties use `__` suffix (e.g. `_handleClick__`, `_localDom`).
+- Public methods: `methodName` (no prefix or suffix).
+- Private methods: `_methodName` (single leading underscore).
+- Private/protected properties: `_propertyName` (single leading underscore, e.g. `_localDom`).
 - Page DOM query results are collected into a typed `LocalDomElements` interface and stored in `this._localDom`.
 - Socket handlers on the server follow the pattern: `socket.on(EVENT, handler)` inside `SocketHandler`.

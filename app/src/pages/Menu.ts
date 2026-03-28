@@ -37,14 +37,14 @@ export class Menu extends Page {
     private _localDom!: LocalDomElements;
     private _partial: Partial;
 
-    constructor(socket: Socket, store: Store, app:App, partial: Partial) {
+    constructor(socket: Socket, store: Store, app: App, partial: Partial) {
         super(socket, store, app);
         this._partial = partial;
     }
 
     async init() {
         super.init();
-        
+
         const menuHTML = await FetchHTML("/views/menu.html");
         this._domElements.gameContainer.innerHTML = menuHTML;
 
@@ -79,69 +79,93 @@ export class Menu extends Page {
 
         // Subscription for state changes
         this._unsub = this._store.subscribe((state: GameState) => {
-            this.render__(state);
+            this.render(state);
         });
 
         // Initial render
-        const initialState = this._store.getState__();
+        const initialState = this._store.getState();
         if (initialState) {
             if (initialState.gameId?.startsWith("sg")) {
-                this._applySinglePlayerLayout__();
+                this.applySinglePlayerLayout();
             }
-            this.render__(initialState);
+            this.render(initialState);
         }
 
         // Events
-        this.addEvents__(this._localDom.leaveBtn, "click", this._leaveGame__.bind(this));
+        this.addEvents(this._localDom.leaveBtn, "click", this.leaveGame.bind(this));
 
         const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
         games.forEach((game) => {
             const btn = this._localDom[`${game}Btn` as keyof LocalDomElements] as HTMLElement;
             if (btn) {
-                this.addEvents__(btn, "click", this._openGame__.bind(this, game));
+                this.addEvents(btn, "click", this.openGame.bind(this, game));
             }
         });
 
         // Multiplayer game-over synchronization — listener lives only while Menu is active
-        const state = this._store.getState__();
+        const state = this._store.getState();
         const gameId = state?.gameId ?? "";
         if (gameId && !gameId.startsWith("sg")) {
             // Always listen for the server broadcast (fired only when both players are done)
-            this.addSocketEvents__(SOCKET_EVENTS.STATE.GAME_COMPLETED, (payload: { data: any }) => {
-                this._showGameOverModal__(payload.data);
+            this.addSocketEvents(SOCKET_EVENTS.STATE.GAME_COMPLETED, (payload: { data: any }) => {
+                this._showGameOverModal(payload.data);
             });
 
             // If this player has finished all their games, signal the server
             const localPlayer = state?.players.find((p: any) => p.id === this._socket.id);
-            const allDone = localPlayer && Object.values(localPlayer.score.games).every((g: any) => g.opend);
+            const allDone =
+                localPlayer && Object.values(localPlayer.score.games).every((g: any) => g.opend);
             if (allDone) {
                 this._socket.emit(SOCKET_EVENTS.STATE.PLAYER_FINISHED, { gameId });
             }
         }
     }
 
-    render__(state: GameState) {
+    render(state: GameState) {
         if (!state || !state.players) return;
         console.log("Rendering Menu with state:", state);
 
         const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
 
         // 1. Logic to disable buttons if game is already 'opend' for the local player
-        const localPlayer = state.players.find(p => p.id === this._socket.id);
+        const localPlayer = state.players.find((p) => p.id === this._socket.id);
 
         if (localPlayer) {
             games.forEach((gameKey) => {
-                const btn = this._localDom[`${gameKey}Btn` as keyof LocalDomElements] as HTMLButtonElement;
+                const btn = this._localDom[
+                    `${gameKey}Btn` as keyof LocalDomElements
+                ] as HTMLButtonElement;
                 if (btn) {
-                    const gameInfo = localPlayer.score.games[gameKey as keyof typeof localPlayer.score.games];
+                    const gameInfo =
+                        localPlayer.score.games[gameKey as keyof typeof localPlayer.score.games];
                     const isOpened = gameInfo?.opend ?? false;
 
                     if (isOpened) {
-                        btn.classList.add("opacity-50", "grayscale", "pointer-events-none", "cursor-not-allowed");
-                        btn.classList.remove("hover:border-brand/50", "hover:bg-surface-overlay", "cursor-pointer", "active:scale-[0.98]");
+                        btn.classList.add(
+                            "opacity-50",
+                            "grayscale",
+                            "pointer-events-none",
+                            "cursor-not-allowed"
+                        );
+                        btn.classList.remove(
+                            "hover:border-brand/50",
+                            "hover:bg-surface-overlay",
+                            "cursor-pointer",
+                            "active:scale-[0.98]"
+                        );
                     } else {
-                        btn.classList.remove("opacity-50", "grayscale", "pointer-events-none", "cursor-not-allowed");
-                        btn.classList.add("hover:border-brand/50", "hover:bg-surface-overlay", "cursor-pointer", "active:scale-[0.98]");
+                        btn.classList.remove(
+                            "opacity-50",
+                            "grayscale",
+                            "pointer-events-none",
+                            "cursor-not-allowed"
+                        );
+                        btn.classList.add(
+                            "hover:border-brand/50",
+                            "hover:bg-surface-overlay",
+                            "cursor-pointer",
+                            "active:scale-[0.98]"
+                        );
                     }
                 }
             });
@@ -161,7 +185,8 @@ export class Menu extends Page {
 
             // Update Individual Game Scores in Table
             games.forEach((gameKey) => {
-                const domKey = `${prefix}${gameKey.charAt(0).toUpperCase() + gameKey.slice(1)}` as keyof LocalDomElements;
+                const domKey =
+                    `${prefix}${gameKey.charAt(0).toUpperCase() + gameKey.slice(1)}` as keyof LocalDomElements;
                 const scoreEl = this._localDom[domKey] as HTMLElement;
 
                 if (scoreEl) {
@@ -172,20 +197,20 @@ export class Menu extends Page {
         });
     }
 
-    dispose__() {
-        super.dispose__();
+    dispose() {
+        super.dispose();
         if (this._unsub) {
             this._unsub();
             this._unsub = null;
         }
     }
 
-    _applySinglePlayerLayout__() {
-        document.querySelectorAll<HTMLElement>("[data-p1]").forEach(el => {
+    applySinglePlayerLayout() {
+        document.querySelectorAll<HTMLElement>("[data-p1]").forEach((el) => {
             el.classList.add("hidden");
         });
 
-        document.querySelectorAll<HTMLElement>(".game-row").forEach(row => {
+        document.querySelectorAll<HTMLElement>(".game-row").forEach((row) => {
             row.style.gridTemplateColumns = "1fr 5rem";
         });
 
@@ -196,9 +221,7 @@ export class Menu extends Page {
         if (totalsSection) totalsSection.style.gridTemplateColumns = "1fr";
     }
 
-
-
-    private _showGameOverModal__(data: { winnerPlayer: any; loser: any; draw: boolean }): void {
+    private _showGameOverModal(data: { winnerPlayer: any; loser: any; draw: boolean }): void {
         const { winnerPlayer, loser, draw } = data;
         const isWinner = winnerPlayer?.id === this._socket.id;
 
@@ -216,7 +239,7 @@ export class Menu extends Page {
             text = `${winnerPlayer?.name ?? "Protivnik"} je pobedio sa ${winnerPlayer?.score ?? 0} poena\nVaš rezultat: ${loser?.score ?? 0}`;
         }
 
-        this._partial.showModal__({
+        this._partial.showModal({
             title,
             text,
             primaryText: "Napusti igru",
@@ -227,9 +250,9 @@ export class Menu extends Page {
         });
     }
 
-    _leaveGame__() {
+    leaveGame() {
         // Using the inherited _partial from Page class for a cleaner exit
-        this._partial.showModal__({
+        this._partial.showModal({
             title: "Napuštanje",
             text: "Da li ste sigurni da želite da napustite partiju?",
             primaryText: "Da",
@@ -238,18 +261,19 @@ export class Menu extends Page {
                 this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
                 this._app.go(VIEWS.LOBY);
             },
-            secondaryAction: () => {}
+            secondaryAction: () => {},
         });
     }
 
-    _openGame__(gameKey: string) {
-        const state = this._store.getState__();
+    openGame(gameKey: string) {
+        const state = this._store.getState();
         console.log(state);
-        
-        const localPlayer = state?.players.find(p => p.id === this._socket.id);
-        
+
+        const localPlayer = state?.players.find((p) => p.id === this._socket.id);
+
         // Final guard: don't emit if already opened
-        const alreadyOpened = localPlayer?.score.games[gameKey as keyof typeof localPlayer.score.games]?.opend;
+        const alreadyOpened =
+            localPlayer?.score.games[gameKey as keyof typeof localPlayer.score.games]?.opend;
         if (alreadyOpened) return;
 
         console.log(`Menu requested game: ${gameKey}`);

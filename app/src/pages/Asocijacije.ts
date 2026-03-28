@@ -55,7 +55,7 @@ export class Asocijacije extends Page {
             finalInput: document.querySelector("#finalInput")!,
         };
 
-        const state = this._store.getState__();
+        const state = this._store.getState();
         const asocijacija = state?.gameState.asocijacije?.asocijacija;
 
         this._gameData = {
@@ -64,15 +64,19 @@ export class Asocijacije extends Page {
             gameId: state?.gameId ?? "",
         };
 
-        this._buildBoard__();
-        this.initHeader__();
-        this._receiveResult__();
+        this._buildBoard();
+        this.initHeader();
+        this._receiveResult();
 
-        this.addEvents__(this._localDom.finalInput, "keyup", this._onFinalInputKeyUp__.bind(this) as EventListener);
-        this.addEvents__(document.body, "timeExpired", this._timeExpired__.bind(this));
+        this.addEvents(
+            this._localDom.finalInput,
+            "keyup",
+            this._onFinalInputKeyUp.bind(this) as EventListener
+        );
+        this.addEvents(document.body, "timeExpired", this._timeExpired.bind(this));
     }
 
-    private _buildBoard__(): void {
+    private _buildBoard(): void {
         this._gameData.columns.forEach((col, colIndex) => {
             const column = document.createElement("div");
             column.className = "flex flex-col gap-1.5";
@@ -88,7 +92,7 @@ export class Asocijacije extends Page {
                     "transition-all",
                 ].join(" ");
 
-                this.addEvents__(card, "click", () => this._onCardClick__(card, colIndex, clue));
+                this.addEvents(card, "click", () => this._onCardClick(card, colIndex, clue));
                 cards.push(card);
                 column.appendChild(card);
             });
@@ -105,7 +109,8 @@ export class Asocijacije extends Page {
                 "focus:outline-none transition-all opacity-40",
             ].join(" ");
 
-            this.addEvents__(input, "keyup", ((e: KeyboardEvent) => this._onColumnInputKeyUp__(e, colIndex)) as EventListener);
+            this.addEvents(input, "keyup", ((e: KeyboardEvent) =>
+                this._onColumnInputKeyUp(e, colIndex)) as EventListener);
             this._columnInputs.push(input);
             column.appendChild(input);
 
@@ -113,14 +118,19 @@ export class Asocijacije extends Page {
         });
     }
 
-    private _onCardClick__(card: HTMLElement, colIndex: number, clue: string): void {
+    private _onCardClick(card: HTMLElement, colIndex: number, clue: string): void {
         if (card.dataset.revealed || this._submitted) return;
 
         card.textContent = clue;
         card.dataset.revealed = "1";
         card.classList.remove(
-            "bg-surface-raised", "border-white/[0.06]", "text-content-muted",
-            "hover:bg-surface-overlay", "hover:border-brand/40", "hover:text-white", "cursor-pointer"
+            "bg-surface-raised",
+            "border-white/[0.06]",
+            "text-content-muted",
+            "hover:bg-surface-overlay",
+            "hover:border-brand/40",
+            "hover:text-white",
+            "cursor-pointer"
         );
         card.classList.add("bg-brand/20", "border-brand/40", "text-white", "cursor-default");
 
@@ -131,7 +141,7 @@ export class Asocijacije extends Page {
         }
     }
 
-    private _onColumnInputKeyUp__(e: KeyboardEvent, colIndex: number): void {
+    private _onColumnInputKeyUp(e: KeyboardEvent, colIndex: number): void {
         if (e.key !== "Enter") return;
         if (this._columnSolved[colIndex] || this._submitted) return;
 
@@ -141,29 +151,29 @@ export class Asocijacije extends Page {
         if (value === this._gameData.columns[colIndex].rešenje) {
             this._columnSolved[colIndex] = true;
             this._points += 5;
-            this._markColumnSolved__(colIndex);
+            this._markColumnSolved(colIndex);
             this._localDom.finalInput.readOnly = false;
             this._localDom.finalInput.classList.remove("opacity-40");
         } else {
-            this._flashError__(input);
+            this._flashError(input);
         }
     }
 
-    private _onFinalInputKeyUp__(e: KeyboardEvent): void {
+    private _onFinalInputKeyUp(e: KeyboardEvent): void {
         if (e.key !== "Enter") return;
         if (this._submitted) return;
 
         const value = this._localDom.finalInput.value.trim().toUpperCase();
         if (value === this._gameData.konačnoRešenje) {
             this._points = 30;
-            this._revealAll__();
-            this._submit__();
+            this._revealAll();
+            this._submit();
         } else {
-            this._flashError__(this._localDom.finalInput);
+            this._flashError(this._localDom.finalInput);
         }
     }
 
-    private _markColumnSolved__(colIndex: number): void {
+    private _markColumnSolved(colIndex: number): void {
         const input = this._columnInputs[colIndex];
         input.readOnly = true;
         input.value = this._gameData.columns[colIndex].rešenje;
@@ -175,18 +185,29 @@ export class Asocijacije extends Page {
                 card.textContent = this._gameData.columns[colIndex].pojmovi[i];
                 card.dataset.revealed = "1";
                 card.classList.remove(
-                    "bg-surface-raised", "bg-brand/20", "border-white/[0.06]", "border-brand/40",
-                    "text-content-muted", "cursor-pointer",
-                    "hover:bg-surface-overlay", "hover:border-brand/40", "hover:text-white"
+                    "bg-surface-raised",
+                    "bg-brand/20",
+                    "border-white/[0.06]",
+                    "border-brand/40",
+                    "text-content-muted",
+                    "cursor-pointer",
+                    "hover:bg-surface-overlay",
+                    "hover:border-brand/40",
+                    "hover:text-white"
                 );
-                card.classList.add("bg-positive/20", "border-positive", "text-white", "cursor-default");
+                card.classList.add(
+                    "bg-positive/20",
+                    "border-positive",
+                    "text-white",
+                    "cursor-default"
+                );
             }, i * 60);
         });
     }
 
-    private _revealAll__(): void {
+    private _revealAll(): void {
         this._gameData.columns.forEach((_, i) => {
-            if (!this._columnSolved[i]) this._markColumnSolved__(i);
+            if (!this._columnSolved[i]) this._markColumnSolved(i);
         });
         const fi = this._localDom.finalInput;
         fi.readOnly = true;
@@ -194,7 +215,7 @@ export class Asocijacije extends Page {
         fi.classList.add("border-positive", "bg-positive/10", "text-positive");
     }
 
-    private _flashError__(input: HTMLInputElement): void {
+    private _flashError(input: HTMLInputElement): void {
         input.classList.add("border-negative", "bg-negative/10");
         input.classList.remove("border-white/[0.06]");
         setTimeout(() => {
@@ -204,10 +225,10 @@ export class Asocijacije extends Page {
         }, 500);
     }
 
-    private _submit__(): void {
+    private _submit(): void {
         if (this._submitted) return;
         this._submitted = true;
-        this._clearTimer__();
+        this.clearTimer();
 
         this._columnInputs.forEach((inp) => (inp.readOnly = true));
         this._localDom.finalInput.readOnly = true;
@@ -218,13 +239,13 @@ export class Asocijacije extends Page {
         });
     }
 
-    private _timeExpired__(): void {
-        this._submit__();
+    private _timeExpired(): void {
+        this._submit();
     }
 
-    private _receiveResult__(): void {
-        this.addSocketEvents__(SOCKET_EVENTS.GAMES.ASOCIJACIJE.SUCCESS, (result) => {
-            this._partial.showModal__({
+    private _receiveResult(): void {
+        this.addSocketEvents(SOCKET_EVENTS.GAMES.ASOCIJACIJE.SUCCESS, (result) => {
+            this._partial.showModal({
                 title: "Igra gotova!",
                 text: `Osvojili ste ${result.data} poena`,
                 solution: `Konačno rešenje: ${this._gameData.konačnoRešenje}`,

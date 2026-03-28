@@ -215,7 +215,11 @@ export const koznaznaDB: KoznaznaQuestion[] = [
     {
         question: "Šta znači akronim HTTP?",
         answer: "HyperText Transfer Protocol",
-        wrong: ["High Transfer Text Protocol", "HyperText Transmission Process", "Hyperlink Transfer Technology Platform"],
+        wrong: [
+            "High Transfer Text Protocol",
+            "HyperText Transmission Process",
+            "Hyperlink Transfer Technology Platform",
+        ],
     },
     {
         question: "Ko je izmislio World Wide Web?",

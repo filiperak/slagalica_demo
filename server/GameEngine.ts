@@ -79,7 +79,9 @@ export class Game {
     }
 
     bothPlayersFinished(): boolean {
-        return this.players.length >= 2 && this.players.every((p) => this.finishedPlayers.has(p.id));
+        return (
+            this.players.length >= 2 && this.players.every((p) => this.finishedPlayers.has(p.id))
+        );
     }
 
     isCompleted() {
@@ -329,7 +331,7 @@ export class Game {
     }
 
     solveMojBroj(numbers: number[], target: number) {
-        return "Nemamo broj Trenutno"
+        return "Nemamo broj Trenutno";
         let bestSolution = null;
         let closestDiff = Infinity;
         const memo = new Map();

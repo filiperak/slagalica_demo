@@ -62,7 +62,7 @@ export class Spojnice extends Page {
             board: document.querySelector("#spojniceBoard")!,
         };
 
-        const state = this._store.getState__();
+        const state = this._store.getState();
         const spojniceState = state?.gameState.spojnice;
 
         this._gameData = {
@@ -72,15 +72,19 @@ export class Spojnice extends Page {
         };
 
         this._localDom.title.textContent = this._gameData.title;
-        this._buildBoard__();
-        this.initHeader__();
-        this._receiveResult__();
+        this._buildBoard();
+        this.initHeader();
+        this._receiveResult();
 
-        this.addEvents__(this._localDom.board, "click", this._onBoardClick__.bind(this) as EventListener);
-        this.addEvents__(document.body, "timeExpired", this._timeExpired__.bind(this));
+        this.addEvents(
+            this._localDom.board,
+            "click",
+            this._onBoardClick.bind(this) as EventListener
+        );
+        this.addEvents(document.body, "timeExpired", this._timeExpired.bind(this));
     }
 
-    private _buildBoard__(): void {
+    private _buildBoard(): void {
         const leftItems = this._gameData.set.filter((_, i) => i % 2 === 0);
         const rightItems = this._gameData.set.filter((_, i) => i % 2 !== 0);
 
@@ -90,12 +94,12 @@ export class Spojnice extends Page {
         rightCol.className = "flex flex-col gap-2";
 
         leftItems.forEach((item) => {
-            const el = this._createCard__(item, "left");
+            const el = this._createCard(item, "left");
             leftCol.appendChild(el);
         });
 
         rightItems.forEach((item) => {
-            const el = this._createCard__(item, "right");
+            const el = this._createCard(item, "right");
             rightCol.appendChild(el);
         });
 
@@ -103,7 +107,7 @@ export class Spojnice extends Page {
         this._localDom.board.appendChild(rightCol);
     }
 
-    private _createCard__(item: SpojniceItem, side: "left" | "right"): HTMLElement {
+    private _createCard(item: SpojniceItem, side: "left" | "right"): HTMLElement {
         const el = document.createElement("div");
         el.dataset.id = String(item.id);
         el.dataset.side = side;
@@ -120,7 +124,7 @@ export class Spojnice extends Page {
         return el;
     }
 
-    private _onBoardClick__(e: MouseEvent): void {
+    private _onBoardClick(e: MouseEvent): void {
         if (this._submitted) return;
 
         const target = (e.target as HTMLElement).closest("[data-side]") as HTMLElement | null;
@@ -130,19 +134,19 @@ export class Spojnice extends Page {
         if (!card || card.matched) return;
 
         if (card.side === "left") {
-            this._selectLeft__(card);
+            this._selectLeft(card);
         } else if (this._phase === "pickRight" && card.side === "right") {
-            this._resolvePair__(card);
+            this._resolvePair(card);
         }
     }
 
-    private _selectLeft__(card: Card): void {
+    private _selectLeft(card: Card): void {
         if (this._selectedLeft === card) {
             // Deselect
             card.el.classList.remove("border-brand", "bg-surface-overlay");
             card.el.classList.add("border-white/[0.06]");
             this._selectedLeft = null;
-            this._setRightOpacity__(true);
+            this._setRightOpacity(true);
             return;
         }
 
@@ -155,32 +159,35 @@ export class Spojnice extends Page {
         card.el.classList.remove("border-white/[0.06]");
         this._selectedLeft = card;
         this._phase = "pickRight";
-        this._setRightOpacity__(false);
+        this._setRightOpacity(false);
     }
 
-    private _resolvePair__(rightCard: Card): void {
+    private _resolvePair(rightCard: Card): void {
         const leftCard = this._selectedLeft!;
         const correct = leftCard.id === rightCard.id;
 
-        this._markCard__(leftCard, correct);
-        this._markCard__(rightCard, correct);
+        this._markCard(leftCard, correct);
+        this._markCard(rightCard, correct);
 
         if (correct) this._correctPick++;
         this._pick++;
 
         this._selectedLeft = null;
         this._phase = "pickLeft";
-        this._setRightOpacity__(true);
+        this._setRightOpacity(true);
 
-        if (this._pick === 8) this._submit__();
+        if (this._pick === 8) this._submit();
     }
 
-    private _markCard__(card: Card, correct: boolean): void {
+    private _markCard(card: Card, correct: boolean): void {
         card.matched = true;
         card.el.classList.remove(
-            "border-white/[0.06]", "border-brand",
-            "bg-surface-raised", "bg-surface-overlay",
-            "opacity-50", "cursor-pointer"
+            "border-white/[0.06]",
+            "border-brand",
+            "bg-surface-raised",
+            "bg-surface-overlay",
+            "opacity-50",
+            "cursor-pointer"
         );
         card.el.classList.add(
             correct ? "bg-positive" : "bg-negative/20",
@@ -189,16 +196,16 @@ export class Spojnice extends Page {
         );
     }
 
-    private _setRightOpacity__(dim: boolean): void {
+    private _setRightOpacity(dim: boolean): void {
         this._cards
             .filter((c) => c.side === "right" && !c.matched)
             .forEach((c) => c.el.classList.toggle("opacity-50", dim));
     }
 
-    private _submit__(): void {
+    private _submit(): void {
         if (this._submitted) return;
         this._submitted = true;
-        this._clearTimer__();
+        this.clearTimer();
 
         this._socket.emit(SOCKET_EVENTS.GAMES.SPOJNICE.SUBMIT, {
             gameId: this._gameData.gameId,
@@ -206,23 +213,24 @@ export class Spojnice extends Page {
         });
     }
 
-    private _timeExpired__(): void {
-        this._submit__();
+    private _timeExpired(): void {
+        this._submit();
     }
 
-    private _receiveResult__(): void {
-        this.addSocketEvents__(SOCKET_EVENTS.GAMES.SPOJNICE.SUCCESS, (result) => {
-            this._partial.showModal__({
+    private _receiveResult(): void {
+        this.addSocketEvents(SOCKET_EVENTS.GAMES.SPOJNICE.SUCCESS, (result) => {
+            this._partial.showModal({
                 title: "Igra gotova!",
                 text: `Osvojili ste ${result.data} poena`,
                 solution: `Tačnih parova: ${this._correctPick} / 8`,
                 primaryText: "Zatvori",
                 secondaryText: "Sledeće",
-                secondaryAction: () => this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
-                    gameId: this._gameData.gameId,
-                    gameKey: GAME_KEYS.SKOCKO,
-                    playerId: this._socket.id,
-                }),
+                secondaryAction: () =>
+                    this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
+                        gameId: this._gameData.gameId,
+                        gameKey: GAME_KEYS.SKOCKO,
+                        playerId: this._socket.id,
+                    }),
             });
         });
     }

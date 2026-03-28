@@ -417,7 +417,9 @@ export class SocketHandler {
             this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
             const player = game.getPlayer(socket.id);
 
-            socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.ADD_POINTS, { data: player.score.games.koZnaZna.score });
+            socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.ADD_POINTS, {
+                data: player.score.games.koZnaZna.score,
+            });
         } catch (error) {
             console.error("Error in handleSubmitKoznazna:", error);
             socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
@@ -433,7 +435,9 @@ export class SocketHandler {
             }
 
             const player = game.getPlayer(socket.id);
-            socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUCCESS, { data: player.score.games.koZnaZna.score });
+            socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUCCESS, {
+                data: player.score.games.koZnaZna.score,
+            });
             this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
         } catch (error) {
             console.error("Error in handleEndKoznazna:", error);
@@ -510,9 +514,13 @@ export class SocketHandler {
                 if (game.finishedPlayers.has(otherPlayer.id)) {
                     // Remaining player was in the waiting state — send final result
                     const finalScore = game.checkWinner();
-                    this.io.to(otherPlayer.id).emit(SOCKET_EVENTS.STATE.GAME_COMPLETED, { data: finalScore });
+                    this.io
+                        .to(otherPlayer.id)
+                        .emit(SOCKET_EVENTS.STATE.GAME_COMPLETED, { data: finalScore });
                 } else {
-                    this.io.to(otherPlayer.id).emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
+                    this.io
+                        .to(otherPlayer.id)
+                        .emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
                 }
             } else {
                 this.cleanupGame(gameId);
@@ -536,9 +544,13 @@ export class SocketHandler {
                 if (game.finishedPlayers.has(otherPlayer.id)) {
                     // Remaining player was waiting for this player — send final result
                     const finalScore = game.checkWinner();
-                    this.io.to(otherPlayer.id).emit(SOCKET_EVENTS.STATE.GAME_COMPLETED, { data: finalScore });
+                    this.io
+                        .to(otherPlayer.id)
+                        .emit(SOCKET_EVENTS.STATE.GAME_COMPLETED, { data: finalScore });
                 } else {
-                    this.io.to(otherPlayer.id).emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
+                    this.io
+                        .to(otherPlayer.id)
+                        .emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
                 }
             } else {
                 this.cleanupGame(gameId);

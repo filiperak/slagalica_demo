@@ -19,9 +19,7 @@ interface LocalDomElements {
     themeToggleBtn: HTMLButtonElement;
 }
 
-interface HeaderDomElements {
-
-}
+interface HeaderDomElements {}
 
 export default class Loby extends Page {
     private _localDom!: LocalDomElements;
@@ -33,7 +31,7 @@ export default class Loby extends Page {
 
     private _partial: Partial;
 
-    constructor(socket: Socket, partial: Partial, store: Store, app:App) {
+    constructor(socket: Socket, partial: Partial, store: Store, app: App) {
         super(socket, store, app);
         this._partial = partial;
 
@@ -62,56 +60,55 @@ export default class Loby extends Page {
 
         this._headerActions = {
             settings: {
-                icon:"",
-                action:"",
-                option: ""
+                icon: "",
+                action: "",
+                option: "",
             },
             language: {
-                icon:"",
-                action:"",
-                option:"",
+                icon: "",
+                action: "",
+                option: "",
             },
             theme: {
-                icon:"",
-                action:"",
-                option:"", 
+                icon: "",
+                action: "",
+                option: "",
             },
             sound: {
-                icon:"",
-                action:"",
-                option:"", 
-            }
+                icon: "",
+                action: "",
+                option: "",
+            },
+        };
 
-        }
+        this.setUsername();
 
-        this._setUsername__();
+        this.addEvents(this._localDom.randomGame, "click", this.playRandomGame.bind(this));
+        this.addEvents(this._localDom.singlePlayer, "click", this.playSinglePlayer.bind(this));
+        this.addEvents(this._localDom.joinGame, "click", this.joinViaCode.bind(this));
+        this.addEvents(this._localDom.usernameInp, "input", this.changeUsername.bind(this));
+        this.addEvents(this._localDom.createGameBtn, "click", this.setGameId.bind(this));
 
-        this.addEvents__(this._localDom.randomGame, "click", this._playRandomGame__.bind(this));
-        this.addEvents__(this._localDom.singlePlayer, "click", this._playSinglePlayer__.bind(this));
-        this.addEvents__(this._localDom.joinGame, "click", this._joinViaCode__.bind(this));
-        this.addEvents__(this._localDom.usernameInp, "input", this._changeUsername__.bind(this));
-        this.addEvents__(this._localDom.createGameBtn, "click", this._setGameId__.bind(this));
-
-        this._updateThemeIcon__();
-        this.addEvents__(this._localDom.themeToggleBtn, "click", () => {
+        this.updateThemeIcon();
+        this.addEvents(this._localDom.themeToggleBtn, "click", () => {
             ThemeService.toggle();
-            this._updateThemeIcon__();
+            this.updateThemeIcon();
         });
-        this._handleLangSelectionClick__()
+        this.handleLangSelectionClick();
     }
 
-    _playRandomGame__() {
+    playRandomGame() {
         if (this._localDom.usernameInp && this._localDom.usernameInp.value) {
             this._socket.emit("enterRoom", {
                 name: this._localDom.usernameInp.value,
                 game: this._gameId,
             });
-            this._partial.showModal__({
+            this._partial.showModal({
                 title: "Čekamo protivnika!",
                 text: "Pogrešan kod za sobu. Pokušajte ponovo.",
                 primaryText: "Odustani",
                 spinner: true,
-                primaryAction: this._leaveGame__.bind(this),
+                primaryAction: this.leaveGame.bind(this),
             });
         } else {
             this._localDom.usernameInp?.classList.add("missing-username-input");
@@ -119,19 +116,19 @@ export default class Loby extends Page {
         }
     }
 
-    _playSinglePlayer__() {
+    playSinglePlayer() {
         if (this._localDom.usernameInp && this._localDom.usernameInp.value) {
             this._socket.emit(SOCKET_EVENTS.CORE.ENTER_SINGLE_PLAYER, {
                 name: this._localDom.usernameInp.value,
                 game: null,
             });
 
-            this._partial.showModal__({
+            this._partial.showModal({
                 title: "Čekamo protivnika!",
                 text: `Podelite ovaj kod: ${this._dedicatedGameId} sa saigračem`,
                 primaryText: "Odustani",
                 spinner: true,
-                primaryAction: this._leaveGame__.bind(this),
+                primaryAction: this.leaveGame.bind(this),
             });
         } else {
             this._localDom.usernameInp?.classList.add("missing-username-input");
@@ -139,19 +136,19 @@ export default class Loby extends Page {
         }
     }
 
-    _joinViaCode__(){
+    joinViaCode() {
         if (this._localDom.usernameInp && this._localDom.usernameInp.value) {
             this._socket.emit(SOCKET_EVENTS.CORE.ENTER_ROOM, {
                 name: this._localDom.usernameInp.value,
                 game: this._localDom.gameIdInput.value,
             });
 
-            this._partial.showModal__({
+            this._partial.showModal({
                 title: "Igra se učitava!",
                 text: `Podelite ovaj kod: ${this._dedicatedGameId} sa saigračem`,
                 primaryText: "Odustani",
                 spinner: true,
-                primaryAction: this._leaveGame__.bind(this),
+                primaryAction: this.leaveGame.bind(this),
             });
         } else {
             this._localDom.usernameInp?.classList.add("missing-username-input");
@@ -159,7 +156,7 @@ export default class Loby extends Page {
         }
     }
 
-    _setUsername__() {
+    setUsername() {
         const saved = localStorage.getItem("slagalicaUsername");
 
         if (saved) {
@@ -171,51 +168,54 @@ export default class Loby extends Page {
         this._localDom.usernameInp.value = this._username;
     }
 
-    _changeUsername__(event: Event) {
+    changeUsername(event: Event) {
         const newUsername = (event.target as HTMLInputElement).value;
         console.log(newUsername);
 
         localStorage.setItem("slagalicaUsername", newUsername);
-        this._localDom.avatarName.innerText = newUsername.trim().slice(0,2)
+        this._localDom.avatarName.innerText = newUsername.trim().slice(0, 2);
     }
 
-    _createGameId__() {
+    createGameId() {
         const gid = () => {
             return Math.floor(Math.random() * 900) + 99;
         };
         return gid() + "-" + gid() + "-" + gid();
     }
 
-    _setGameId__() {
-        this._dedicatedGameId = this._createGameId__();
+    setGameId() {
+        this._dedicatedGameId = this.createGameId();
         console.log(this._localDom.gameIdInput);
-        
+
         this._localDom.gameIdInput.value = this._dedicatedGameId;
     }
 
-    _updateThemeIcon__() {
+    updateThemeIcon() {
         const img = this._localDom.themeToggleBtn.querySelector("img")!;
         const theme = ThemeService.get();
-        img.src = theme === "dark" ? "./assets/icon-theme-dark.svg" : "./assets/icon-theme-light.svg";
+        img.src =
+            theme === "dark" ? "./assets/icon-theme-dark.svg" : "./assets/icon-theme-light.svg";
     }
 
-    _leaveGame__() {
+    leaveGame() {
         this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
         this._gameId = null;
         this._gameMode = null;
-        this._partial.hideModal__();
+        this._partial.hideModal();
     }
 
-    _handleLangSelectionClick__() {
-        const picker = this._localDom.headerActions.querySelector<HTMLButtonElement>("#languagePicker")!;
-        const menu = this._localDom.headerActions.querySelector<HTMLUListElement>("#languagePickerMenu")!;
+    handleLangSelectionClick() {
+        const picker =
+            this._localDom.headerActions.querySelector<HTMLButtonElement>("#languagePicker")!;
+        const menu =
+            this._localDom.headerActions.querySelector<HTMLUListElement>("#languagePickerMenu")!;
 
-        this.addEvents__(picker, "click", (e) => {
-            e.stopPropagation(); 
+        this.addEvents(picker, "click", (e) => {
+            e.stopPropagation();
             menu.classList.toggle("hidden");
         });
 
-        this.addEvents__(menu, "click", (e) => {
+        this.addEvents(menu, "click", (e) => {
             const option = (e.target as HTMLElement).closest<HTMLElement>("[data-lang]");
             if (option) {
                 console.log(option.dataset.lang);
@@ -223,10 +223,14 @@ export default class Loby extends Page {
             }
         });
 
-        document.addEventListener("click", (e) => {
-            if (!picker.contains(e.target as Node)) {
-                menu.classList.add("hidden");
-            }
-        }, { capture: true }); 
+        document.addEventListener(
+            "click",
+            (e) => {
+                if (!picker.contains(e.target as Node)) {
+                    menu.classList.add("hidden");
+                }
+            },
+            { capture: true }
+        );
     }
 }
