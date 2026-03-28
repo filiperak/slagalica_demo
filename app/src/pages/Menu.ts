@@ -8,6 +8,7 @@ import App from "../App";
 
 interface LocalDomElements {
     leaveBtn: HTMLElement;
+    waitingSection: HTMLElement;
     slagalicaBtn: HTMLElement;
     mojBrojBtn: HTMLElement;
     spojniceBtn: HTMLElement;
@@ -51,6 +52,7 @@ export class Menu extends Page {
         // Initialize local DOM references
         this._localDom = {
             leaveBtn: document.querySelector("#leave-game-btn")!,
+            waitingSection: document.querySelector("#waiting-section")!,
             slagalicaBtn: document.querySelector("#slagalica")!,
             mojBrojBtn: document.querySelector("#mojBroj")!,
             spojniceBtn: document.querySelector("#spojnice")!,
@@ -93,7 +95,7 @@ export class Menu extends Page {
 
         // Events
         this.addEvents__(this._localDom.leaveBtn, "click", this._leaveGame__.bind(this));
-        
+
         const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
         games.forEach((game) => {
             const btn = this._localDom[`${game}Btn` as keyof LocalDomElements] as HTMLElement;
@@ -101,6 +103,25 @@ export class Menu extends Page {
                 this.addEvents__(btn, "click", this._openGame__.bind(this, game));
             }
         });
+
+        // Multiplayer game-over synchronization — listener lives only while Menu is active
+        const state = this._store.getState__();
+        const gameId = state?.gameId ?? "";
+        if (gameId && !gameId.startsWith("sg")) {
+            // Always listen for the server broadcast (fired only when both players are done)
+            this.addSocketEvents__(SOCKET_EVENTS.STATE.GAME_COMPLETED, (payload: { data: any }) => {
+                this._hideWaitingState__();
+                this._showGameOverModal__(payload.data);
+            });
+
+            // If this player has finished all their games, signal the server
+            const localPlayer = state?.players.find((p: any) => p.id === this._socket.id);
+            const allDone = localPlayer && Object.values(localPlayer.score.games).every((g: any) => g.opend);
+            if (allDone) {
+                this._socket.emit(SOCKET_EVENTS.STATE.PLAYER_FINISHED, { gameId });
+                this._showWaitingState__();
+            }
+        }
     }
 
     render__(state: GameState) {
@@ -177,6 +198,43 @@ export class Menu extends Page {
 
         const totalsSection = document.querySelector<HTMLElement>("#totals-section");
         if (totalsSection) totalsSection.style.gridTemplateColumns = "1fr";
+    }
+
+    private _showWaitingState__(): void {
+        this._localDom.waitingSection.classList.remove("hidden");
+    }
+
+    private _hideWaitingState__(): void {
+        this._localDom.waitingSection.classList.add("hidden");
+    }
+
+    private _showGameOverModal__(data: { winnerPlayer: any; loser: any; draw: boolean }): void {
+        const { winnerPlayer, loser, draw } = data;
+        const isWinner = winnerPlayer?.id === this._socket.id;
+
+        let title: string;
+        let text: string;
+
+        if (draw) {
+            title = "Nerešeno!";
+            text = `Oba igrača su postigla jednak broj poena: ${winnerPlayer?.score ?? 0}`;
+        } else if (isWinner) {
+            title = "Pobedili ste!";
+            text = `Vaš rezultat: ${winnerPlayer.score}\n${loser?.name ?? "Protivnik"}: ${loser?.score ?? 0}`;
+        } else {
+            title = "Izgubili ste!";
+            text = `${winnerPlayer?.name ?? "Protivnik"} je pobedio sa ${winnerPlayer?.score ?? 0} poena\nVaš rezultat: ${loser?.score ?? 0}`;
+        }
+
+        this._partial.showModal__({
+            title,
+            text,
+            primaryText: "Napusti igru",
+            primaryAction: () => {
+                this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
+                this._app.go(VIEWS.LOBY);
+            },
+        });
     }
 
     _leaveGame__() {

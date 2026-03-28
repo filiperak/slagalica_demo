@@ -8,10 +8,12 @@ export class Game {
     players: any[];
     gameState: any;
     gameCompleted: boolean;
+    finishedPlayers: Set<string>;
 
     constructor(gameId: string) {
         this.gameId = gameId;
         this.players = [];
+        this.finishedPlayers = new Set();
         this.gameState = {
             slagalica: this.createSlagalica(),
             mojBroj: this.createMojBroj(),
@@ -70,6 +72,14 @@ export class Game {
                 player.score.games[gameKey].score += score;
             }
         });
+    }
+
+    markPlayerFinished(playerId: string): void {
+        this.finishedPlayers.add(playerId);
+    }
+
+    bothPlayersFinished(): boolean {
+        return this.players.length >= 2 && this.players.every((p) => this.finishedPlayers.has(p.id));
     }
 
     isCompleted() {

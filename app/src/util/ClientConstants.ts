@@ -20,6 +20,7 @@ export const SOCKET_EVENTS = Object.freeze({
         GAME_DATA: "gameData",
         CHECK_COMPLETED: "checkIfCompleted",
         GAME_COMPLETED: "gameCompleted",
+        PLAYER_FINISHED: "playerFinished",
         START_GAME: "startGame",
         START_SINGLE_PLAYER: "startSinglePlayerGame",
         NOTIFICATION: "notification",

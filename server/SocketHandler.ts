@@ -106,6 +106,9 @@ export class SocketHandler {
         socket.on(SOCKET_EVENTS.STATE.CHECK_COMPLETED, (data: GameIdEvent) =>
             this.handleCheckIfCompleted(socket, data)
         );
+        socket.on(SOCKET_EVENTS.STATE.PLAYER_FINISHED, (data: GameIdEvent) =>
+            this.handlePlayerFinished(socket, data)
+        );
 
         // Game-specific event handlers
         socket.on(SOCKET_EVENTS.GAMES.SLAGALICA.CHECK, (data: SlagalicaCheckEvent) =>
@@ -274,6 +277,23 @@ export class SocketHandler {
             }
         } catch (error) {
             console.error("Error in handleCheckIfCompleted:", error);
+        }
+    }
+
+    private handlePlayerFinished(socket: Socket, { gameId }: GameIdEvent): void {
+        try {
+            const game = this.getGame(gameId);
+            if (!game) return;
+
+            game.markPlayerFinished(socket.id);
+            console.log(`Player ${socket.id} finished all games in ${gameId}`);
+
+            if (game.bothPlayersFinished()) {
+                const finalScore = game.checkWinner();
+                this.io.to(gameId).emit(SOCKET_EVENTS.STATE.GAME_COMPLETED, { data: finalScore });
+            }
+        } catch (error) {
+            console.error("Error in handlePlayerFinished:", error);
         }
     }
 
@@ -480,15 +500,20 @@ export class SocketHandler {
             }
 
             const game = this.games[gameId];
+            const otherPlayer = game.players.find((p) => p.id !== socket.id);
+
             game.removePlayer(socket.id);
             socket.leave(gameId);
             console.log(`${gameId} left the game`);
 
-            const otherPlayer = game.players.find((p) => p.id !== socket.id);
             if (otherPlayer) {
-                this.io
-                    .to(otherPlayer.id)
-                    .emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
+                if (game.finishedPlayers.has(otherPlayer.id)) {
+                    // Remaining player was in the waiting state — send final result
+                    const finalScore = game.checkWinner();
+                    this.io.to(otherPlayer.id).emit(SOCKET_EVENTS.STATE.GAME_COMPLETED, { data: finalScore });
+                } else {
+                    this.io.to(otherPlayer.id).emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
+                }
             } else {
                 this.cleanupGame(gameId);
             }
@@ -508,9 +533,13 @@ export class SocketHandler {
             const otherPlayer = game.players.find((p) => p.id !== socket.id);
 
             if (otherPlayer) {
-                this.io
-                    .to(otherPlayer.id)
-                    .emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
+                if (game.finishedPlayers.has(otherPlayer.id)) {
+                    // Remaining player was waiting for this player — send final result
+                    const finalScore = game.checkWinner();
+                    this.io.to(otherPlayer.id).emit(SOCKET_EVENTS.STATE.GAME_COMPLETED, { data: finalScore });
+                } else {
+                    this.io.to(otherPlayer.id).emit(SOCKET_EVENTS.CORE.OPPONENT_LEFT, "Opponent left the game");
+                }
             } else {
                 this.cleanupGame(gameId);
             }
