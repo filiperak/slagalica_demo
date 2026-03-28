@@ -1,8 +1,8 @@
-// jest.mock("@paunovic/questionnaire");
-import { Game } from "../server/services/game.js";
+// vi.mock("@paunovic/questionnaire");
+import { Game } from "../../server/GameEngine";
 
 describe("Game class method tests", () => {
-    let game;
+    let game: Game;
 
     beforeEach(() => {
         game = new Game("test_id_123");
@@ -78,17 +78,17 @@ describe("Game class method tests", () => {
     });
 
     test("testing add score method", () => {
-        game.addPlayer("p1","Player One")
-        game.addScore("slagalica", "p1", 10)
-        const player = game.getPlayer("p1")
-        expect(player.score.games["slagalica"]).toEqual({"opend": false, "score": 10});
-    })
+        game.addPlayer("p1", "Player One");
+        game.addScore("slagalica", "p1", 10);
+        const player = game.getPlayer("p1");
+        expect(player.score.games["slagalica"]).toEqual({ opend: false, score: 10 });
+    });
 
-    //gameplay methods
+    // gameplay methods
 
-    test("testing cratateSlagalica method it shuld return a object with property word (string (x < word length < 13))",() => {
-        const w = game.createSlagalica()
+    test("createSlagalica should return an object with a word between 2 and 12 characters", () => {
+        const w = game.createSlagalica();
         expect(w.word.length).toBeGreaterThan(1);
         expect(w.word.length).toBeLessThan(13);
-    })
+    });
 });

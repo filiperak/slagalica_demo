@@ -356,8 +356,8 @@ export class Game {
             }
 
             if (currentNumbers.length === 1) {
-                let result = currentNumbers[0];
-                let diff = Math.abs(target - result);
+                const result = currentNumbers[0];
+                const diff = Math.abs(target - result);
 
                 if (diff < closestDiff) {
                     closestDiff = diff;
@@ -368,21 +368,21 @@ export class Game {
                 return;
             }
 
-            let seen = new Set();
+            const seen = new Set();
 
             for (let i = 0; i < currentNumbers.length; i++) {
                 for (let j = i + 1; j < currentNumbers.length; j++) {
-                    let a = currentNumbers[i];
-                    let b = currentNumbers[j];
+                    const a = currentNumbers[i];
+                    const b = currentNumbers[j];
 
-                    let nextNumbers = currentNumbers.filter(
+                    const nextNumbers = currentNumbers.filter(
                         (_, index) => index !== i && index !== j
                     );
-                    let nextExpressions = expressions.filter(
+                    const nextExpressions = expressions.filter(
                         (_, index) => index !== i && index !== j
                     );
 
-                    let operations = [
+                    const operations = [
                         { result: a + b, expr: `(${expressions[i]} + ${expressions[j]})` },
                         { result: a - b, expr: `(${expressions[i]} - ${expressions[j]})` },
                         { result: b - a, expr: `(${expressions[j]} - ${expressions[i]})` },
@@ -402,7 +402,7 @@ export class Game {
                         });
                     }
 
-                    for (let op of operations) {
+                    for (const op of operations) {
                         if (op.result > 0 && !seen.has(op.result)) {
                             seen.add(op.result);
 
@@ -421,7 +421,7 @@ export class Game {
             memo.set(key, { result: null, expressions });
         }
 
-        let expressions = numbers.map((num) => num.toString());
+        const expressions = numbers.map((num) => num.toString());
         backtrack(numbers, expressions);
 
         if (bestSolution) {
