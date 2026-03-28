@@ -108,4 +108,8 @@ export class Partial {
         this._clearEvents();
         this._elements.overlay.classList.add("hidden");
     }
+
+    showBanner(){
+        
+    }
 }
