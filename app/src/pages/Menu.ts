@@ -1,7 +1,7 @@
 import { Socket } from "socket.io-client";
 import Page from "../Page";
 import { FetchHTML } from "../util/Util";
-import { Store, GameState } from "../Store";
+import { Store, GameState, GameScore, Player } from "../Store";
 import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import App from "../App";
@@ -30,6 +30,18 @@ interface LocalDomElements {
     p1Skocko: HTMLElement;
     p1KoZnaZna: HTMLElement;
     p1Asocijacije: HTMLElement;
+}
+
+interface GameOverPlayer {
+    id: string;
+    name: string;
+    score: number;
+}
+
+interface GameOverData {
+    winnerPlayer: GameOverPlayer | null;
+    loser: GameOverPlayer | null;
+    draw: boolean;
 }
 
 export class Menu extends Page {
@@ -107,14 +119,14 @@ export class Menu extends Page {
         const gameId = state?.gameId ?? "";
         if (gameId && !gameId.startsWith("sg")) {
             // Always listen for the server broadcast (fired only when both players are done)
-            this.addSocketEvents(SOCKET_EVENTS.STATE.GAME_COMPLETED, (payload: { data: any }) => {
+            this.addSocketEvents(SOCKET_EVENTS.STATE.GAME_COMPLETED, (payload: { data: GameOverData }) => {
                 this._showGameOverModal(payload.data);
             });
 
             // If this player has finished all their games, signal the server
-            const localPlayer = state?.players.find((p: any) => p.id === this._socket.id);
+            const localPlayer = state?.players.find((p: Player) => p.id === this._socket.id);
             const allDone =
-                localPlayer && Object.values(localPlayer.score.games).every((g: any) => g.opend);
+                localPlayer && Object.values(localPlayer.score.games).every((g: GameScore) => g.opend);
             if (allDone) {
                 this._socket.emit(SOCKET_EVENTS.STATE.PLAYER_FINISHED, { gameId });
             }
@@ -221,7 +233,7 @@ export class Menu extends Page {
         if (totalsSection) totalsSection.style.gridTemplateColumns = "1fr";
     }
 
-    private _showGameOverModal(data: { winnerPlayer: any; loser: any; draw: boolean }): void {
+    private _showGameOverModal(data: GameOverData): void {
         const { winnerPlayer, loser, draw } = data;
         const isWinner = winnerPlayer?.id === this._socket.id;
 
@@ -233,7 +245,7 @@ export class Menu extends Page {
             text = `Oba igrača su postigla jednak broj poena: ${winnerPlayer?.score ?? 0}`;
         } else if (isWinner) {
             title = "Pobedili ste!";
-            text = `Vaš rezultat: ${winnerPlayer.score}\n${loser?.name ?? "Protivnik"}: ${loser?.score ?? 0}`;
+            text = `Vaš rezultat: ${winnerPlayer?.score ?? 0}\n${loser?.name ?? "Protivnik"}: ${loser?.score ?? 0}`;
         } else {
             title = "Izgubili ste!";
             text = `${winnerPlayer?.name ?? "Protivnik"} je pobedio sa ${winnerPlayer?.score ?? 0} poena\nVaš rezultat: ${loser?.score ?? 0}`;

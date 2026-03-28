@@ -48,7 +48,7 @@ interface AsocijacijeState {
 
 // ── Player shape (mirror server/GameEngine.ts addPlayer) ──────────────────────
 
-interface GameScore {
+export interface GameScore {
     opend: boolean;
     score: number;
 }
@@ -95,7 +95,7 @@ export class Store {
     private _state: GameState | null = null;
     private _listeners: Array<(state: GameState) => void> = [];
 
-    setState(newState: any) {
+    setState(newState: GameState) {
         this._state = newState;
         this._listeners.forEach((listener) => listener(this._state!));
     }

@@ -74,13 +74,14 @@ export default abstract class Page {
         this._headerProgressEl = null;
     }
 
-    render(state: GameState): void {}
+    render(_state: GameState): void {}
 
     addEvents(element: HTMLElement, event: string, callback: EventListener): void {
         this._events.push({ element, event, callback });
         element.addEventListener(event, callback);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     addSocketEvents(name: string, callback: (...args: any[]) => void): void {
         this._socketEvents.push({ eventName: name, eventHandler: callback });
         this._socket.on(name, callback);

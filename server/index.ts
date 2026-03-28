@@ -38,4 +38,4 @@ const io = new Server(expressServer, {
 // const io = new Server(expressServer)
 
 //init socket logic
-const socketHandler = new SocketHandler(io);
+new SocketHandler(io);

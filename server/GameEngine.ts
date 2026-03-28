@@ -1,12 +1,49 @@
 import { srDictCapital } from "./data/sr-latin-capital-dict.js";
 import { spojniceCombDb } from "./data/spojnice-comb-db.js";
 import { asocijacijeDB } from "./data/asocijacije-db.js";
-import { koznaznaDB } from "./data/koznazna-db.js";
+import { koznaznaDB, KoznaznaQuestion } from "./data/koznazna-db.js";
+
+interface GameScore {
+    opend: boolean;
+    score: number;
+}
+
+interface PlayerGames {
+    slagalica: GameScore;
+    mojBroj: GameScore;
+    spojnice: GameScore;
+    skocko: GameScore;
+    koZnaZna: GameScore;
+    asocijacije: GameScore;
+}
+
+interface GamePlayer {
+    id: string;
+    name: string;
+    score: {
+        games: PlayerGames;
+        readonly total: number;
+    };
+}
+
+interface SpojniceElement {
+    id: number;
+    name: string;
+}
+
+interface ServerGameState {
+    slagalica: { word: string; letterComb: string[] };
+    mojBroj: { target: number; numbers: number[]; solution: string };
+    spojnice: { title: string; set: SpojniceElement[] };
+    skocko: number[];
+    koznazna: KoznaznaQuestion[];
+    asocijacije: { asocijacija: (typeof asocijacijeDB)[number] };
+}
 
 export class Game {
     gameId: string;
-    players: any[];
-    gameState: any;
+    players: GamePlayer[];
+    gameState: ServerGameState;
     gameCompleted: boolean;
     finishedPlayers: Set<string>;
 
@@ -61,7 +98,7 @@ export class Game {
     handleOpendGame(gameKey: string, playerId: string) {
         this.players.forEach((player) => {
             if (player.id === playerId) {
-                player.score.games[gameKey].opend = true;
+                player.score.games[gameKey as keyof PlayerGames].opend = true;
             }
         });
     }
@@ -69,7 +106,7 @@ export class Game {
     addScore(gameKey: string, playerId: string, score: number) {
         this.players.forEach((player) => {
             if (player.id === playerId) {
-                player.score.games[gameKey].score += score;
+                player.score.games[gameKey as keyof PlayerGames].score += score;
             }
         });
     }
@@ -87,7 +124,7 @@ export class Game {
     isCompleted() {
         let completed = true;
         this.players.forEach((e) => {
-            Object.values(e.score.games).forEach((g: any) => {
+            Object.values(e.score.games).forEach((g: GameScore) => {
                 if (!g.opend) {
                     completed = false;
                 }
@@ -157,7 +194,7 @@ export class Game {
             }
         };
         const getRandowLetter = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
-        const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
+        const shuffle = <T>(arr: T[]): T[] => arr.sort(() => Math.random() - 0.5);
 
         const wordCombination = () => {
             const maxLen = 12;
@@ -193,7 +230,7 @@ export class Game {
         let correctPositions = 0;
         let score = 0;
 
-        const correctCombCopy = [...correctComb];
+        const correctCombCopy: (number | null)[] = [...correctComb];
         if (inputComb) {
             inputComb.forEach((num, index) => {
                 if (num === correctComb[index]) {
@@ -217,11 +254,11 @@ export class Game {
 
     createSpojnice() {
         const randomSpojnica = spojniceCombDb[Math.floor(Math.random() * spojniceCombDb.length)];
-        const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
+        const shuffle = <T>(arr: T[]): T[] => arr.sort(() => Math.random() - 0.5);
 
-        const firstElementsWithIds: any[] = [];
+        const firstElementsWithIds: SpojniceElement[] = [];
         const seenIds = new Set();
-        const remainingElements: any[] = [];
+        const remainingElements: SpojniceElement[] = [];
 
         randomSpojnica.set.forEach((elem) => {
             if (elem.id && !seenIds.has(elem.id)) {
@@ -265,7 +302,7 @@ export class Game {
     }
 
     createKoznazna() {
-        const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
+        const shuffle = <T>(arr: T[]): T[] => arr.sort(() => Math.random() - 0.5);
         const pool = shuffle([...koznaznaDB]);
         return pool.slice(0, 10).map((q) => ({
             question: q.question,
@@ -285,7 +322,6 @@ export class Game {
     createMojBroj() {
         const target = Math.floor(Math.random() * 900) + 100;
 
-        const operations = ["+", "-", "*", "/"];
         const mediumNimbers = [10, 15, 20];
         const largeNumbers = [25, 50, 75, 100];
         const numbers = [];
@@ -305,7 +341,7 @@ export class Game {
         const target = this.gameState.mojBroj.target;
         console.log(combination);
 
-        let points = 0;
+        let points: number;
 
         const safeEval = (expression: string) => {
             try {

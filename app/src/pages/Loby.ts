@@ -19,11 +19,8 @@ interface LocalDomElements {
     themeToggleBtn: HTMLButtonElement;
 }
 
-interface HeaderDomElements {}
-
 export default class Loby extends Page {
     private _localDom!: LocalDomElements;
-    private _headerActions!: HeaderDomElements;
     private _gameMode: string | null;
     private _gameId: string | null;
     private _username: string;
@@ -56,29 +53,6 @@ export default class Loby extends Page {
             headerActions: document.querySelector("#headerActions")!,
             themeToggleBtn: document.querySelector("#themeToggleBtn")!,
             avatarName: document.querySelector("#avatarName")!,
-        };
-
-        this._headerActions = {
-            settings: {
-                icon: "",
-                action: "",
-                option: "",
-            },
-            language: {
-                icon: "",
-                action: "",
-                option: "",
-            },
-            theme: {
-                icon: "",
-                action: "",
-                option: "",
-            },
-            sound: {
-                icon: "",
-                action: "",
-                option: "",
-            },
         };
 
         this.setUsername();

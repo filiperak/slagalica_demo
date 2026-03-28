@@ -235,11 +235,11 @@ export class SocketHandler {
             }
 
             currentGame.handleOpendGame(gameKey, playerId);
-            console.log(playerId, currentGame.gameState[gameKey]);
+            console.log(playerId, currentGame.gameState[gameKey as keyof typeof currentGame.gameState]);
 
             const response = {
                 gameKey,
-                gameState: currentGame.gameState[gameKey],
+                gameState: currentGame.gameState[gameKey as keyof typeof currentGame.gameState],
             };
 
             socket.emit(SOCKET_EVENTS.STATE.GAME_DATA, response);
@@ -416,6 +416,7 @@ export class SocketHandler {
             game.addScore(GAME_KEYS.KO_ZNA_ZNA, socket.id, numericPoints);
             this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
             const player = game.getPlayer(socket.id);
+            if (!player) return;
 
             socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.ADD_POINTS, {
                 data: player.score.games.koZnaZna.score,
@@ -435,6 +436,7 @@ export class SocketHandler {
             }
 
             const player = game.getPlayer(socket.id);
+            if (!player) return;
             socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUCCESS, {
                 data: player.score.games.koZnaZna.score,
             });
@@ -466,6 +468,7 @@ export class SocketHandler {
             game.addScore(GAME_KEYS.ASOCIJACIJE, socket.id, numericPoints);
             this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
             const player = game.getPlayer(socket.id);
+            if (!player) return;
 
             socket.emit("scoreSubmitedAsocijacije", {
                 data: player.score.games.asocijacije.score,
@@ -569,7 +572,7 @@ export class SocketHandler {
             }
 
             // Try to find player by name and update their socket id
-            const existingPlayer = game.players.find((p: any) => p.name === name);
+            const existingPlayer = game.players.find((p) => p.name === name);
             if (existingPlayer) {
                 existingPlayer.id = socket.id;
                 socket.join(gameId);
