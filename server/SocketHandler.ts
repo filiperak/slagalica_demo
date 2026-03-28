@@ -193,6 +193,7 @@ export class SocketHandler {
             const singlePlayerGame = new Game(gameId);
             this.games[gameId] = singlePlayerGame;
             singlePlayerGame.addPlayer(socket.id, name);
+            socket.join(gameId);
 
             socket.emit("startSinglePlayerGame", { game: this.games[gameId] });
         } catch (error) {
@@ -396,7 +397,7 @@ export class SocketHandler {
             this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
             const player = game.getPlayer(socket.id);
 
-            socket.emit("addScoreKoznazna", { data: player.score.games.koZnaZna.score });
+            socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.ADD_POINTS, { data: player.score.games.koZnaZna.score });
         } catch (error) {
             console.error("Error in handleSubmitKoznazna:", error);
             socket.emit(SOCKET_EVENTS.STATE.NOTIFICATION, "Failed to submit score");
@@ -412,7 +413,7 @@ export class SocketHandler {
             }
 
             const player = game.getPlayer(socket.id);
-            socket.emit("scoreSubmitedKoznazna", { data: player.score.games.koZnaZna.score });
+            socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUCCESS, { data: player.score.games.koZnaZna.score });
             this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
         } catch (error) {
             console.error("Error in handleEndKoznazna:", error);

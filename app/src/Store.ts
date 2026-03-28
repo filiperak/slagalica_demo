@@ -1,6 +1,3 @@
-// ---------------------------------------------------------------------------
-// State
-// ---------------------------------------------------------------------------
 
 export interface GameState {
     gameCompleted: boolean;
@@ -13,6 +10,7 @@ export interface GameState {
             letterComb: string[];
             word: string;
         };
+        koznazna:any;
         spojnice: any;
     };
     players: any[];

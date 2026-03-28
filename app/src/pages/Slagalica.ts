@@ -1,7 +1,7 @@
 import { Socket } from "socket.io-client";
 import Page from "../Page";
 import { Store } from "../Store";
-import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
+import { GAME_KEYS, SOCKET_EVENTS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
 import App from "../App";
@@ -66,6 +66,8 @@ export class Slagalica extends Page {
         };
 
         const state = this._store.getState__();
+        console.log(state);
+
         this._gameData = {
             letters: state?.gameState.slagalica.letterComb ?? [],
             gameId: state?.gameId ?? "",
@@ -246,13 +248,19 @@ export class Slagalica extends Page {
 
     private _reciveResult__() :void{
         this._socket.on(SOCKET_EVENTS.GAMES.SLAGALICA.SUCCESS, (result) => {
-            console.log(result); 
+            console.log(result);
+            const word = this._store.getState__()?.gameState.slagalica.word ?? "";
             this._partial.showModal__({
                 title:"Igra gotova!",
                 text: `Osvojili ste ${result.data} poena`,
+                solution: `Reč je: ${word}`,
                 primaryText: "Zatvori",
                 secondaryText:"Sledeće",
-                secondaryAction: () => this._app.go(VIEWS.MOJ_BROJ)
+                secondaryAction: () => this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
+                    gameId: this._gameData.gameId,
+                    gameKey: GAME_KEYS.MOJ_BROJ,
+                    playerId: this._socket.id,
+                })
             })
         })
     }

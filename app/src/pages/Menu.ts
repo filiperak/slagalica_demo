@@ -120,13 +120,11 @@ export class Menu extends Page {
                     const isOpened = gameInfo?.opend ?? false;
 
                     if (isOpened) {
-                        btn.disabled = true;
-                        btn.classList.add("opacity-50", "cursor-not-allowed", "grayscale");
-                        // We remove hover effects to ensure it looks truly inactive
-                        btn.classList.remove("hover:bg-blue-600", "hover:scale-105"); 
+                        btn.classList.add("opacity-50", "grayscale", "pointer-events-none", "cursor-not-allowed");
+                        btn.classList.remove("hover:border-brand/50", "hover:bg-surface-overlay", "cursor-pointer", "active:scale-[0.98]");
                     } else {
-                        btn.disabled = false;
-                        btn.classList.remove("opacity-50", "cursor-not-allowed", "grayscale");
+                        btn.classList.remove("opacity-50", "grayscale", "pointer-events-none", "cursor-not-allowed");
+                        btn.classList.add("hover:border-brand/50", "hover:bg-surface-overlay", "cursor-pointer", "active:scale-[0.98]");
                     }
                 }
             });

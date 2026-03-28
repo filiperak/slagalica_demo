@@ -1,7 +1,7 @@
 import { srDictCapital } from "./data/sr-latin-capital-dict.js";
 import { spojniceCombDb } from "./data/spojnice-comb-db.js";
-// import { initialize } from "@paunovic/questionnaire";
 import { asocijacijeDB } from "./data/asocijacije-db.js";
+import { koznaznaDB } from "./data/koznazna-db.js";
 
 export class Game {
     gameId: string;
@@ -253,9 +253,13 @@ export class Game {
     }
 
     createKoznazna() {
-        // const QUESTIONNAIRE = initialize();
-        //const Q4 = QUESTIONNAIRE.questions({ howMany: 10, wrong: 2 });
-        //return Q4
+        const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
+        const pool = shuffle([...koznaznaDB]);
+        return pool.slice(0, 10).map((q) => ({
+            question: q.question,
+            answer: q.answer,
+            wrong: q.wrong,
+        }));
     }
 
     createAsocijacije() {

@@ -74,4 +74,8 @@ export const VIEWS = Object.freeze({
     MENU: "menu",
     SLAGALICA: "slagalica",
     MOJ_BROJ: "mojBroj",
+    SPOJNICE: "spojnice",
+    SKOCKO: "skocko",
+    KO_ZNA_ZNA: "koZnaZna",
+    ASOCIJACIJE: "asocijacije",
 });

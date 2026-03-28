@@ -8,12 +8,20 @@ import { Partial } from "./util/Partials";
 import { Store } from "./Store";
 import { Slagalica } from "./pages/Slagalica";
 import { MojBroj } from "./pages/MojBroj";
+import { Spojnice } from "./pages/Spojnice";
+import { Skocko } from "./pages/Skocko";
+import { Asocijacije } from "./pages/Asocijacije";
+import { KoZnaZna } from "./pages/Koznazna";
 
 interface Views {
     loby: Loby;
     menu: Menu;
     slagalica: Slagalica;
     mojBroj: MojBroj;
+    spojnice: Spojnice;
+    skocko: Skocko;
+    koZnaZna: KoZnaZna;
+    asocijacije: Asocijacije;
 }
 
 export default class App {
@@ -34,7 +42,11 @@ export default class App {
             loby: new Loby(this._socket, this._partial, this._store, this),
             menu: new Menu(this._socket, this._store, this, this._partial),
             slagalica: new Slagalica(this._socket, this._store, this, this._partial),
-            mojBroj: new MojBroj(this._socket, this._store, this),
+            mojBroj: new MojBroj(this._socket, this._store, this, this._partial),
+            spojnice: new Spojnice(this._socket, this._store, this, this._partial),
+            skocko: new Skocko(this._socket, this._store, this, this._partial),
+            koZnaZna: new KoZnaZna(this._socket, this._store, this, this._partial),
+            asocijacije: new Asocijacije(this._socket, this._store, this, this._partial),
         };
 
         this._addSocketEvents__();
