@@ -4,6 +4,7 @@ import { Store } from "../Store";
 import { GAME_KEYS, SOCKET_EVENTS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
+import { I18nService } from "../I18n";
 import App from "../App";
 
 interface LocalDomElements {
@@ -72,6 +73,8 @@ export class Slagalica extends Page {
         this._inputWord = [];
 
         this._domElements.gameContainer.innerHTML = await FetchHTML("/views/slagalica.html");
+        await I18nService.load("slagalica");
+        I18nService.translate(this._domElements.gameContainer, "slagalica");
 
         this._localDom = {
             checkWord: document.querySelector("#checkWord")!,

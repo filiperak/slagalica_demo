@@ -5,6 +5,7 @@ import { Partial } from "../util/Partials";
 import { SOCKET_EVENTS } from "../util/ClientConstants";
 import { Store } from "../Store";
 import { ThemeService } from "../util/ThemeService";
+import { I18nService, Lang } from "../I18n";
 import App from "../App";
 
 interface LocalDomElements {
@@ -42,6 +43,8 @@ export default class Loby extends Page {
     async init() {
         const lobyHTML = await FetchHTML("/views/loby.html");
         this._domElements.gameContainer.innerHTML = lobyHTML;
+        await I18nService.load("loby");
+        I18nService.translate(this._domElements.gameContainer, "loby");
 
         this._localDom = {
             createGameBtn: document.querySelector("#createGameBtn")!,
@@ -78,15 +81,18 @@ export default class Loby extends Page {
                 game: this._gameId,
             });
             this._partial.showModal({
-                title: "Čekamo protivnika!",
-                text: "Pogrešan kod za sobu. Pokušajte ponovo.",
-                primaryText: "Odustani",
+                title: I18nService.getMessage("loby", "waiting_opponent"),
+                text: I18nService.getMessage("loby", "share_code"),
+                primaryText: I18nService.getMessage("loby", "cancel"),
                 spinner: true,
                 primaryAction: this.leaveGame.bind(this),
             });
         } else {
             this._localDom.usernameInp?.classList.add("missing-username-input");
-            this._localDom.usernameInp?.setAttribute("placeholder", "Enter username");
+            this._localDom.usernameInp?.setAttribute(
+                "placeholder",
+                I18nService.getMessage("loby", "enter_username")
+            );
         }
     }
 
@@ -98,15 +104,18 @@ export default class Loby extends Page {
             });
 
             this._partial.showModal({
-                title: "Čekamo protivnika!",
-                text: `Podelite ovaj kod: ${this._dedicatedGameId} sa saigračem`,
-                primaryText: "Odustani",
+                title: I18nService.getMessage("loby", "waiting_opponent"),
+                text: I18nService.getMessage("loby", "share_code"),
+                primaryText: I18nService.getMessage("loby", "cancel"),
                 spinner: true,
                 primaryAction: this.leaveGame.bind(this),
             });
         } else {
             this._localDom.usernameInp?.classList.add("missing-username-input");
-            this._localDom.usernameInp?.setAttribute("placeholder", "Enter username");
+            this._localDom.usernameInp?.setAttribute(
+                "placeholder",
+                I18nService.getMessage("loby", "enter_username")
+            );
         }
     }
 
@@ -118,15 +127,18 @@ export default class Loby extends Page {
             });
 
             this._partial.showModal({
-                title: "Igra se učitava!",
-                text: `Podelite ovaj kod: ${this._dedicatedGameId} sa saigračem`,
-                primaryText: "Odustani",
+                title: I18nService.getMessage("loby", "game_loading"),
+                text: I18nService.getMessage("loby", "share_code"),
+                primaryText: I18nService.getMessage("loby", "cancel"),
                 spinner: true,
                 primaryAction: this.leaveGame.bind(this),
             });
         } else {
             this._localDom.usernameInp?.classList.add("missing-username-input");
-            this._localDom.usernameInp?.setAttribute("placeholder", "Enter username");
+            this._localDom.usernameInp?.setAttribute(
+                "placeholder",
+                I18nService.getMessage("loby", "enter_username")
+            );
         }
     }
 
@@ -189,10 +201,13 @@ export default class Loby extends Page {
             menu.classList.toggle("hidden");
         });
 
-        this.addEvents(menu, "click", (e) => {
+        this.addEvents(menu, "click", async (e) => {
             const option = (e.target as HTMLElement).closest<HTMLElement>("[data-lang]");
             if (option) {
-                console.log(option.dataset.lang);
+                const lang = option.dataset.lang as Lang;
+                I18nService.set(lang);
+                await I18nService.load("loby");
+                I18nService.translate(this._domElements.gameContainer, "loby");
                 menu.classList.add("hidden");
             }
         });

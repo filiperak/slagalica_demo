@@ -4,6 +4,7 @@ import { FetchHTML } from "../util/Util";
 import { Store, GameState, GameScore, Player } from "../Store";
 import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
+import { I18nService } from "../I18n";
 import App from "../App";
 
 interface LocalDomElements {
@@ -59,6 +60,8 @@ export class Menu extends Page {
 
         const menuHTML = await FetchHTML("/views/menu.html");
         this._domElements.gameContainer.innerHTML = menuHTML;
+        await I18nService.load("menu");
+        I18nService.translate(this._domElements.gameContainer, "menu");
 
         // Initialize local DOM references
         this._localDom = {

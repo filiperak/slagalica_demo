@@ -4,6 +4,7 @@ import { Store } from "../Store";
 import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
+import { I18nService } from "../I18n";
 import App from "../App";
 
 const COL_LABELS = ["A", "B", "C", "D"];
@@ -49,6 +50,8 @@ export class Asocijacije extends Page {
         this._columnInputs = [];
 
         this._domElements.gameContainer.innerHTML = await FetchHTML("/views/asocijacije.html");
+        await I18nService.load("asocijacije");
+        I18nService.translate(this._domElements.gameContainer, "asocijacije");
 
         this._localDom = {
             board: document.querySelector("#asociijaceBoard")!,

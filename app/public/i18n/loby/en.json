@@ -1,0 +1,23 @@
+{
+  "username_placeholder": "Player123",
+  "tooltip_language": "Language",
+  "tooltip_sound": "Sound",
+  "tooltip_theme": "Theme",
+  "app_title": "SLAGALICA",
+  "status_online": "Online · Ready to play",
+  "start_game": "Start Game",
+  "mode_multiplayer": "Multi Player mode",
+  "training": "Training",
+  "mode_singleplayer": "Single Player mode",
+  "create_room": "Create Room",
+  "create_btn": "Create",
+  "join_room": "Join",
+  "join_code_placeholder": "Enter code...",
+  "join_btn": "Join",
+  "copyright": "2025 copyright © Slagalica",
+  "waiting_opponent": "Waiting for opponent!",
+  "share_code": "Share this code with your opponent",
+  "cancel": "Cancel",
+  "game_loading": "Loading game!",
+  "enter_username": "Enter your username"
+}

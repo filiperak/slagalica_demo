@@ -5,12 +5,12 @@
         <div id="player-headers" class="grid grid-cols-2 gap-3 mb-4">
             <div class="bg-surface-raised border border-white/6 rounded-lg shadow-md">
                 <div class="p-4 text-center">
-                    <h2 id="p0-name" class="text-lg font-bold text-brand truncate">Igrač 1</h2>
+                    <h2 id="p0-name" class="text-lg font-bold text-brand truncate" data-i18n="player1">Igrač 1</h2>
                 </div>
             </div>
             <div id="p1-header" data-p1 class="bg-surface-raised border border-white/6 rounded-lg shadow-md">
                 <div class="p-4 text-center">
-                    <h2 id="p1-name" class="text-lg font-bold text-brand truncate">Igrač 2</h2>
+                    <h2 id="p1-name" class="text-lg font-bold text-brand truncate" data-i18n="player2">Igrač 2</h2>
                 </div>
             </div>
         </div>
@@ -132,13 +132,13 @@
         <div id="totals-section" class="grid grid-cols-2 gap-3 mb-6">
             <div class="bg-surface-raised border border-brand/30 rounded-lg shadow-brand-glow">
                 <div class="p-4 text-center">
-                    <p class="text-content-muted text-[10px] uppercase font-bold tracking-widest mb-1">Ukupno</p>
+                    <p class="text-content-muted text-[10px] uppercase font-bold tracking-widest mb-1" data-i18n="total">Ukupno</p>
                     <span id="p0-total" class="text-3xl font-black text-white">0</span>
                 </div>
             </div>
             <div data-p1 class="bg-surface-raised border border-brand/30 rounded-lg shadow-brand-glow">
                 <div class="p-4 text-center">
-                    <p class="text-content-muted text-[10px] uppercase font-bold tracking-widest mb-1">Ukupno</p>
+                    <p class="text-content-muted text-[10px] uppercase font-bold tracking-widest mb-1" data-i18n="total">Ukupno</p>
                     <span id="p1-total" class="text-3xl font-black text-white">0</span>
                 </div>
             </div>
@@ -146,7 +146,7 @@
 
         <!-- Leave button -->
         <div class="text-center">
-            <button id="leave-game-btn" class="px-10 py-2.5 bg-transparent border border-negative text-negative hover:bg-negative hover:text-white text-sm font-semibold rounded transition-all hover:-translate-y-px active:translate-y-0 uppercase tracking-wide">
+            <button id="leave-game-btn" class="px-10 py-2.5 bg-transparent border border-negative text-negative hover:bg-negative hover:text-white text-sm font-semibold rounded transition-all hover:-translate-y-px active:translate-y-0 uppercase tracking-wide" data-i18n="leave_game">
                 Napusti igru
             </button>
         </div>

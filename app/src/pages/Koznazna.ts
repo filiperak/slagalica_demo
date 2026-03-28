@@ -4,6 +4,7 @@ import { Store } from "../Store";
 import { GAME_KEYS, SOCKET_EVENTS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
+import { I18nService } from "../I18n";
 import App from "../App";
 
 interface KoznaznaQuestion {
@@ -48,6 +49,8 @@ export class KoZnaZna extends Page {
         this._locked = false;
 
         this._domElements.gameContainer.innerHTML = await FetchHTML("/views/koznazna.html");
+        await I18nService.load("koznazna");
+        I18nService.translate(this._domElements.gameContainer, "koznazna");
 
         this._localDom = {
             questionCounter: document.querySelector("#question-counter")!,
@@ -75,7 +78,9 @@ export class KoZnaZna extends Page {
         const q = this._gameData.questions[this._qCounter];
         const total = this._gameData.questions.length;
 
-        this._localDom.questionCounter.textContent = `Pitanje ${this._qCounter + 1} / ${total}`;
+        this._localDom.questionCounter.textContent = I18nService.getMessage("koznazna", "question_counter")
+            .replace("{n}", String(this._qCounter + 1))
+            .replace("{total}", String(total));
         this._localDom.questionText.textContent = q.question;
         this._localDom.optionsContainer.innerHTML = "";
         this._locked = false;
@@ -169,7 +174,8 @@ export class KoZnaZna extends Page {
             SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.ADD_POINTS,
             (data: { data: number }) => {
                 this._score = data.data;
-                this._localDom.runningScore.textContent = `${this._score} poena`;
+                this._localDom.runningScore.textContent = I18nService.getMessage("koznazna", "score")
+                    .replace("{n}", String(this._score));
             }
         );
 

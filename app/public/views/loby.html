@@ -9,48 +9,47 @@
             </div>
             </div>
             </div>
-            <input type="text" class="username-inp bg-transparent border-none focus:outline-none font-semibold text-content placeholder-content-muted text-sm w-28" id="usernameInp" placeholder="Igrac123">
+            <input type="text" class="username-inp bg-transparent border-none focus:outline-none font-semibold text-content placeholder-content-muted text-sm w-28" id="usernameInp" placeholder="Igrac123" data-i18n-placeholder="username_placeholder">
         </div>
 
 
         <div class="flex items-center gap-2" id="headerActions">
 
             <div class="relative">
-                <div class="tooltip tooltip-left" data-tip="Language">
+                <div class="tooltip tooltip-left" data-tip="Jezik" data-i18n-tip="tooltip_language">
                     <button class="btn btn-circle" id="languagePicker">
                         <img src="./assets/icon-lang.svg" class="h-5 w-5" />
                     </button>
                 </div>
                 <ul class="menu bg-base-200 rounded-box w-36 mt-0.5 absolute hidden" id="languagePickerMenu">
                     <li>
-                        <a data-lang="english">
+                        <a data-lang="en">
 <img src="./assets/icon-flag-usa.svg" alt="" class="h-5 w-5">
                         English
                         </a>
                     </li>
                     <li>
-                        <a data-lang="serbian">
+                        <a data-lang="sr">
 <img src="./assets/icon-flag-rs.svg" alt="" class="h-5 w-5">
-
                         Srpski
                         </a>
                     </li>
                 </ul>
             </div>
 
-            <div class="tooltip tooltip-bottom" data-tip="Sound">
+            <div class="tooltip tooltip-bottom" data-tip="Zvuk" data-i18n-tip="tooltip_sound">
                 <button class="btn btn-circle">
                     <img src="./assets/icon-sound-off.svg" class="h-5 w-5" />
                 </button>
             </div>
 
 
-            <div class="tooltip tooltip-bottom" data-tip="Theme">
+            <div class="tooltip tooltip-bottom" data-tip="Tema" data-i18n-tip="tooltip_theme">
                 <button class="btn btn-circle" id="themeToggleBtn">
                     <img src="./assets/icon-theme-dark.svg" class="h-5 w-5" />
                 </button>
             </div>
-<!-- 
+<!--
             <div class="tooltip tooltip-bottom" data-tip="Settings">
                 <button class="btn btn-circle">
                     <img src="./assets/icon-settings.svg" class="h-5 w-5" />
@@ -61,10 +60,10 @@
 
     <div class="flex flex-col items-center mb-8 gap-3">
         <img src="./assets/owl_logo.png" class="logo-img w-20 h-20 drop-shadow-brand mb-1" />
-        <h3 class="text-2xl font-black tracking-[.18em] uppercase text-content">SLAGALICA</h3>
+        <h3 class="text-2xl font-black tracking-[.18em] uppercase text-content" data-i18n="app_title">SLAGALICA</h3>
         <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/[0.08] text-content-muted text-[11px] font-semibold uppercase tracking-wider">
             <span class="w-1.5 h-1.5 rounded-full bg-positive inline-block"></span>
-            Online · Spreman za igru
+            <span data-i18n="status_online">Online · Spreman za igru</span>
         </span>
     </div>
 
@@ -74,8 +73,8 @@
             <img src="./assets/icon-play.svg" class="w-5 h-5" />
         </div>
         <div class="text-left">
-            <span class="block text-base font-bold text-white">Započni Igru</span>
-            <span class="block text-xs text-white/70 font-medium mt-0.5">Multi Player režim</span>
+            <span class="block text-base font-bold text-white" data-i18n="start_game">Započni Igru</span>
+            <span class="block text-xs text-white/70 font-medium mt-0.5" data-i18n="mode_multiplayer">Multi Player režim</span>
         </div>
     </button>
 
@@ -85,8 +84,8 @@
             <img src="./assets/icon-singleplayer.svg" class="w-5 h-5" />
         </div>
         <div class="text-left">
-            <span class="block text-base font-bold text-white">Trening</span>
-            <span class="block text-xs text-white/70 font-medium mt-0.5">Single Player režim</span>
+            <span class="block text-base font-bold text-white" data-i18n="training">Trening</span>
+            <span class="block text-xs text-white/70 font-medium mt-0.5" data-i18n="mode_singleplayer">Single Player režim</span>
         </div>
     </button>
 
@@ -97,10 +96,10 @@
                 <div class="w-8 h-8 rounded flex items-center justify-center bg-white/[0.08] text-brand flex-shrink-0">
                     <img src="./assets/icon-hash.svg" class="w-4 h-4" />
                 </div>
-                <span class="font-bold text-sm text-content">Napravi Sobu</span>
+                <span class="font-bold text-sm text-content" data-i18n="create_room">Napravi Sobu</span>
             </div>
             <div class="h-px bg-white/[0.06] -mx-5"></div>
-            <button id="createGameBtn" class="menu-button w-full py-2.5 px-4 rounded text-sm font-semibold border border-brand text-brand hover:bg-brand hover:text-white active:bg-brand-active hover:-translate-y-px active:translate-y-0 transition-all bg-transparent">Kreiraj</button>
+            <button id="createGameBtn" class="menu-button w-full py-2.5 px-4 rounded text-sm font-semibold border border-brand text-brand hover:bg-brand hover:text-white active:bg-brand-active hover:-translate-y-px active:translate-y-0 transition-all bg-transparent" data-i18n="create_btn">Kreiraj</button>
         </div>
 
         <div class="bg-surface-raised border border-white/[0.06] rounded-lg p-5 flex-1 flex flex-col items-stretch gap-3 shadow-md hover:border-brand/40 hover:shadow-lg transition-all">
@@ -108,16 +107,16 @@
                 <div class="w-8 h-8 rounded flex items-center justify-center bg-white/[0.08] text-brand flex-shrink-0">
                     <img src="./assets/icon-link.svg" class="w-4 h-4" />
                 </div>
-                <span class="font-bold text-sm text-content">Pridruži se</span>
+                <span class="font-bold text-sm text-content" data-i18n="join_room">Pridruži se</span>
             </div>
             <div class="h-px bg-white/[0.06] -mx-5"></div>
-            <input type="text" id="gameIdInput" placeholder="Unesi kod..." class="menu-input w-full bg-surface border border-dim focus:border-brand rounded text-sm font-medium text-content placeholder-content-muted py-2.5 px-3 text-center focus:outline-none transition-colors tracking-widest uppercase">
-            <button id="joinGame" class="menu-button w-full py-2.5 px-4 rounded text-sm font-semibold bg-brand hover:bg-brand-hover active:bg-brand-active text-white hover:-translate-y-px active:translate-y-0 transition-all border-0">Uđi</button>
+            <input type="text" id="gameIdInput" placeholder="Unesi kod..." data-i18n-placeholder="join_code_placeholder" class="menu-input w-full bg-surface border border-dim focus:border-brand rounded text-sm font-medium text-content placeholder-content-muted py-2.5 px-3 text-center focus:outline-none transition-colors tracking-widest uppercase">
+            <button id="joinGame" class="menu-button w-full py-2.5 px-4 rounded text-sm font-semibold bg-brand hover:bg-brand-hover active:bg-brand-active text-white hover:-translate-y-px active:translate-y-0 transition-all border-0" data-i18n="join_btn">Uđi</button>
         </div>
 
     </div>
 
-    <p class="trade-mark absolute bottom-4 text-xs opacity-40 font-bold uppercase tracking-widest text-content-muted">
+    <p class="trade-mark absolute bottom-4 text-xs opacity-40 font-bold uppercase tracking-widest text-content-muted" data-i18n="copyright">
         2025 copyright &copy; Slagalica
     </p>
 

@@ -1,0 +1,6 @@
+{
+  "title": "Who Knows Knows",
+  "question_counter": "Question {n} / {total}",
+  "score": "{n} points",
+  "skip": "Don't know"
+}
