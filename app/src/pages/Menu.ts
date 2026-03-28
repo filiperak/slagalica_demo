@@ -8,7 +8,6 @@ import App from "../App";
 
 interface LocalDomElements {
     leaveBtn: HTMLElement;
-    waitingSection: HTMLElement;
     slagalicaBtn: HTMLElement;
     mojBrojBtn: HTMLElement;
     spojniceBtn: HTMLElement;
@@ -52,7 +51,6 @@ export class Menu extends Page {
         // Initialize local DOM references
         this._localDom = {
             leaveBtn: document.querySelector("#leave-game-btn")!,
-            waitingSection: document.querySelector("#waiting-section")!,
             slagalicaBtn: document.querySelector("#slagalica")!,
             mojBrojBtn: document.querySelector("#mojBroj")!,
             spojniceBtn: document.querySelector("#spojnice")!,
@@ -110,7 +108,6 @@ export class Menu extends Page {
         if (gameId && !gameId.startsWith("sg")) {
             // Always listen for the server broadcast (fired only when both players are done)
             this.addSocketEvents__(SOCKET_EVENTS.STATE.GAME_COMPLETED, (payload: { data: any }) => {
-                this._hideWaitingState__();
                 this._showGameOverModal__(payload.data);
             });
 
@@ -119,7 +116,6 @@ export class Menu extends Page {
             const allDone = localPlayer && Object.values(localPlayer.score.games).every((g: any) => g.opend);
             if (allDone) {
                 this._socket.emit(SOCKET_EVENTS.STATE.PLAYER_FINISHED, { gameId });
-                this._showWaitingState__();
             }
         }
     }
@@ -200,13 +196,7 @@ export class Menu extends Page {
         if (totalsSection) totalsSection.style.gridTemplateColumns = "1fr";
     }
 
-    private _showWaitingState__(): void {
-        this._localDom.waitingSection.classList.remove("hidden");
-    }
 
-    private _hideWaitingState__(): void {
-        this._localDom.waitingSection.classList.add("hidden");
-    }
 
     private _showGameOverModal__(data: { winnerPlayer: any; loser: any; draw: boolean }): void {
         const { winnerPlayer, loser, draw } = data;
