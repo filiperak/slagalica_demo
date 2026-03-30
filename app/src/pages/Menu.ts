@@ -4,7 +4,7 @@ import { FetchHTML } from "../util/Util";
 import { Store, GameState, GameScore, Player } from "../Store";
 import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
-import { I18nService } from "../I18n";
+import { I18nService } from "../util/I18n";
 import App from "../App";
 
 interface LocalDomElements {

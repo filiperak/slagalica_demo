@@ -4,7 +4,7 @@ import { Store } from "../Store";
 import { GAME_KEYS, SOCKET_EVENTS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
-import { I18nService } from "../I18n";
+import { I18nService } from "../util/I18n";
 import App from "../App";
 
 interface LocalDomElements {
@@ -143,8 +143,8 @@ export class Slagalica extends Page {
             btn.className = [
                 "letter-btn",
                 "w-16 h-14 flex items-center justify-center",
-                "bg-surface-raised border border-white/[0.06]",
-                "hover:border-brand/60 hover:bg-surface-overlay",
+                "bg-surface-raised border border-border-default",
+                "hover:border-border-strong hover:bg-surface-overlay",
                 "rounded-lg text-content",
                 "font-bold text-base transition-all active:scale-95 shadow-sm",
             ].join(" ");
@@ -173,8 +173,8 @@ export class Slagalica extends Page {
             const tile = document.createElement("div");
             tile.className = [
                 "w-11 h-11 flex items-center justify-center",
-                "bg-surface-overlay border border-brand/60 rounded",
-                "text-white font-bold text-lg",
+                "bg-surface-overlay border border-border-strong rounded",
+                "text-content font-bold text-lg",
                 "shadow-brand-glow",
             ].join(" ");
             tile.textContent = letter;

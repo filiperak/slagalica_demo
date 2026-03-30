@@ -4,7 +4,7 @@ import { Store } from "../Store";
 import { GAME_KEYS, SOCKET_EVENTS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
-import { I18nService } from "../I18n";
+import { I18nService } from "../util/I18n";
 import App from "../App";
 
 const SYMBOL_IMGS = [
@@ -90,7 +90,7 @@ export class Skocko extends Page {
                 const slot = document.createElement("div");
                 slot.className = [
                     "w-14 h-14 flex items-center justify-center",
-                    "bg-surface-raised border border-white/[0.06] rounded-lg",
+                    "bg-surface-raised border border-border-default rounded-lg",
                     "transition-all cursor-pointer",
                 ].join(" ");
                 slots.push(slot);
@@ -104,7 +104,7 @@ export class Skocko extends Page {
             const circles: HTMLElement[] = [];
             for (let k = 0; k < COLS; k++) {
                 const circle = document.createElement("div");
-                circle.className = "w-3 h-3 rounded-full bg-surface border border-white/[0.1]";
+                circle.className = "w-3 h-3 rounded-full border border-border-default";
                 circles.push(circle);
                 scoreDisplay.appendChild(circle);
             }
@@ -120,8 +120,8 @@ export class Skocko extends Page {
             const btn = document.createElement("button");
             btn.className = [
                 "w-14 h-14 flex items-center justify-center p-1",
-                "bg-surface-raised border border-white/[0.06]",
-                "hover:border-brand/60 hover:bg-surface-overlay",
+                "bg-surface-raised border border-border-default",
+                "hover:border-border-strong hover:bg-surface-overlay",
                 "rounded-lg transition-all active:scale-95",
             ].join(" ");
 
@@ -164,13 +164,13 @@ export class Skocko extends Page {
     private _renderSlot(row: number, col: number, symbolIndex: number): void {
         const slot = this._boardSlots[row][col];
         slot.innerHTML = `<img src="${SYMBOL_IMGS[symbolIndex]}" class="w-10 h-10 object-contain pointer-events-none" />`;
-        slot.classList.add("border-brand/40");
+        slot.classList.add("border-border-strong");
     }
 
     private _clearSlot(row: number, col: number): void {
         const slot = this._boardSlots[row][col];
         slot.innerHTML = "";
-        slot.classList.remove("border-brand/40");
+        slot.classList.remove("border-border-strong");
     }
 
     private _submitRow(): void {
@@ -203,10 +203,10 @@ export class Skocko extends Page {
 
                 circles.forEach((circle) => {
                     if (pos > 0) {
-                        circle.className = "w-3 h-3 rounded-full bg-positive";
+                        circle.className = "w-3 h-3 rounded-sm bg-content";
                         pos--;
                     } else if (num > 0) {
-                        circle.className = "w-3 h-3 rounded-full bg-yellow-400";
+                        circle.className = "w-3 h-3 rounded-full border-2 border-content";
                         num--;
                     }
                 });

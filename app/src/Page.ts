@@ -121,8 +121,8 @@ export default abstract class Page {
                 this._headerProgressEl.style.width = `${pct}%`;
 
                 if (pct <= 20) {
-                    this._headerProgressEl.classList.remove("bg-blue-400");
-                    this._headerProgressEl.classList.add("bg-red-500");
+                    this._headerProgressEl.classList.remove("bg-brand");
+                    this._headerProgressEl.classList.add("bg-content");
                 }
             }
 
@@ -134,11 +134,11 @@ export default abstract class Page {
 
     private _buildHeaderHTML(duration: number): string {
         return `
-            <div class="flex items-center gap-3 px-4 py-2 w-full max-w-2xl mx-auto border-b border-white/[0.06]">
+            <div class="flex items-center gap-3 px-4 py-2 w-full max-w-2xl mx-auto border-b border-border-default">
 
                 <button
                     id="header-back-btn"
-                    class="flex items-center gap-1.5 px-3 py-2 text-content-muted hover:text-white hover:bg-white/[0.08] active:bg-white/[0.12] text-sm font-semibold rounded transition-colors shrink-0"
+                    class="flex items-center gap-1.5 px-3 py-2 text-content-muted hover:bg-surface-raised active:bg-surface-overlay text-sm font-semibold rounded transition-colors shrink-0"
                 >
                     <span>&#8592;</span>
                     <span>Nazad</span>
@@ -152,7 +152,7 @@ export default abstract class Page {
                     ></div>
                 </div>
 
-                <div class="flex items-center gap-2 px-3 py-2 bg-surface border border-white/[0.06] rounded shrink-0">
+                <div class="flex items-center gap-2 px-3 py-2 bg-surface border border-border-default rounded shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-content-muted"
                          fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>

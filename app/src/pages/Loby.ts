@@ -5,7 +5,8 @@ import { Partial } from "../util/Partials";
 import { SOCKET_EVENTS } from "../util/ClientConstants";
 import { Store } from "../Store";
 import { ThemeService } from "../util/ThemeService";
-import { I18nService, Lang } from "../I18n";
+import { SoundService } from "../util/SoundService";
+import { I18nService, Lang } from "../util/I18n";
 import App from "../App";
 
 interface LocalDomElements {
@@ -18,6 +19,7 @@ interface LocalDomElements {
     usernameInp: HTMLInputElement;
     headerActions: HTMLDivElement;
     themeToggleBtn: HTMLButtonElement;
+    toggleSoundBtn: HTMLButtonElement;
 }
 
 export default class Loby extends Page {
@@ -56,6 +58,7 @@ export default class Loby extends Page {
             headerActions: document.querySelector("#headerActions")!,
             themeToggleBtn: document.querySelector("#themeToggleBtn")!,
             avatarName: document.querySelector("#avatarName")!,
+            toggleSoundBtn: document.querySelector("#soundAction")!
         };
 
         this.setUsername();
@@ -65,13 +68,16 @@ export default class Loby extends Page {
         this.addEvents(this._localDom.joinGame, "click", this.joinViaCode.bind(this));
         this.addEvents(this._localDom.usernameInp, "input", this.changeUsername.bind(this));
         this.addEvents(this._localDom.createGameBtn, "click", this.setGameId.bind(this));
+        this.addEvents(this._localDom.toggleSoundBtn, "click", this.handleSoundChange.bind(this));
 
         this.updateThemeIcon();
+        this.updateSoundIcon();
         this.addEvents(this._localDom.themeToggleBtn, "click", () => {
             ThemeService.toggle();
             this.updateThemeIcon();
         });
         this.handleLangSelectionClick();
+        SoundService.play();
     }
 
     playRandomGame() {
@@ -221,5 +227,17 @@ export default class Loby extends Page {
             },
             { capture: true }
         );
+    }
+
+    handleSoundChange(): void {
+        SoundService.toggle();
+        this.updateSoundIcon();
+    }
+
+    updateSoundIcon(): void {
+        const img = this._localDom.toggleSoundBtn.querySelector("img")!;
+        img.src = SoundService.isMuted()
+            ? "./assets/icon-sound-off.svg"
+            : "./assets/icon-sound-on.svg";
     }
 }

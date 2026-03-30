@@ -4,7 +4,7 @@ import { Store } from "../Store";
 import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
-import { I18nService } from "../I18n";
+import { I18nService } from "../util/I18n";
 import App from "../App";
 
 const COL_LABELS = ["A", "B", "C", "D"];
@@ -90,8 +90,8 @@ export class Asocijacije extends Page {
                 card.textContent = `${COL_LABELS[colIndex]}${rowIndex + 1}`;
                 card.className = [
                     "w-full py-3 px-1 text-center text-sm font-bold rounded-lg border cursor-pointer select-none",
-                    "bg-surface-raised border-white/[0.06] text-content-muted",
-                    "hover:bg-surface-overlay hover:border-brand/40 hover:text-white",
+                    "bg-surface-raised border-border-default text-content-muted",
+                    "hover:bg-surface-overlay hover:border-border-strong",
                     "transition-all",
                 ].join(" ");
 
@@ -108,7 +108,7 @@ export class Asocijacije extends Page {
             input.setAttribute("autocomplete", "off");
             input.className = [
                 "w-full px-2 py-2 rounded-lg border text-xs font-semibold text-center uppercase",
-                "bg-surface border-white/[0.06] text-content placeholder:text-content-subtle",
+                "bg-surface border-border-default text-content placeholder:text-content-subtle",
                 "focus:outline-none transition-all opacity-40",
             ].join(" ");
 
@@ -128,14 +128,14 @@ export class Asocijacije extends Page {
         card.dataset.revealed = "1";
         card.classList.remove(
             "bg-surface-raised",
-            "border-white/[0.06]",
+            "border-border-default",
             "text-content-muted",
             "hover:bg-surface-overlay",
-            "hover:border-brand/40",
-            "hover:text-white",
+            "hover:border-border-strong",
+            "",
             "cursor-pointer"
         );
-        card.classList.add("bg-brand/20", "border-brand/40", "text-white", "cursor-default");
+        card.classList.add("bg-brand/20", "border-brand/40", "text-content", "cursor-default");
 
         const input = this._columnInputs[colIndex];
         if (input.readOnly) {
@@ -180,7 +180,7 @@ export class Asocijacije extends Page {
         const input = this._columnInputs[colIndex];
         input.readOnly = true;
         input.value = this._gameData.columns[colIndex].rešenje;
-        input.classList.remove("border-white/[0.06]", "opacity-40");
+        input.classList.remove("border-border-default", "opacity-40");
         input.classList.add("border-positive", "bg-positive/10", "text-positive");
 
         this._columnCards[colIndex].forEach((card, i) => {
@@ -190,18 +190,19 @@ export class Asocijacije extends Page {
                 card.classList.remove(
                     "bg-surface-raised",
                     "bg-brand/20",
-                    "border-white/[0.06]",
+                    "border-border-default",
                     "border-brand/40",
                     "text-content-muted",
+                    "text-content",
                     "cursor-pointer",
                     "hover:bg-surface-overlay",
-                    "hover:border-brand/40",
-                    "hover:text-white"
+                    "hover:border-border-strong",
+                    ""
                 );
                 card.classList.add(
                     "bg-positive/20",
                     "border-positive",
-                    "text-white",
+                    "text-content-on-brand",
                     "cursor-default"
                 );
             }, i * 60);
@@ -214,16 +215,16 @@ export class Asocijacije extends Page {
         });
         const fi = this._localDom.finalInput;
         fi.readOnly = true;
-        fi.classList.remove("border-white/[0.06]", "opacity-40");
+        fi.classList.remove("border-border-default", "opacity-40");
         fi.classList.add("border-positive", "bg-positive/10", "text-positive");
     }
 
     private _flashError(input: HTMLInputElement): void {
         input.classList.add("border-negative", "bg-negative/10");
-        input.classList.remove("border-white/[0.06]");
+        input.classList.remove("border-border-default");
         setTimeout(() => {
             input.classList.remove("border-negative", "bg-negative/10");
-            input.classList.add("border-white/[0.06]");
+            input.classList.add("border-border-default");
             input.value = "";
         }, 500);
     }

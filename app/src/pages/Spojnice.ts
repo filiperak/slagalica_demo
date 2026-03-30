@@ -114,7 +114,7 @@ export class Spojnice extends Page {
         el.textContent = item.name;
         el.className = [
             "px-3 py-3 text-sm font-semibold text-center rounded-lg border cursor-pointer",
-            "bg-surface-raised border-white/[0.06] text-content",
+            "bg-surface-raised border-border-default text-content",
             "transition-all select-none",
             side === "right" ? "opacity-50" : "",
         ].join(" ");
@@ -144,7 +144,7 @@ export class Spojnice extends Page {
         if (this._selectedLeft === card) {
             // Deselect
             card.el.classList.remove("border-brand", "bg-surface-overlay");
-            card.el.classList.add("border-white/[0.06]");
+            card.el.classList.add("border-border-default");
             this._selectedLeft = null;
             this._setRightOpacity(true);
             return;
@@ -152,11 +152,11 @@ export class Spojnice extends Page {
 
         if (this._selectedLeft) {
             this._selectedLeft.el.classList.remove("border-brand", "bg-surface-overlay");
-            this._selectedLeft.el.classList.add("border-white/[0.06]");
+            this._selectedLeft.el.classList.add("border-border-default");
         }
 
         card.el.classList.add("border-brand", "bg-surface-overlay");
-        card.el.classList.remove("border-white/[0.06]");
+        card.el.classList.remove("border-border-default");
         this._selectedLeft = card;
         this._phase = "pickRight";
         this._setRightOpacity(false);
@@ -182,16 +182,18 @@ export class Spojnice extends Page {
     private _markCard(card: Card, correct: boolean): void {
         card.matched = true;
         card.el.classList.remove(
-            "border-white/[0.06]",
+            "border-border-default",
             "border-brand",
             "bg-surface-raised",
             "bg-surface-overlay",
             "opacity-50",
-            "cursor-pointer"
+            "cursor-pointer",
+            "text-content"
         );
         card.el.classList.add(
             correct ? "bg-positive" : "bg-negative/20",
             correct ? "border-positive" : "border-negative",
+            correct ? "text-content-on-brand" : "text-content",
             "cursor-default"
         );
     }

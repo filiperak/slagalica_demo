@@ -4,7 +4,7 @@ import { Store } from "../Store";
 import { GAME_KEYS, SOCKET_EVENTS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
-import { I18nService } from "../I18n";
+import { I18nService } from "../util/I18n";
 import App from "../App";
 
 interface KoznaznaQuestion {
@@ -92,8 +92,8 @@ export class KoZnaZna extends Page {
             btn.textContent = option;
             btn.className = [
                 "py-3 px-4 text-sm font-medium text-content",
-                "bg-surface-raised border border-white/[0.06]",
-                "hover:border-brand/60 hover:bg-surface-overlay hover:text-white",
+                "bg-surface-raised border border-border-default",
+                "hover:border-border-strong hover:bg-surface-overlay",
                 "rounded-lg transition-all active:scale-95 text-center leading-snug",
             ].join(" ");
 
@@ -110,7 +110,7 @@ export class KoZnaZna extends Page {
         const isCorrect = selected === correct;
 
         if (isCorrect) {
-            btn.classList.add("bg-positive", "border-positive", "text-white");
+            btn.classList.add("bg-positive", "border-positive", "text-content-on-brand");
             this._socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUBMIT, {
                 gameId: this._gameData.gameId,
                 points: 3,
@@ -141,7 +141,7 @@ export class KoZnaZna extends Page {
         const btns = this._localDom.optionsContainer.querySelectorAll<HTMLButtonElement>("button");
         btns.forEach((b) => {
             if (b.textContent === correct) {
-                b.classList.add("bg-positive", "border-positive", "text-white");
+                b.classList.add("bg-positive", "border-positive", "text-content-on-brand");
             }
         });
     }

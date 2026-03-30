@@ -1,11 +1,10 @@
-// ── Type derivation from SR JSON files (compile-time only) ────────────────────
-import loby_sr from "../public/i18n/loby/sr.json";
-import menu_sr from "../public/i18n/menu/sr.json";
-import slagalica_sr from "../public/i18n/slagalica/sr.json";
-import mojBroj_sr from "../public/i18n/mojBroj/sr.json";
-import skocko_sr from "../public/i18n/skocko/sr.json";
-import koznazna_sr from "../public/i18n/koznazna/sr.json";
-import asocijacije_sr from "../public/i18n/asocijacije/sr.json";
+import loby_sr from "../../public/i18n/loby/sr.json";
+import menu_sr from "../../public/i18n/menu/sr.json";
+import slagalica_sr from "../../public/i18n/slagalica/sr.json";
+import mojBroj_sr from "../../public/i18n/mojBroj/sr.json";
+import skocko_sr from "../../public/i18n/skocko/sr.json";
+import koznazna_sr from "../../public/i18n/koznazna/sr.json";
+import asocijacije_sr from "../../public/i18n/asocijacije/sr.json";
 
 export type Lang = "sr" | "en";
 
@@ -19,13 +18,11 @@ type ViewKeyMap = {
     asocijacije: keyof typeof asocijacije_sr;
 };
 
-// ── Module-level state ────────────────────────────────────────────────────────
 const LANG_KEY = "user-lang";
 type TranslationMap = Record<string, string>;
 const _cache: Record<string, TranslationMap> = {};
 let _currentLang: Lang = (localStorage.getItem(LANG_KEY) as Lang) ?? "sr";
 
-// ── Singleton service ─────────────────────────────────────────────────────────
 export const I18nService = {
     get(): Lang {
         return _currentLang;
@@ -39,7 +36,10 @@ export const I18nService = {
     async load(view: string): Promise<void> {
         try {
             const res = await fetch(`/i18n/${view}/${_currentLang}.json`);
-            if (!res.ok) throw new Error(`i18n fetch failed: /i18n/${view}/${_currentLang}.json (${res.status})`);
+            if (!res.ok)
+                throw new Error(
+                    `i18n fetch failed: /i18n/${view}/${_currentLang}.json (${res.status})`
+                );
             _cache[view] = await res.json();
         } catch (err) {
             console.error(err);

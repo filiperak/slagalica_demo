@@ -4,7 +4,7 @@ import { Store } from "../Store";
 import { GAME_KEYS, SOCKET_EVENTS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
-import { I18nService } from "../I18n";
+import { I18nService } from "../util/I18n";
 import App from "../App";
 
 interface LocalDomElements {
@@ -128,8 +128,8 @@ export class MojBroj extends Page {
         btn.className = [
             "num-btn",
             "w-14 h-12 flex items-center justify-center",
-            "bg-surface-raised border border-white/[0.06]",
-            "hover:border-brand/60 hover:bg-surface-overlay",
+            "bg-surface-raised border border-border-default",
+            "hover:border-border-strong hover:bg-surface-overlay",
             "rounded-lg text-content",
             "font-bold text-base transition-all active:scale-95 shadow-sm",
         ].join(" ");
@@ -145,9 +145,9 @@ export class MojBroj extends Page {
             btn.textContent = op;
             btn.className = [
                 "w-12 h-12 flex items-center justify-center",
-                "bg-surface-raised border border-white/[0.06]",
-                "hover:border-brand/60 hover:bg-surface-overlay",
-                "rounded-lg text-content-muted hover:text-white",
+                "bg-surface-raised border border-border-default",
+                "hover:border-border-strong hover:bg-surface-overlay",
+                "rounded-lg text-content-muted",
                 "font-bold text-base transition-all active:scale-95",
             ].join(" ");
 
