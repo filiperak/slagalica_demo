@@ -132,7 +132,6 @@ export class Asocijacije extends Page {
             "text-content-muted",
             "hover:bg-surface-overlay",
             "hover:border-border-strong",
-            "",
             "cursor-pointer"
         );
         card.classList.add("bg-brand/20", "border-brand/40", "text-content", "cursor-default");
