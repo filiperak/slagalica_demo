@@ -142,7 +142,6 @@ export class Spojnice extends Page {
 
     private _selectLeft(card: Card): void {
         if (this._selectedLeft === card) {
-            // Deselect
             card.el.classList.remove("border-brand", "bg-surface-overlay");
             card.el.classList.add("border-border-default");
             this._selectedLeft = null;

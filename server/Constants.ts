@@ -26,7 +26,6 @@ export const SOCKET_EVENTS = Object.freeze({
         NOTIFICATION: "notification",
     },
 
-    // Specific Minigames
     GAMES: {
         SLAGALICA: {
             CHECK: "checkWord",

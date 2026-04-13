@@ -331,7 +331,6 @@ export class Game {
         numbers.push(mediumNimbers[Math.floor(Math.random() * mediumNimbers.length)]);
         numbers.push(largeNumbers[Math.floor(Math.random() * largeNumbers.length)]);
 
-        //const solution = "123"
         const solution = this.solveMojBroj(numbers, target);
 
         return { target, numbers, solution };

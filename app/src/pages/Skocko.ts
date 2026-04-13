@@ -135,7 +135,6 @@ export class Skocko extends Page {
         });
     }
 
-    // Places the symbol in the first empty slot of the current row
     private _onSymbolClick(symbolIndex: number): void {
         if (this._submitted || this._rowCounter >= ROWS) return;
 
@@ -151,7 +150,6 @@ export class Skocko extends Page {
         }
     }
 
-    // Clicking a filled slot empties it; next symbol input fills the first empty slot
     private _onSlotClick(row: number, col: number): void {
         if (this._submitted || row !== this._rowCounter) return;
         if (this._currentComb[col] === null) return;
@@ -203,10 +201,10 @@ export class Skocko extends Page {
 
                 circles.forEach((circle) => {
                     if (pos > 0) {
-                        circle.className = "w-3 h-3 rounded-sm bg-content";
+                        circle.className = "w-3 h-3 rounded-sm bg-red-500";
                         pos--;
                     } else if (num > 0) {
-                        circle.className = "w-3 h-3 rounded-full border-2 border-content";
+                        circle.className = "w-3 h-3 rounded-full border-2 border-yellow-400";
                         num--;
                     }
                 });

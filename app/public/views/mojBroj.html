@@ -5,27 +5,23 @@
 
         <div class="flex flex-col gap-6 flex-1 justify-center">
 
-            <!-- Target number -->
             <div class="flex justify-center">
                 <div id="targetNumber" class="text-5xl font-bold text-brand tracking-widest min-w-[140px] text-center py-3 px-6 bg-surface-raised border border-border-strong rounded-xl">
                     ?
                 </div>
             </div>
 
-            <!-- Expression display -->
             <div class="w-full">
                 <div id="expressionDisplay" class="min-h-[44px] flex items-center justify-center text-xl font-semibold text-content flex-wrap gap-1 px-4">
                 </div>
                 <div class="mt-2 h-px bg-border-default"></div>
             </div>
 
-            <!-- Number rows -->
             <div class="flex flex-col gap-3">
                 <div id="firstRow" class="flex flex-wrap justify-center gap-2"></div>
                 <div id="secondRow" class="flex flex-wrap justify-center gap-2"></div>
             </div>
 
-            <!-- Operators + delete -->
             <div class="flex items-center justify-center gap-2 flex-wrap">
                 <div id="operatorBtns" class="flex gap-2 flex-wrap justify-center"></div>
                 <button id="deleteBtn" class="w-12 h-12 flex items-center justify-center bg-surface-raised border border-border-default hover:border-negative/50 hover:bg-negative/10 rounded-lg text-content-muted hover:text-negative transition-all">
@@ -37,7 +33,6 @@
                 </button>
             </div>
 
-            <!-- Actions -->
             <div class="flex flex-col gap-2 w-full">
                 <button id="stopBtn" class="w-full py-3 bg-surface-raised border border-border-default hover:border-border-strong hover:bg-surface-overlay text-content text-sm font-semibold rounded-lg transition-all hover:-translate-y-px active:translate-y-0 tracking-wide" data-i18n="stop">
                     Stop

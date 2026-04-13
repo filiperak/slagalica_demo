@@ -1,5 +1,3 @@
-// ── Game state shapes (mirror server/GameEngine.ts return values) ──────────────
-
 interface SlagalicaState {
     letterComb: string[];
     word: string;
@@ -46,8 +44,6 @@ interface AsocijacijeState {
     asocijacija: AsocijacijeAsocijacija;
 }
 
-// ── Player shape (mirror server/GameEngine.ts addPlayer) ──────────────────────
-
 export interface GameScore {
     opend: boolean;
     score: number;
@@ -73,8 +69,6 @@ export interface Player {
     score: PlayerScore;
 }
 
-// ── Root state ─────────────────────────────────────────────────────────────────
-
 export interface GameState {
     gameCompleted: boolean;
     gameId: string;
@@ -88,8 +82,6 @@ export interface GameState {
     };
     players: Player[];
 }
-
-// ── Store ──────────────────────────────────────────────────────────────────────
 
 export class Store {
     private _state: GameState | null = null;

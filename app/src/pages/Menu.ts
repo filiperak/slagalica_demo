@@ -63,7 +63,6 @@ export class Menu extends Page {
         await I18nService.load("menu");
         I18nService.translate(this._domElements.gameContainer, "menu");
 
-        // Initialize local DOM references
         this._localDom = {
             leaveBtn: document.querySelector("#leave-game-btn")!,
             slagalicaBtn: document.querySelector("#slagalica")!,
@@ -92,12 +91,10 @@ export class Menu extends Page {
             p1Asocijacije: document.querySelector("#p1-asocijacije")!,
         };
 
-        // Subscription for state changes
         this._unsub = this._store.subscribe((state: GameState) => {
             this.render(state);
         });
 
-        // Initial render
         const initialState = this._store.getState();
         if (initialState) {
             if (initialState.gameId?.startsWith("sg")) {
@@ -106,7 +103,6 @@ export class Menu extends Page {
             this.render(initialState);
         }
 
-        // Events
         this.addEvents(this._localDom.leaveBtn, "click", this.leaveGame.bind(this));
 
         const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
@@ -117,16 +113,13 @@ export class Menu extends Page {
             }
         });
 
-        // Multiplayer game-over synchronization — listener lives only while Menu is active
         const state = this._store.getState();
         const gameId = state?.gameId ?? "";
         if (gameId && !gameId.startsWith("sg")) {
-            // Always listen for the server broadcast (fired only when both players are done)
             this.addSocketEvents(SOCKET_EVENTS.STATE.GAME_COMPLETED, (payload: { data: GameOverData }) => {
                 this._showGameOverModal(payload.data);
             });
 
-            // If this player has finished all their games, signal the server
             const localPlayer = state?.players.find((p: Player) => p.id === this._socket.id);
             const allDone =
                 localPlayer && Object.values(localPlayer.score.games).every((g: GameScore) => g.opend);
@@ -142,7 +135,6 @@ export class Menu extends Page {
 
         const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
 
-        // 1. Logic to disable buttons if game is already 'opend' for the local player
         const localPlayer = state.players.find((p) => p.id === this._socket.id);
 
         if (localPlayer) {
@@ -186,19 +178,15 @@ export class Menu extends Page {
             });
         }
 
-        // 2. Logic to update the scoreboard table
         state.players.forEach((player, index) => {
             const prefix = `p${index}`;
 
-            // Update Name
             const nameEl = this._localDom[`${prefix}Name` as keyof LocalDomElements];
             if (nameEl) nameEl.textContent = player.name || `Igrač ${index + 1}`;
 
-            // Update Total
             const totalEl = this._localDom[`${prefix}Total` as keyof LocalDomElements];
             if (totalEl) totalEl.textContent = player.score.total.toString();
 
-            // Update Individual Game Scores in Table
             games.forEach((gameKey) => {
                 const domKey =
                     `${prefix}${gameKey.charAt(0).toUpperCase() + gameKey.slice(1)}` as keyof LocalDomElements;
@@ -266,7 +254,6 @@ export class Menu extends Page {
     }
 
     leaveGame() {
-        // Using the inherited _partial from Page class for a cleaner exit
         this._partial.showModal({
             title: "Napuštanje",
             text: "Da li ste sigurni da želite da napustite partiju?",
@@ -286,7 +273,6 @@ export class Menu extends Page {
 
         const localPlayer = state?.players.find((p) => p.id === this._socket.id);
 
-        // Final guard: don't emit if already opened
         const alreadyOpened =
             localPlayer?.score.games[gameKey as keyof typeof localPlayer.score.games]?.opend;
         if (alreadyOpened) return;

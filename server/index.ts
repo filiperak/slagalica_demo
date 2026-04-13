@@ -16,8 +16,6 @@ const PORT = process.env.PORT || 5500;
 const app = express();
 app.use(cors());
 
-// Resolve correct static folder for both dev (running TS from repo)
-// and production (running compiled JS from dist).
 const candidates = [path.join(__dirname, "../dist/app"), path.join(__dirname, "../app")];
 const staticFolder = candidates.find((p) => fs.existsSync(p)) || candidates[0];
 console.log(`Serving static files from: ${staticFolder}`);
@@ -30,12 +28,7 @@ const expressServer = app.listen(PORT, () => {
 const io = new Server(expressServer, {
     cors: {
         origin: "*",
-        // origin: process.env.NODE_ENV === "production"?
-        // "https://slagalica-demo.onrender.com" :
-        //  ["http://localhost:5500","http://127.0.0.1:5500"]
     },
 });
-// const io = new Server(expressServer)
 
-//init socket logic
 new SocketHandler(io);

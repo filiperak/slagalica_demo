@@ -2,6 +2,7 @@ import { Socket } from "socket.io-client";
 import { Store, GameState } from "./Store";
 import { VIEWS } from "./util/ClientConstants";
 import { ping } from "./util/Util";
+import { I18nService } from "./util/I18n";
 import App from "./App";
 
 interface PageEvent {
@@ -81,7 +82,6 @@ export default abstract class Page {
         element.addEventListener(event, callback);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     addSocketEvents(name: string, callback: (...args: any[]) => void): void {
         this._socketEvents.push({ eventName: name, eventHandler: callback });
         this._socket.on(name, callback);
@@ -92,15 +92,12 @@ export default abstract class Page {
         ping("timeExpired");
     }
 
-    // protected _next(): void {
-    //     console.warn("_next() not yet implemented — add logic here.");
-    // }
-
     protected initHeader(duration: number = 90): void {
         this._timerDuration = duration;
         this._timerRemaining = duration;
 
         this._domElements.gameHeader.innerHTML = this._buildHeaderHTML(duration);
+        I18nService.translate(this._domElements.gameHeader, "common");
         this._headerTimerEl = this._domElements.gameHeader.querySelector("#header-timer-count");
         this._headerProgressEl = this._domElements.gameHeader.querySelector("#header-progress-bar");
 
@@ -141,7 +138,7 @@ export default abstract class Page {
                     class="flex items-center gap-1.5 px-3 py-2 text-content-muted hover:bg-surface-raised active:bg-surface-overlay text-sm font-semibold rounded transition-colors shrink-0"
                 >
                     <span>&#8592;</span>
-                    <span>Nazad</span>
+                    <span data-i18n="back">Nazad</span>
                 </button>
 
                 <div class="flex-1 h-1.5 bg-surface rounded-full overflow-hidden">

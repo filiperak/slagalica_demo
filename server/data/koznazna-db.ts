@@ -46,7 +46,6 @@ export const koznaznaDB: KoznaznaQuestion[] = [
         wrong: ["25", "28", "30"],
     },
 
-    // History
     {
         question: "Koje godine je pao Berlinski zid?",
         answer: "1989.",
@@ -83,7 +82,6 @@ export const koznaznaDB: KoznaznaQuestion[] = [
         wrong: ["Maje", "Acteci", "Čimuji"],
     },
 
-    // Science & Nature
     {
         question: "Koliko elektrona ima atom kiseonika?",
         answer: "8",
@@ -135,7 +133,6 @@ export const koznaznaDB: KoznaznaQuestion[] = [
         wrong: ["Gravitaciona sila", "Jaka nuklearna sila", "Slaba nuklearna sila"],
     },
 
-    // Mathematics
     {
         question: "Koliko prostih brojeva postoji između 1 i 50?",
         answer: "15",
@@ -162,7 +159,6 @@ export const koznaznaDB: KoznaznaQuestion[] = [
         wrong: ["31,4 cm²", "62,8 cm²", "157 cm²"],
     },
 
-    // Literature & Art
     {
         question: "Ko je napisao roman 'Sto godina samoće'?",
         answer: "Gabrijel Garsija Markes",
@@ -189,7 +185,6 @@ export const koznaznaDB: KoznaznaQuestion[] = [
         wrong: ["Mocart", "Brams", "Šubert"],
     },
 
-    // Sports
     {
         question: "Koja zemlja je pobednik FIFA Svetskog prvenstva 2022?",
         answer: "Argentina",
@@ -211,7 +206,6 @@ export const koznaznaDB: KoznaznaQuestion[] = [
         wrong: ["Los Anđeles", "Brizbejn", "Tokio"],
     },
 
-    // Technology & Physics
     {
         question: "Šta znači akronim HTTP?",
         answer: "HyperText Transfer Protocol",
@@ -242,7 +236,6 @@ export const koznaznaDB: KoznaznaQuestion[] = [
         wrong: ["6,022 × 10¹⁶", "6,022 × 10³⁰", "6,022 × 10¹²"],
     },
 
-    // Serbian / Balkan culture
     {
         question: "Ko je napisao ep 'Gorski vijenac'?",
         answer: "Petar II Petrović Njegoš",

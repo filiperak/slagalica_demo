@@ -87,7 +87,6 @@ export class SocketHandler {
         socket.emit(socket.id);
         console.log(`New connection: ${socket.id}`);
 
-        // Register all event handlers
         socket.on(SOCKET_EVENTS.CORE.ENTER_ROOM, (data: EnterRoomEvent) =>
             this.handleEnterRoom(socket, data)
         );
@@ -110,7 +109,6 @@ export class SocketHandler {
             this.handlePlayerFinished(socket, data)
         );
 
-        // Game-specific event handlers
         socket.on(SOCKET_EVENTS.GAMES.SLAGALICA.CHECK, (data: SlagalicaCheckEvent) =>
             this.handleCheckWord(socket, data)
         );
@@ -139,7 +137,6 @@ export class SocketHandler {
             this.handleSubmitMojBroj(socket, data)
         );
 
-        // Connection handlers
         socket.on(SOCKET_EVENTS.CORE.LEAVE_GAME, () => this.handleLeaveGame(socket));
         socket.on(SOCKET_EVENTS.CORE.DISCONNECT, (reason: string) =>
             this.handleDisconnect(socket, reason)
@@ -297,7 +294,6 @@ export class SocketHandler {
         }
     }
 
-    // Slagalica handlers
     private handleCheckWord(socket: Socket, { gameId, word }: SlagalicaCheckEvent): void {
         try {
             const game = this.getGame(gameId);
@@ -334,7 +330,6 @@ export class SocketHandler {
         }
     }
 
-    // Skocko handlers
     private handleCheckSkocko(socket: Socket, { gameId, cardComb }: SkockoCheckEvent): void {
         try {
             const game = this.getGame(gameId);
@@ -367,7 +362,9 @@ export class SocketHandler {
             }
 
             const validateSkocko = game.validateSkocko(cardComb);
-            game.addScore(GAME_KEYS.SKOCKO, socket.id, validateSkocko.score);
+            if (validateSkocko.correctPositions !== 4) {
+                game.addScore(GAME_KEYS.SKOCKO, socket.id, validateSkocko.score);
+            }
             socket.emit("scoreSubmitedSkocko", { data: validateSkocko.score });
             this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
         } catch (error) {
@@ -376,7 +373,6 @@ export class SocketHandler {
         }
     }
 
-    // Spojnice handler
     private handleSubmitSpojnice(
         socket: Socket,
         { gameId, correctPick }: SpojniceSubmitEvent
@@ -398,7 +394,6 @@ export class SocketHandler {
         }
     }
 
-    // Ko Zna Zna handlers
     private handleSubmitKoznazna(socket: Socket, { gameId, points }: KoZnaZnaSubmitEvent): void {
         try {
             const game = this.getGame(gameId);
@@ -447,7 +442,6 @@ export class SocketHandler {
         }
     }
 
-    // Asocijacije handler
     private handleSubmitAsocijacije(
         socket: Socket,
         { gameId, points }: AsocijacijeSubmitEvent
@@ -479,7 +473,6 @@ export class SocketHandler {
         }
     }
 
-    // Moj Broj handler
     private handleSubmitMojBroj(socket: Socket, { gameId, combination }: MojBrojSubmitEvent): void {
         try {
             const game = this.getGame(gameId);
@@ -515,7 +508,6 @@ export class SocketHandler {
 
             if (otherPlayer) {
                 if (game.finishedPlayers.has(otherPlayer.id)) {
-                    // Remaining player was in the waiting state — send final result
                     const finalScore = game.checkWinner();
                     this.io
                         .to(otherPlayer.id)
@@ -545,7 +537,6 @@ export class SocketHandler {
 
             if (otherPlayer) {
                 if (game.finishedPlayers.has(otherPlayer.id)) {
-                    // Remaining player was waiting for this player — send final result
                     const finalScore = game.checkWinner();
                     this.io
                         .to(otherPlayer.id)
@@ -571,21 +562,18 @@ export class SocketHandler {
                 return;
             }
 
-            // Try to find player by name and update their socket id
             const existingPlayer = game.players.find((p) => p.name === name);
             if (existingPlayer) {
                 existingPlayer.id = socket.id;
                 socket.join(gameId);
                 console.log(`Player ${name} reconnected to game ${gameId} as ${socket.id}`);
 
-                // Send updated state to the reconnected socket and room
                 socket.emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
                 socket.emit(SOCKET_EVENTS.STATE.GAME_DATA, game.gameState);
                 this.io.to(gameId).emit(SOCKET_EVENTS.STATE.PLAYERS_STATE, game);
                 return;
             }
 
-            // If player not found, try to add them if there's space
             if (game.players.length < 2) {
                 game.addPlayer(socket.id, name);
                 socket.join(gameId);
@@ -605,7 +593,6 @@ export class SocketHandler {
         }
     }
 
-    // Helper methods
     private determineGameId(game: string | null): string {
         if (game !== null) {
             return game;
@@ -663,7 +650,6 @@ export class SocketHandler {
         return `${gid()}-${gid()}-${gid()}`;
     }
 
-    // Public method to get server stats if needed
     public getStats(): { activeGames: number; totalPlayers: number } {
         const activeGames = Object.keys(this.games).length;
         const totalPlayers = Object.values(this.games).reduce(

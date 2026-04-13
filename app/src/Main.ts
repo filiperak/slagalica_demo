@@ -1,7 +1,7 @@
 import "./style.css";
 import App from "./App";
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
     const app = new App();
-    app.init();
+    await app.init();
 });

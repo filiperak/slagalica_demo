@@ -12,6 +12,7 @@ import { Spojnice } from "./pages/Spojnice";
 import { Skocko } from "./pages/Skocko";
 import { Asocijacije } from "./pages/Asocijacije";
 import { KoZnaZna } from "./pages/Koznazna";
+import { I18nService } from "./util/I18n";
 
 interface Views {
     loby: Loby;
@@ -52,7 +53,9 @@ export default class App {
         this.addSocketEvents();
     }
 
-    init() {
+    async init() {
+        await I18nService.load("common");
+        I18nService.translate(document.body, "common");
         this.go(VIEWS.LOBY);
         console.log(this._socket);
     }
@@ -65,8 +68,6 @@ export default class App {
         this._views[page].init();
         this._previousView = this._views[page];
     }
-
-    //IMPLEMENT NEXT(PAGE) AND CREATE nAVIGATORO CLASS
 
     addSocketEvents() {
         this._socket.on(SOCKET_EVENTS.STATE.START_GAME, ({ game }) => {

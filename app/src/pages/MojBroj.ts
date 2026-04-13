@@ -224,7 +224,6 @@ export class MojBroj extends Page {
         if (isNumber(last) || last === ")") {
             return ["+", "-", "*", "/", ")"].includes(next);
         }
-        // After binary operator or "("
         return isNumber(next) || next === "(";
     }
 
