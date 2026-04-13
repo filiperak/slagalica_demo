@@ -87,7 +87,6 @@ export class Slagalica extends Page {
         };
 
         const state = this._store.getState();
-        console.log(state);
 
         this._gameData = {
             letters: state?.gameState.slagalica.letterComb ?? [],
@@ -264,7 +263,6 @@ export class Slagalica extends Page {
     }
 
     private _timeExpired(): void {
-        console.log("times up");
         this._submitted = true;
         this._socket.emit(SOCKET_EVENTS.GAMES.SLAGALICA.SUBMIT, {
             gameId: this._gameData.gameId,
@@ -274,11 +272,13 @@ export class Slagalica extends Page {
 
     private _reciveResult(): void {
         this._socket.on(SOCKET_EVENTS.GAMES.SLAGALICA.SUCCESS, (result) => {
-            console.log(result);
             const word = this._store.getState()?.gameState.slagalica.word ?? "";
             this._partial.showModal({
                 title: I18nService.getMessage("slagalica", "game_over"),
-                text: I18nService.getMessage("slagalica", "result_score").replace("{n}", String(result.data)),
+                text: I18nService.getMessage("slagalica", "result_score").replace(
+                    "{n}",
+                    String(result.data)
+                ),
                 solution: `${I18nService.getMessage("slagalica", "solution_word_label")}: ${word}`,
                 primaryText: I18nService.getMessage("slagalica", "close"),
                 secondaryText: I18nService.getMessage("slagalica", "next"),

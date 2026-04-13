@@ -232,7 +232,10 @@ export class SocketHandler {
             }
 
             currentGame.handleOpendGame(gameKey, playerId);
-            console.log(playerId, currentGame.gameState[gameKey as keyof typeof currentGame.gameState]);
+            console.log(
+                playerId,
+                currentGame.gameState[gameKey as keyof typeof currentGame.gameState]
+            );
 
             const response = {
                 gameKey,

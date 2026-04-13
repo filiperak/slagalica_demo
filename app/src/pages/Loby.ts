@@ -58,7 +58,7 @@ export default class Loby extends Page {
             headerActions: document.querySelector("#headerActions")!,
             themeToggleBtn: document.querySelector("#themeToggleBtn")!,
             avatarName: document.querySelector("#avatarName")!,
-            toggleSoundBtn: document.querySelector("#soundAction")!
+            toggleSoundBtn: document.querySelector("#soundAction")!,
         };
 
         this._localDom.joinGame.disabled = true;
@@ -214,7 +214,8 @@ export default class Loby extends Page {
     updateThemeIcon() {
         const img = this._localDom.themeToggleBtn.querySelector("img")!;
         const theme = ThemeService.get();
-        img.src = theme === "dark" ? "./assets/icon-theme-dark.svg" : "./assets/icon-theme-light.svg";
+        img.src =
+            theme === "dark" ? "./assets/icon-theme-dark.svg" : "./assets/icon-theme-light.svg";
     }
 
     leaveGame() {
@@ -225,8 +226,10 @@ export default class Loby extends Page {
     }
 
     handleLangSelectionClick() {
-        const picker = this._localDom.headerActions.querySelector<HTMLButtonElement>("#languagePicker")!;
-        const menu = this._localDom.headerActions.querySelector<HTMLUListElement>("#languagePickerMenu")!;
+        const picker =
+            this._localDom.headerActions.querySelector<HTMLButtonElement>("#languagePicker")!;
+        const menu =
+            this._localDom.headerActions.querySelector<HTMLUListElement>("#languagePickerMenu")!;
 
         this.addEvents(picker, "click", (e) => {
             e.stopPropagation();

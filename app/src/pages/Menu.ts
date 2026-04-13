@@ -116,13 +116,17 @@ export class Menu extends Page {
         const state = this._store.getState();
         const gameId = state?.gameId ?? "";
         if (gameId && !gameId.startsWith("sg")) {
-            this.addSocketEvents(SOCKET_EVENTS.STATE.GAME_COMPLETED, (payload: { data: GameOverData }) => {
-                this._showGameOverModal(payload.data);
-            });
+            this.addSocketEvents(
+                SOCKET_EVENTS.STATE.GAME_COMPLETED,
+                (payload: { data: GameOverData }) => {
+                    this._showGameOverModal(payload.data);
+                }
+            );
 
             const localPlayer = state?.players.find((p: Player) => p.id === this._socket.id);
             const allDone =
-                localPlayer && Object.values(localPlayer.score.games).every((g: GameScore) => g.opend);
+                localPlayer &&
+                Object.values(localPlayer.score.games).every((g: GameScore) => g.opend);
             if (allDone) {
                 this._socket.emit(SOCKET_EVENTS.STATE.PLAYER_FINISHED, { gameId });
             }
@@ -131,7 +135,6 @@ export class Menu extends Page {
 
     render(state: GameState) {
         if (!state || !state.players) return;
-        console.log("Rendering Menu with state:", state);
 
         const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
 
@@ -269,7 +272,6 @@ export class Menu extends Page {
 
     openGame(gameKey: string) {
         const state = this._store.getState();
-        console.log(state);
 
         const localPlayer = state?.players.find((p) => p.id === this._socket.id);
 
@@ -277,7 +279,6 @@ export class Menu extends Page {
             localPlayer?.score.games[gameKey as keyof typeof localPlayer.score.games]?.opend;
         if (alreadyOpened) return;
 
-        console.log(`Menu requested game: ${gameKey}`);
         this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
             gameId: state?.gameId,
             gameKey,

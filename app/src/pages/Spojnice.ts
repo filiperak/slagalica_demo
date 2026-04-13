@@ -224,7 +224,10 @@ export class Spojnice extends Page {
         this.addSocketEvents(SOCKET_EVENTS.GAMES.SPOJNICE.SUCCESS, (result) => {
             this._partial.showModal({
                 title: I18nService.getMessage("spojnice", "game_over"),
-                text: I18nService.getMessage("spojnice", "result_score").replace("{n}", String(result.data)),
+                text: I18nService.getMessage("spojnice", "result_score").replace(
+                    "{n}",
+                    String(result.data)
+                ),
                 solution: `${I18nService.getMessage("spojnice", "correct_pairs_label")}: ${this._correctPick} / 8`,
                 primaryText: I18nService.getMessage("spojnice", "close"),
                 secondaryText: I18nService.getMessage("spojnice", "next"),

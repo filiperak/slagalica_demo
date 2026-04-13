@@ -1,5 +1,5 @@
 import { Socket } from "socket.io-client";
-import { Store, GameState } from "./Store";
+import { Store } from "./Store";
 import { VIEWS } from "./util/ClientConstants";
 import { ping } from "./util/Util";
 import { I18nService } from "./util/I18n";
@@ -29,7 +29,6 @@ export default abstract class Page {
     protected _store: Store;
     protected _app: App;
 
-    private _unsubStore: (() => void) | null = null;
     private _timerInterval: ReturnType<typeof setInterval> | null = null;
     private _timerRemaining: number = 0;
     private _timerDuration: number = 90;
@@ -64,18 +63,11 @@ export default abstract class Page {
         this._events = [];
         this._socketEvents = [];
 
-        if (this._unsubStore) {
-            this._unsubStore();
-            this._unsubStore = null;
-        }
-
         this.clearTimer();
         this._domElements.gameHeader.innerHTML = "";
         this._headerTimerEl = null;
         this._headerProgressEl = null;
     }
-
-    render(_state: GameState): void {}
 
     addEvents(element: HTMLElement, event: string, callback: EventListener): void {
         this._events.push({ element, event, callback });
@@ -171,11 +163,4 @@ export default abstract class Page {
         }
     }
 
-    protected subscribeToStore() {
-        if (this._unsubStore) this._unsubStore();
-        this._unsubStore = this._store.subscribe((state) => this.render(state));
-
-        const currentState = this._store.getState();
-        if (currentState) this.render(currentState);
-    }
 }

@@ -78,7 +78,10 @@ export class KoZnaZna extends Page {
         const q = this._gameData.questions[this._qCounter];
         const total = this._gameData.questions.length;
 
-        this._localDom.questionCounter.textContent = I18nService.getMessage("koznazna", "question_counter")
+        this._localDom.questionCounter.textContent = I18nService.getMessage(
+            "koznazna",
+            "question_counter"
+        )
             .replace("{n}", String(this._qCounter + 1))
             .replace("{total}", String(total));
         this._localDom.questionText.textContent = q.question;
@@ -174,15 +177,20 @@ export class KoZnaZna extends Page {
             SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.ADD_POINTS,
             (data: { data: number }) => {
                 this._score = data.data;
-                this._localDom.runningScore.textContent = I18nService.getMessage("koznazna", "score")
-                    .replace("{n}", String(this._score));
+                this._localDom.runningScore.textContent = I18nService.getMessage(
+                    "koznazna",
+                    "score"
+                ).replace("{n}", String(this._score));
             }
         );
 
         this.addSocketEvents(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUCCESS, (result: { data: number }) => {
             this._partial.showModal({
                 title: I18nService.getMessage("koznazna", "game_over"),
-                text: I18nService.getMessage("koznazna", "result_score").replace("{n}", String(result.data)),
+                text: I18nService.getMessage("koznazna", "result_score").replace(
+                    "{n}",
+                    String(result.data)
+                ),
                 primaryText: I18nService.getMessage("koznazna", "close"),
                 secondaryText: I18nService.getMessage("koznazna", "next"),
                 secondaryAction: () =>

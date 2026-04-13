@@ -57,7 +57,6 @@ export default class App {
         await I18nService.load("common");
         I18nService.translate(document.body, "common");
         this.go(VIEWS.LOBY);
-        console.log(this._socket);
     }
 
     go(page: keyof Views) {
@@ -83,13 +82,11 @@ export default class App {
         });
 
         this._socket.on(SOCKET_EVENTS.STATE.GAME_DATA, ({ gameKey, gameState }) => {
-            console.log("Received game data:", gameKey, gameState);
             this.go(gameKey as keyof Views);
         });
 
         this._socket.on(SOCKET_EVENTS.STATE.PLAYERS_STATE, (state) => {
             this._store.setState(state);
-            console.log(state);
         });
 
         this._socket.on(SOCKET_EVENTS.CORE.OPPONENT_LEFT, () => {

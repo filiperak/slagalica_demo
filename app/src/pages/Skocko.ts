@@ -16,8 +16,6 @@ const SYMBOL_IMGS = [
     "/assets/star.png",
 ];
 
-const SYMBOL_NAMES = ["sova", "tref", "karo", "pik", "herc", "zvezda"];
-
 const ROWS = 6;
 const COLS = 4;
 
@@ -237,7 +235,10 @@ export class Skocko extends Page {
             const solutionEl = this._buildSolutionElement(combination);
             this._partial.showModal({
                 title: I18nService.getMessage("skocko", "game_over"),
-                text: I18nService.getMessage("skocko", "result_score").replace("{n}", String(result.data)),
+                text: I18nService.getMessage("skocko", "result_score").replace(
+                    "{n}",
+                    String(result.data)
+                ),
                 solutionElement: solutionEl,
                 primaryText: I18nService.getMessage("skocko", "close"),
                 secondaryText: I18nService.getMessage("skocko", "next"),

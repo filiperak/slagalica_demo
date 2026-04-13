@@ -269,7 +269,10 @@ export class MojBroj extends Page {
             const solution = this._store.getState()?.gameState.mojBroj?.solution ?? "";
             this._partial.showModal({
                 title: I18nService.getMessage("mojBroj", "game_over"),
-                text: I18nService.getMessage("mojBroj", "result_score").replace("{n}", String(result.data)),
+                text: I18nService.getMessage("mojBroj", "result_score").replace(
+                    "{n}",
+                    String(result.data)
+                ),
                 solution: `${I18nService.getMessage("mojBroj", "solution_label")}: ${solution}`,
                 primaryText: I18nService.getMessage("mojBroj", "close"),
                 secondaryText: I18nService.getMessage("mojBroj", "next"),

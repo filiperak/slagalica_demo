@@ -117,7 +117,12 @@ export class Asocijacije extends Page {
             this.addEvents(input, "keyup", ((e: KeyboardEvent) =>
                 this._onColumnInputKeyUp(e, colIndex)) as EventListener);
             this._columnInputs.push(input);
-            column.appendChild(input);
+
+            if (colIndex < 2) {
+                column.appendChild(input);
+            } else {
+                column.insertBefore(input, column.firstChild);
+            }
 
             const target = colIndex < 2 ? this._localDom.boardTop : this._localDom.boardBottom;
             target.appendChild(column);
@@ -256,7 +261,10 @@ export class Asocijacije extends Page {
             const finalLabel = I18nService.getMessage("asocijacije", "final_solution_label");
             this._partial.showModal({
                 title: I18nService.getMessage("asocijacije", "game_over"),
-                text: I18nService.getMessage("asocijacije", "result_score").replace("{n}", String(result.data)),
+                text: I18nService.getMessage("asocijacije", "result_score").replace(
+                    "{n}",
+                    String(result.data)
+                ),
                 solution: `${colSolutions} — ${finalLabel}: ${this._gameData.konačnoRešenje}`,
                 primaryText: I18nService.getMessage("asocijacije", "close"),
                 secondaryText: I18nService.getMessage("asocijacije", "next"),

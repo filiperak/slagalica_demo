@@ -3,6 +3,8 @@ name: Node.Js CI/CD
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   lint:
@@ -71,6 +73,7 @@ jobs:
     name: Deploy
     needs: [test, build]
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: Deploy to production
