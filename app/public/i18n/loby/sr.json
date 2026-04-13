@@ -1,0 +1,23 @@
+{
+  "username_placeholder": "Igrac123",
+  "tooltip_language": "Jezik",
+  "tooltip_sound": "Zvuk",
+  "tooltip_theme": "Tema",
+  "app_title": "SLAGALICA",
+  "status_online": "Online · Spreman za igru",
+  "start_game": "Započni Igru",
+  "mode_multiplayer": "Multi Player režim",
+  "training": "Trening",
+  "mode_singleplayer": "Single Player režim",
+  "create_room": "Napravi Sobu",
+  "create_btn": "Kreiraj",
+  "join_room": "Pridruži se",
+  "join_code_placeholder": "Unesi kod...",
+  "join_btn": "Uđi",
+  "copyright": "2025 copyright © Slagalica",
+  "waiting_opponent": "Čekamo protivnika!",
+  "share_code": "Podelite ovaj kod sa saigračem",
+  "cancel": "Odustani",
+  "game_loading": "Igra se učitava!",
+  "enter_username": "Unesite korisničko ime"
+}

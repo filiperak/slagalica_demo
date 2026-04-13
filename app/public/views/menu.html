@@ -1,0 +1,151 @@
+<main class="bg-surface min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-4xl mx-auto">
+
+        <div id="player-headers" class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-surface-raised border border-border-default rounded-lg shadow-md">
+                <div class="p-4 text-center">
+                    <h2 id="p0-name" class="text-lg font-bold text-brand truncate" data-i18n="player1">Igrač 1</h2>
+                </div>
+            </div>
+            <div id="p1-header" data-p1 class="bg-surface-raised border border-border-default rounded-lg shadow-md">
+                <div class="p-4 text-center">
+                    <h2 id="p1-name" class="text-lg font-bold text-brand truncate" data-i18n="player2">Igrač 2</h2>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-rows-container" class="space-y-2 mb-6">
+
+            <div class="game-row grid grid-cols-[1fr_5rem_5rem] gap-2 items-center">
+                <div data-game="slagalica" id="slagalica" class="game-btn bg-surface-raised border border-border-default hover:border-border-strong hover:bg-surface-overlay rounded-lg transition-all cursor-pointer active:scale-[0.98] group">
+                    <div class="px-4 py-3">
+                        <h3 class="text-sm font-semibold text-content transition-colors">Slagalica</h3>
+                    </div>
+                </div>
+                <div class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p0-slagalica" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+                <div data-p1 class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p1-slagalica" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-row grid grid-cols-[1fr_5rem_5rem] gap-2 items-center">
+                <div data-game="mojBroj" id="mojBroj" class="game-btn bg-surface-raised border border-border-default hover:border-border-strong hover:bg-surface-overlay rounded-lg transition-all cursor-pointer active:scale-[0.98] group">
+                    <div class="px-4 py-3">
+                        <h3 class="text-sm font-semibold text-content transition-colors">Moj Broj</h3>
+                    </div>
+                </div>
+                <div class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p0-mojBroj" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+                <div data-p1 class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p1-mojBroj" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-row grid grid-cols-[1fr_5rem_5rem] gap-2 items-center">
+                <div data-game="spojnice" id="spojnice" class="game-btn bg-surface-raised border border-border-default hover:border-border-strong hover:bg-surface-overlay rounded-lg transition-all cursor-pointer active:scale-[0.98] group">
+                    <div class="px-4 py-3">
+                        <h3 class="text-sm font-semibold text-content transition-colors">Spojnice</h3>
+                    </div>
+                </div>
+                <div class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p0-spojnice" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+                <div data-p1 class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p1-spojnice" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-row grid grid-cols-[1fr_5rem_5rem] gap-2 items-center">
+                <div data-game="skocko" id="skocko" class="game-btn bg-surface-raised border border-border-default hover:border-border-strong hover:bg-surface-overlay rounded-lg transition-all cursor-pointer active:scale-[0.98] group">
+                    <div class="px-4 py-3">
+                        <h3 class="text-sm font-semibold text-content transition-colors">Skočko</h3>
+                    </div>
+                </div>
+                <div class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p0-skocko" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+                <div data-p1 class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p1-skocko" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-row grid grid-cols-[1fr_5rem_5rem] gap-2 items-center">
+                <div data-game="koZnaZna" id="koZnaZna" class="game-btn bg-surface-raised border border-border-default hover:border-border-strong hover:bg-surface-overlay rounded-lg transition-all cursor-pointer active:scale-[0.98] group">
+                    <div class="px-4 py-3">
+                        <h3 class="text-sm font-semibold text-content transition-colors">Ko Zna Zna</h3>
+                    </div>
+                </div>
+                <div class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p0-koZnaZna" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+                <div data-p1 class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p1-koZnaZna" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-row grid grid-cols-[1fr_5rem_5rem] gap-2 items-center">
+                <div data-game="asocijacije" id="asocijacije" class="game-btn bg-surface-raised border border-border-default hover:border-border-strong hover:bg-surface-overlay rounded-lg transition-all cursor-pointer active:scale-[0.98] group">
+                    <div class="px-4 py-3">
+                        <h3 class="text-sm font-semibold text-content transition-colors">Asocijacije</h3>
+                    </div>
+                </div>
+                <div class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p0-asocijacije" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+                <div data-p1 class="bg-surface-raised border border-border-default rounded-lg">
+                    <div class="py-3 text-center">
+                        <span id="p1-asocijacije" class="text-lg font-bold text-content">0</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="totals-section" class="grid grid-cols-2 gap-3 mb-6">
+            <div class="bg-surface-raised border border-border-strong rounded-lg shadow-brand-glow">
+                <div class="p-4 text-center">
+                    <p class="text-content-muted text-[10px] uppercase font-bold tracking-widest mb-1" data-i18n="total">Ukupno</p>
+                    <span id="p0-total" class="text-3xl font-black text-content">0</span>
+                </div>
+            </div>
+            <div data-p1 class="bg-surface-raised border border-border-strong rounded-lg shadow-brand-glow">
+                <div class="p-4 text-center">
+                    <p class="text-content-muted text-[10px] uppercase font-bold tracking-widest mb-1" data-i18n="total">Ukupno</p>
+                    <span id="p1-total" class="text-3xl font-black text-content">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button id="leave-game-btn" class="px-10 py-2.5 bg-transparent border border-negative text-negative hover:bg-negative hover:text-content-on-brand text-sm font-semibold rounded transition-all hover:-translate-y-px active:translate-y-0 uppercase tracking-wide" data-i18n="leave_game">
+                Napusti igru
+            </button>
+        </div>
+
+    </div>
+</main>

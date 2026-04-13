@@ -84,14 +84,29 @@ Each game is explained separately below:
 
 ## Technologies Used
 
-The Slagalica application is a robust full-stack solution, featuring a responsive frontend built with vanilla JavaScript and a backend powered by Node.js and Express.js. Real-time interactions are handled using WebSockets (Socket.io), ensuring a smooth and engaging user experience. The application is unit tested using Jest to maintain high code quality and reliability. Continuous Integration and Continuous Deployment (CI/CD) pipelines are set up using GitHub Actions, which automatically run tests and deploy the application to Render.com upon successful test completion. This streamlined process ensures that updates are efficiently and reliably delivered to users.
-The app is purposely built with basic technologies and minimal libraries for maintainability and to allow me to practice core JavaScript concepts.
+**Frontend**
+- TypeScript (strict mode, no framework)
+- Vite — dev server and build tool
+- Tailwind CSS + DaisyUI — styling and component primitives
+- Socket.io Client — real-time communication
+- Custom i18n system — English and Serbian support
+
+**Backend**
+- Node.js + Express.js — HTTP server and static file serving
+- Socket.io — WebSocket-based real-time game state management
+- TypeScript
+
+**Testing & Tooling**
+- Vitest — unit tests for both frontend (jsdom) and backend (node)
+- ESLint + Prettier — linting and formatting
+- nodemon + concurrently — development workflow
+- GitHub Actions — CI/CD pipeline (tests → deploy to Render.com)
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js installed on your machine.
+- Node.js (v18 or later)
 
 ### Installation
 
@@ -100,38 +115,36 @@ The app is purposely built with basic technologies and minimal libraries for mai
    ```sh
    git clone https://github.com/your-username/slagalica_demo.git
    cd slagalica_demo
-
    ```
 
 2. Install dependencies:
 
    ```sh
    npm install
-
    ```
 
-3. Start the server:
+3. Start the development server:
+
    ```sh
-   npm start
+   npm run dev
    ```
 
-The server will start, and you should see a message indicating that the server is running.
+   This starts both the backend (port `5500`) and the Vite frontend dev server (port `5173`) concurrently. Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-4. Open the `slagalica_demo/public/js/app.js` folder:
+### Production Build
 
-   Change the socket variable
+```sh
+npm run build   # compiles TypeScript + bundles frontend into dist/
+npm start       # serves the compiled app on port 5500
+```
 
-   - from:
-     ```javaScript
-        const socket = io("https://slagalica-demo.onrender.com")
-     ```
-   - to:
-     ```javaScript
-         const socket = io("ws://localhost:3500")
-     ```
+### Running Tests
 
-5. Navigate to `slagalica_demo/public/index.html` :
-   Start live server
+```sh
+npm test          # single run
+npm run test:watch  # watch mode
+npm run test:cov    # with coverage report
+```
 
 ## Gameplay screenshots
 

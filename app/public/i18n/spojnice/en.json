@@ -1,0 +1,7 @@
+{
+  "game_over": "Game over!",
+  "close": "Close",
+  "next": "Next",
+  "result_score": "You scored {n} points",
+  "correct_pairs_label": "Correct pairs"
+}
