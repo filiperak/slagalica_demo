@@ -116,7 +116,7 @@ export class KoZnaZna extends Page {
                 points: 3,
             });
         } else {
-            btn.classList.add("bg-negative/20", "border-negative", "text-negative");
+            btn.classList.add("bg-negative", "border-negative", "text-content-on-brand");
             this._highlightCorrect(correct);
             this._socket.emit(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUBMIT, {
                 gameId: this._gameData.gameId,
@@ -181,10 +181,10 @@ export class KoZnaZna extends Page {
 
         this.addSocketEvents(SOCKET_EVENTS.GAMES.KO_ZNA_ZNA.SUCCESS, (result: { data: number }) => {
             this._partial.showModal({
-                title: "Igra gotova!",
-                text: `Osvojili ste ${result.data} poena`,
-                primaryText: "Zatvori",
-                secondaryText: "Sledeće",
+                title: I18nService.getMessage("koznazna", "game_over"),
+                text: I18nService.getMessage("koznazna", "result_score").replace("{n}", String(result.data)),
+                primaryText: I18nService.getMessage("koznazna", "close"),
+                secondaryText: I18nService.getMessage("koznazna", "next"),
                 secondaryAction: () =>
                     this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
                         gameId: this._gameData.gameId,

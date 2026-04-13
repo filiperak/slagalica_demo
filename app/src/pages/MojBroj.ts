@@ -268,11 +268,11 @@ export class MojBroj extends Page {
         this.addSocketEvents(SOCKET_EVENTS.GAMES.MOJ_BROJ.SUCCESS, (result) => {
             const solution = this._store.getState()?.gameState.mojBroj?.solution ?? "";
             this._partial.showModal({
-                title: "Igra gotova!",
-                text: `Osvojili ste ${result.data} poena`,
-                solution: `Rešenje: ${solution}`,
-                primaryText: "Zatvori",
-                secondaryText: "Sledeće",
+                title: I18nService.getMessage("mojBroj", "game_over"),
+                text: I18nService.getMessage("mojBroj", "result_score").replace("{n}", String(result.data)),
+                solution: `${I18nService.getMessage("mojBroj", "solution_label")}: ${solution}`,
+                primaryText: I18nService.getMessage("mojBroj", "close"),
+                secondaryText: I18nService.getMessage("mojBroj", "next"),
                 secondaryAction: () =>
                     this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
                         gameId: this._gameData.gameId,

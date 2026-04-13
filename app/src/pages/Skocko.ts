@@ -234,13 +234,13 @@ export class Skocko extends Page {
     private _receiveResult(): void {
         this.addSocketEvents(SOCKET_EVENTS.GAMES.SKOCKO.SUCCESS, (result) => {
             const combination: number[] = this._store.getState()?.gameState.skocko ?? [];
-            const combinationText = combination.map((i) => SYMBOL_NAMES[i]).join(" - ");
+            const solutionEl = this._buildSolutionElement(combination);
             this._partial.showModal({
-                title: "Igra gotova!",
-                text: `Osvojili ste ${result.data} poena`,
-                solution: `Kombinacija: ${combinationText}`,
-                primaryText: "Zatvori",
-                secondaryText: "Sledeće",
+                title: I18nService.getMessage("skocko", "game_over"),
+                text: I18nService.getMessage("skocko", "result_score").replace("{n}", String(result.data)),
+                solutionElement: solutionEl,
+                primaryText: I18nService.getMessage("skocko", "close"),
+                secondaryText: I18nService.getMessage("skocko", "next"),
                 secondaryAction: () =>
                     this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
                         gameId: this._gameData.gameId,
@@ -249,5 +249,19 @@ export class Skocko extends Page {
                     }),
             });
         });
+    }
+
+    private _buildSolutionElement(combination: number[]): HTMLElement {
+        const container = document.createElement("div");
+        container.className = "flex items-center gap-2 flex-wrap justify-center";
+
+        combination.forEach((symbolIndex) => {
+            const img = document.createElement("img");
+            img.src = SYMBOL_IMGS[symbolIndex];
+            img.className = "w-8 h-8 object-contain";
+            container.appendChild(img);
+        });
+
+        return container;
     }
 }

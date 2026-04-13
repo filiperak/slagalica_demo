@@ -1,3 +1,8 @@
 {
-  "title": "Skočko"
+  "title": "Skočko",
+  "game_over": "Game over!",
+  "close": "Close",
+  "next": "Next",
+  "result_score": "You scored {n} points",
+  "combination_label": "Combination"
 }

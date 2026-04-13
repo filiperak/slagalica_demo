@@ -5,6 +5,7 @@ import mojBroj_sr from "../../public/i18n/mojBroj/sr.json";
 import skocko_sr from "../../public/i18n/skocko/sr.json";
 import koznazna_sr from "../../public/i18n/koznazna/sr.json";
 import asocijacije_sr from "../../public/i18n/asocijacije/sr.json";
+import spojnice_sr from "../../public/i18n/spojnice/sr.json";
 
 export type Lang = "sr" | "en";
 
@@ -16,6 +17,7 @@ type ViewKeyMap = {
     skocko: keyof typeof skocko_sr;
     koznazna: keyof typeof koznazna_sr;
     asocijacije: keyof typeof asocijacije_sr;
+    spojnice: keyof typeof spojnice_sr;
 };
 
 const LANG_KEY = "user-lang";

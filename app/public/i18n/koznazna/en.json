@@ -2,5 +2,9 @@
   "title": "Who Knows Knows",
   "question_counter": "Question {n} / {total}",
   "score": "{n} points",
-  "skip": "Don't know"
+  "skip": "Don't know",
+  "game_over": "Game over!",
+  "close": "Close",
+  "next": "Next",
+  "result_score": "You scored {n} points"
 }

@@ -21,7 +21,8 @@ interface GameData {
 }
 
 interface LocalDomElements {
-    board: HTMLElement;
+    boardTop: HTMLElement;
+    boardBottom: HTMLElement;
     finalInput: HTMLInputElement;
 }
 
@@ -54,7 +55,8 @@ export class Asocijacije extends Page {
         I18nService.translate(this._domElements.gameContainer, "asocijacije");
 
         this._localDom = {
-            board: document.querySelector("#asociijaceBoard")!,
+            boardTop: document.querySelector("#boardTop")!,
+            boardBottom: document.querySelector("#boardBottom")!,
             finalInput: document.querySelector("#finalInput")!,
         };
 
@@ -117,7 +119,8 @@ export class Asocijacije extends Page {
             this._columnInputs.push(input);
             column.appendChild(input);
 
-            this._localDom.board.appendChild(column);
+            const target = colIndex < 2 ? this._localDom.boardTop : this._localDom.boardBottom;
+            target.appendChild(column);
         });
     }
 
@@ -247,12 +250,16 @@ export class Asocijacije extends Page {
 
     private _receiveResult(): void {
         this.addSocketEvents(SOCKET_EVENTS.GAMES.ASOCIJACIJE.SUCCESS, (result) => {
+            const colSolutions = this._gameData.columns
+                .map((col, i) => `${COL_LABELS[i]}: ${col.rešenje}`)
+                .join(" | ");
+            const finalLabel = I18nService.getMessage("asocijacije", "final_solution_label");
             this._partial.showModal({
-                title: "Igra gotova!",
-                text: `Osvojili ste ${result.data} poena`,
-                solution: `Konačno rešenje: ${this._gameData.konačnoRešenje}`,
-                primaryText: "Zatvori",
-                secondaryText: "Sledeće",
+                title: I18nService.getMessage("asocijacije", "game_over"),
+                text: I18nService.getMessage("asocijacije", "result_score").replace("{n}", String(result.data)),
+                solution: `${colSolutions} — ${finalLabel}: ${this._gameData.konačnoRešenje}`,
+                primaryText: I18nService.getMessage("asocijacije", "close"),
+                secondaryText: I18nService.getMessage("asocijacije", "next"),
                 secondaryAction: () => this._app.go(VIEWS.MENU),
             });
         });

@@ -1,5 +1,10 @@
 {
   "title": "Moj Broj",
   "stop": "Stop",
-  "submit": "Potvrdi"
+  "submit": "Potvrdi",
+  "game_over": "Igra gotova!",
+  "close": "Zatvori",
+  "next": "Sledeće",
+  "result_score": "Osvojili ste {n} poena",
+  "solution_label": "Rešenje"
 }

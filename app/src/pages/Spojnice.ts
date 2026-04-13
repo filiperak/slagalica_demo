@@ -4,6 +4,7 @@ import { Store } from "../Store";
 import { GAME_KEYS, SOCKET_EVENTS } from "../util/ClientConstants";
 import { Partial } from "../util/Partials";
 import { FetchHTML } from "../util/Util";
+import { I18nService } from "../util/I18n";
 import App from "../App";
 
 interface SpojniceItem {
@@ -56,6 +57,7 @@ export class Spojnice extends Page {
         this._cards = [];
 
         this._domElements.gameContainer.innerHTML = await FetchHTML("/views/spojnice.html");
+        await I18nService.load("spojnice");
 
         this._localDom = {
             title: document.querySelector("#spojniceTitle")!,
@@ -190,9 +192,9 @@ export class Spojnice extends Page {
             "text-content"
         );
         card.el.classList.add(
-            correct ? "bg-positive" : "bg-negative/20",
+            correct ? "bg-positive" : "bg-negative",
             correct ? "border-positive" : "border-negative",
-            correct ? "text-content-on-brand" : "text-content",
+            "text-content-on-brand",
             "cursor-default"
         );
     }
@@ -221,11 +223,11 @@ export class Spojnice extends Page {
     private _receiveResult(): void {
         this.addSocketEvents(SOCKET_EVENTS.GAMES.SPOJNICE.SUCCESS, (result) => {
             this._partial.showModal({
-                title: "Igra gotova!",
-                text: `Osvojili ste ${result.data} poena`,
-                solution: `Tačnih parova: ${this._correctPick} / 8`,
-                primaryText: "Zatvori",
-                secondaryText: "Sledeće",
+                title: I18nService.getMessage("spojnice", "game_over"),
+                text: I18nService.getMessage("spojnice", "result_score").replace("{n}", String(result.data)),
+                solution: `${I18nService.getMessage("spojnice", "correct_pairs_label")}: ${this._correctPick} / 8`,
+                primaryText: I18nService.getMessage("spojnice", "close"),
+                secondaryText: I18nService.getMessage("spojnice", "next"),
                 secondaryAction: () =>
                     this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
                         gameId: this._gameData.gameId,

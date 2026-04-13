@@ -2,6 +2,7 @@ interface ModalOptions {
     title: string;
     text: string;
     solution?: string;
+    solutionElement?: HTMLElement;
     primaryText?: string;
     secondaryText?: string;
     spinner?: boolean;
@@ -57,6 +58,7 @@ export class Partial {
         title,
         text,
         solution,
+        solutionElement,
         primaryText,
         secondaryText,
         spinner = false,
@@ -70,7 +72,11 @@ export class Partial {
 
         const toggle = (el: Element, show: boolean) => el.classList.toggle("hidden", !show);
 
-        if (solution) {
+        if (solutionElement) {
+            this._elements.solutionText.innerHTML = "";
+            this._elements.solutionText.appendChild(solutionElement);
+            toggle(this._elements.solutionBox, true);
+        } else if (solution) {
             this._elements.solutionText.innerText = solution;
             toggle(this._elements.solutionBox, true);
         } else {

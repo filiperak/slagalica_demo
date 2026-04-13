@@ -277,11 +277,11 @@ export class Slagalica extends Page {
             console.log(result);
             const word = this._store.getState()?.gameState.slagalica.word ?? "";
             this._partial.showModal({
-                title: "Igra gotova!",
-                text: `Osvojili ste ${result.data} poena`,
-                solution: `Reč je: ${word}`,
-                primaryText: "Zatvori",
-                secondaryText: "Sledeće",
+                title: I18nService.getMessage("slagalica", "game_over"),
+                text: I18nService.getMessage("slagalica", "result_score").replace("{n}", String(result.data)),
+                solution: `${I18nService.getMessage("slagalica", "solution_word_label")}: ${word}`,
+                primaryText: I18nService.getMessage("slagalica", "close"),
+                secondaryText: I18nService.getMessage("slagalica", "next"),
                 secondaryAction: () =>
                     this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
                         gameId: this._gameData.gameId,

@@ -12,7 +12,7 @@ import App from "../App";
 interface LocalDomElements {
     createGameBtn: HTMLElement;
     avatarName: HTMLElement;
-    joinGame: HTMLElement;
+    joinGame: HTMLButtonElement;
     gameIdInput: HTMLInputElement;
     singlePlayer: HTMLElement;
     randomGame: HTMLElement;
@@ -61,6 +61,9 @@ export default class Loby extends Page {
             toggleSoundBtn: document.querySelector("#soundAction")!
         };
 
+        this._localDom.joinGame.disabled = true;
+        this._localDom.joinGame.classList.add("opacity-50", "cursor-not-allowed");
+
         this.setUsername();
 
         this.addEvents(this._localDom.randomGame, "click", this.playRandomGame.bind(this));
@@ -69,6 +72,16 @@ export default class Loby extends Page {
         this.addEvents(this._localDom.usernameInp, "input", this.changeUsername.bind(this));
         this.addEvents(this._localDom.createGameBtn, "click", this.setGameId.bind(this));
         this.addEvents(this._localDom.toggleSoundBtn, "click", this.handleSoundChange.bind(this));
+
+        this.addEvents(this._localDom.gameIdInput, "input", () => {
+            const hasValue = this._localDom.gameIdInput.value.trim().length > 0;
+            this._localDom.joinGame.disabled = !hasValue;
+            this._localDom.joinGame.classList.toggle("opacity-50", !hasValue);
+            this._localDom.joinGame.classList.toggle("cursor-not-allowed", !hasValue);
+            if (hasValue) {
+                this._localDom.gameIdInput.classList.remove("border-red-500");
+            }
+        });
 
         this.updateThemeIcon();
         this.updateSoundIcon();
@@ -80,10 +93,18 @@ export default class Loby extends Page {
         SoundService.play();
     }
 
+    private _sanitizeInput(str: string, maxLen: number = 20): string {
+        return str
+            .replace(/[<>"'`&;]/g, "")
+            .trim()
+            .slice(0, maxLen);
+    }
+
     playRandomGame() {
-        if (this._localDom.usernameInp && this._localDom.usernameInp.value) {
+        const username = this._sanitizeInput(this._localDom.usernameInp?.value ?? "");
+        if (username) {
             this._socket.emit("enterRoom", {
-                name: this._localDom.usernameInp.value,
+                name: username,
                 game: this._gameId,
             });
             this._partial.showModal({
@@ -103,9 +124,10 @@ export default class Loby extends Page {
     }
 
     playSinglePlayer() {
-        if (this._localDom.usernameInp && this._localDom.usernameInp.value) {
+        const username = this._sanitizeInput(this._localDom.usernameInp?.value ?? "");
+        if (username) {
             this._socket.emit(SOCKET_EVENTS.CORE.ENTER_SINGLE_PLAYER, {
-                name: this._localDom.usernameInp.value,
+                name: username,
                 game: null,
             });
 
@@ -126,10 +148,18 @@ export default class Loby extends Page {
     }
 
     joinViaCode() {
-        if (this._localDom.usernameInp && this._localDom.usernameInp.value) {
+        const username = this._sanitizeInput(this._localDom.usernameInp?.value ?? "");
+        const gameId = this._sanitizeInput(this._localDom.gameIdInput.value, 15);
+
+        if (!gameId) {
+            this._localDom.gameIdInput.classList.add("border-red-500");
+            return;
+        }
+
+        if (username) {
             this._socket.emit(SOCKET_EVENTS.CORE.ENTER_ROOM, {
-                name: this._localDom.usernameInp.value,
-                game: this._localDom.gameIdInput.value,
+                name: username,
+                game: gameId,
             });
 
             this._partial.showModal({
@@ -161,11 +191,10 @@ export default class Loby extends Page {
     }
 
     changeUsername(event: Event) {
-        const newUsername = (event.target as HTMLInputElement).value;
-        console.log(newUsername);
-
-        localStorage.setItem("slagalicaUsername", newUsername);
-        this._localDom.avatarName.innerText = newUsername.trim().slice(0, 2);
+        const raw = (event.target as HTMLInputElement).value;
+        const sanitized = this._sanitizeInput(raw);
+        localStorage.setItem("slagalicaUsername", sanitized);
+        this._localDom.avatarName.innerText = sanitized.trim().slice(0, 2);
     }
 
     createGameId() {
@@ -177,9 +206,9 @@ export default class Loby extends Page {
 
     setGameId() {
         this._dedicatedGameId = this.createGameId();
-        console.log(this._localDom.gameIdInput);
-
         this._localDom.gameIdInput.value = this._dedicatedGameId;
+        this._localDom.joinGame.disabled = false;
+        this._localDom.joinGame.classList.remove("opacity-50", "cursor-not-allowed");
     }
 
     updateThemeIcon() {
@@ -209,8 +238,9 @@ export default class Loby extends Page {
             if (option) {
                 const lang = option.dataset.lang as Lang;
                 I18nService.set(lang);
-                await I18nService.load("loby");
+                await Promise.all([I18nService.load("loby"), I18nService.load("common")]);
                 I18nService.translate(this._domElements.gameContainer, "loby");
+                I18nService.translate(document.body, "common");
                 menu.classList.add("hidden");
             }
         });
