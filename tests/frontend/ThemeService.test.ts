@@ -7,8 +7,8 @@ beforeEach(() => {
 });
 
 describe("ThemeService.get", () => {
-    test("returns 'dark' when no value is stored", () => {
-        expect(ThemeService.get()).toBe("dark");
+    test("returns 'light' when no value is stored", () => {
+        expect(ThemeService.get()).toBe("light");
     });
 
     test("returns the stored theme from localStorage", () => {
