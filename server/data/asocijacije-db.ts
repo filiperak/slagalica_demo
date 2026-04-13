@@ -2,495 +2,495 @@ export const asocijacijeDB = [
     {
         columns: [
             {
-                pojmovi: ["LOVAC", "CRVENKAPA", "VUK", "ŠUMA"],
-                rešenje: "BAJKA",
+                clues: ["LOVAC", "CRVENKAPA", "VUK", "ŠUMA"],
+                solution: "BAJKA",
                 col: 1,
             },
             {
-                pojmovi: ["LUK", "STRELA", "META", "GAĐANJE"],
-                rešenje: "STRELJAŠTVO",
+                clues: ["LUK", "STRELA", "META", "GAĐANJE"],
+                solution: "STRELJAŠTVO",
                 col: 2,
             },
             {
-                pojmovi: ["ZEMLJA", "GLOBUS", "PLANETA", "MAPA"],
-                rešenje: "GEOGRAFIJA",
+                clues: ["ZEMLJA", "GLOBUS", "PLANETA", "MAPA"],
+                solution: "GEOGRAFIJA",
                 col: 3,
             },
             {
-                pojmovi: ["SUNCE", "PLAŽA", "MORO", "TURIZAM"],
-                rešenje: "LETO",
+                clues: ["SUNCE", "PLAŽA", "MORO", "TURIZAM"],
+                solution: "LETO",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "SVET",
+        finalSolution: "SVET",
     },
     {
         columns: [
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 1,
             },
             {
-                pojmovi: ["DIMNJAK", "CIGARETA", "VATROMET", "OBLAK"],
-                rešenje: "DIM",
+                clues: ["DIMNJAK", "CIGARETA", "VATROMET", "OBLAK"],
+                solution: "DIM",
                 col: 2,
             },
             {
-                pojmovi: ["OLIMPIJA", "ATINA", "SPARTA", "ZEUS"],
-                rešenje: "GRCKA",
+                clues: ["OLIMPIJA", "ATINA", "SPARTA", "ZEUS"],
+                solution: "GRCKA",
                 col: 3,
             },
             {
-                pojmovi: ["ĐAVO", "MUKE", "VRELO", "OGANJ"],
-                rešenje: "PAKAO",
+                clues: ["ĐAVO", "MUKE", "VRELO", "OGANJ"],
+                solution: "PAKAO",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "VATRA",
+        finalSolution: "VATRA",
     },
     {
         columns: [
             {
-                pojmovi: ["IZVOR", "KOPANJE", "VODA", "SELO"],
-                rešenje: "BUNAR",
+                clues: ["IZVOR", "KOPANJE", "VODA", "SELO"],
+                solution: "BUNAR",
                 col: 1,
             },
             {
-                pojmovi: ["ORGAN", "KRV", "PULS", "ŽIVOT"],
-                rešenje: "SRCE",
+                clues: ["ORGAN", "KRV", "PULS", "ŽIVOT"],
+                solution: "SRCE",
                 col: 2,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 3,
             },
             {
-                pojmovi: ["BENZIN", "NAFTA", "DIZEL", "PUNJENJE"],
-                rešenje: "GORIVO",
+                clues: ["BENZIN", "NAFTA", "DIZEL", "PUNJENJE"],
+                solution: "GORIVO",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "PUMPA",
+        finalSolution: "PUMPA",
     },
     {
         columns: [
             {
-                pojmovi: ["NOĆ", "UGALJ", "TINTA", "TAMA"],
-                rešenje: "CRNO",
+                clues: ["NOĆ", "UGALJ", "TINTA", "TAMA"],
+                solution: "CRNO",
                 col: 1,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 2,
             },
             {
-                pojmovi: ["BAZEN", "PLIVANJE", "DEZINFEKCIJA", "PLIN"],
-                rešenje: "HLOR",
+                clues: ["BAZEN", "PLIVANJE", "DEZINFEKCIJA", "PLIN"],
+                solution: "HLOR",
                 col: 3,
             },
             {
-                pojmovi: ["KUHINJA", "ZAČIN", "MORSKA", "SLANO"],
-                rešenje: "SO",
+                clues: ["KUHINJA", "ZAČIN", "MORSKA", "SLANO"],
+                solution: "SO",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "MORE",
+        finalSolution: "MORE",
     },
     {
         columns: [
             {
-                pojmovi: ["PECIVO", "KRUH", "PEKARA", "OBLIK"],
-                rešenje: "DJEVREK",
+                clues: ["PECIVO", "KRUH", "PEKARA", "OBLIK"],
+                solution: "DJEVREK",
                 col: 1,
             },
             {
-                pojmovi: ["GROŽĐE", "PIĆE", "CRVENO", "BIJELO"],
-                rešenje: "VINO",
+                clues: ["GROŽĐE", "PIĆE", "CRVENO", "BIJELO"],
+                solution: "VINO",
                 col: 2,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 3,
             },
             {
-                pojmovi: ["SLATKO", "KAKAO", "TABLA", "MLIJEKO"],
-                rešenje: "ČOKOLADA",
+                clues: ["SLATKO", "KAKAO", "TABLA", "MLIJEKO"],
+                solution: "ČOKOLADA",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "KUVANJE",
+        finalSolution: "KUVANJE",
     },
     {
         columns: [
             {
-                pojmovi: ["OPERACIJA", "LEKAR", "ZAŠTITA", "BOLNICA"],
-                rešenje: "HIRURG",
+                clues: ["OPERACIJA", "LEKAR", "ZAŠTITA", "BOLNICA"],
+                solution: "HIRURG",
                 col: 1,
             },
             {
-                pojmovi: ["POZIV", "MOBILNI", "EKRAN", "KONTAKT"],
-                rešenje: "TELEFON",
+                clues: ["POZIV", "MOBILNI", "EKRAN", "KONTAKT"],
+                solution: "TELEFON",
                 col: 2,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 3,
             },
             {
-                pojmovi: ["KINO", "GLUMAC", "SCENA", "HOLIVUD"],
-                rešenje: "FILM",
+                clues: ["KINO", "GLUMAC", "SCENA", "HOLIVUD"],
+                solution: "FILM",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "MASKA",
+        finalSolution: "MASKA",
     },
     {
         columns: [
             {
-                pojmovi: ["CITRUS", "ŽUT", "KISELO", "VOĆE"],
-                rešenje: "LIMUN",
+                clues: ["CITRUS", "ŽUT", "KISELO", "VOĆE"],
+                solution: "LIMUN",
                 col: 1,
             },
             {
-                pojmovi: ["ORGAN", "HRANA", "BOL", "PROBAVA"],
-                rešenje: "STOMAK",
+                clues: ["ORGAN", "HRANA", "BOL", "PROBAVA"],
+                solution: "STOMAK",
                 col: 2,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 3,
             },
             {
-                pojmovi: ["FERMENTACIJA", "PIVO", "PEKAR", "GLJIVA"],
-                rešenje: "KVASAC",
+                clues: ["FERMENTACIJA", "PIVO", "PEKAR", "GLJIVA"],
+                solution: "KVASAC",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "PIVO",
+        finalSolution: "PIVO",
     },
     {
         columns: [
             {
-                pojmovi: ["MORE", "TALASI", "PLAVO", "DUBINA"],
-                rešenje: "OKEAN",
+                clues: ["MORE", "TALASI", "PLAVO", "DUBINA"],
+                solution: "OKEAN",
                 col: 1,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 2,
             },
             {
-                pojmovi: ["SERIJAL", "PARTIZANI", "RAT", "BEOGRAD"],
-                rešenje: "OTPISANI",
+                clues: ["SERIJAL", "PARTIZANI", "RAT", "BEOGRAD"],
+                solution: "OTPISANI",
                 col: 3,
             },
             {
-                pojmovi: ["MRAK", "MESEC", "ZVEZDE", "SAN"],
-                rešenje: "NOĆ",
+                clues: ["MRAK", "MESEC", "ZVEZDE", "SAN"],
+                solution: "NOĆ",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "TIHI",
+        finalSolution: "TIHI",
     },
     {
         columns: [
             {
-                pojmovi: ["AUTOBUS", "TRAMVAJ", "TAXI", "BICIKL"],
-                rešenje: "PREVOZ",
+                clues: ["AUTOBUS", "TRAMVAJ", "TAXI", "BICIKL"],
+                solution: "PREVOZ",
                 col: 1,
             },
             {
-                pojmovi: ["JEZERO", "REKA", "MORO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["JEZERO", "REKA", "MORO", "KIŠA"],
+                solution: "VODA",
                 col: 2,
             },
             {
-                pojmovi: ["BENZIN", "DIZEL", "MOTOR", "BRZINA"],
-                rešenje: "MOTOR",
+                clues: ["BENZIN", "DIZEL", "MOTOR", "BRZINA"],
+                solution: "MOTOR",
                 col: 3,
             },
             {
-                pojmovi: ["ZAŠTITA", "GLAVA", "VOZAČ", "SIGURNOST"],
-                rešenje: "KACIGA",
+                clues: ["ZAŠTITA", "GLAVA", "VOZAČ", "SIGURNOST"],
+                solution: "KACIGA",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "SKUTER",
+        finalSolution: "SKUTER",
     },
     {
         columns: [
             {
-                pojmovi: ["NOĆ", "MESEC", "ZVEZDE", "SAN"],
-                rešenje: "SAN",
+                clues: ["NOĆ", "MESEC", "ZVEZDE", "SAN"],
+                solution: "SAN",
                 col: 1,
             },
             {
-                pojmovi: ["OBUĆA", "SPORT", "TRČANJE", "NOGE"],
-                rešenje: "PATIKE",
+                clues: ["OBUĆA", "SPORT", "TRČANJE", "NOGE"],
+                solution: "PATIKE",
                 col: 2,
             },
             {
-                pojmovi: ["ZVUK", "MUZIKA", "PRIČA", "UHO"],
-                rešenje: "GLAS",
+                clues: ["ZVUK", "MUZIKA", "PRIČA", "UHO"],
+                solution: "GLAS",
                 col: 3,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "DUBOK",
+        finalSolution: "DUBOK",
     },
     {
         columns: [
             {
-                pojmovi: ["GRAD", "ITALIJA", "CARSTVO", "KOLOSEUM"],
-                rešenje: "RIM",
+                clues: ["GRAD", "ITALIJA", "CARSTVO", "KOLOSEUM"],
+                solution: "RIM",
                 col: 1,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 2,
             },
             {
-                pojmovi: ["IZVOR", "RUPA", "ZEMLJA", "ALAT"],
-                rešenje: "KOPANJE",
+                clues: ["IZVOR", "RUPA", "ZEMLJA", "ALAT"],
+                solution: "KOPANJE",
                 col: 3,
             },
             {
-                pojmovi: ["IGRA", "FUDBAL", "TRENER", "PARTIZAN"],
-                rešenje: "SANTRAC",
+                clues: ["IGRA", "FUDBAL", "TRENER", "PARTIZAN"],
+                solution: "SANTRAC",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "BUNAR",
+        finalSolution: "BUNAR",
     },
     {
         columns: [
             {
-                pojmovi: ["GRAD", "ITALIJA", "CARSTVO", "KOLOSEUM"],
-                rešenje: "RIM",
+                clues: ["GRAD", "ITALIJA", "CARSTVO", "KOLOSEUM"],
+                solution: "RIM",
                 col: 1,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 2,
             },
             {
-                pojmovi: ["IZVOR", "RUPA", "ZEMLJA", "ALAT"],
-                rešenje: "KOPANJE",
+                clues: ["IZVOR", "RUPA", "ZEMLJA", "ALAT"],
+                solution: "KOPANJE",
                 col: 3,
             },
             {
-                pojmovi: ["IGRA", "FUDBAL", "TRENER", "PARTIZAN"],
-                rešenje: "SANTRAC",
+                clues: ["IGRA", "FUDBAL", "TRENER", "PARTIZAN"],
+                solution: "SANTRAC",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "BUNAR",
+        finalSolution: "BUNAR",
     },
     {
         columns: [
             {
-                pojmovi: ["TLO", "POLJE", "BAŠTA", "ORANICA"],
-                rešenje: "ZEMLJA",
+                clues: ["TLO", "POLJE", "BAŠTA", "ORANICA"],
+                solution: "ZEMLJA",
                 col: 1,
             },
             {
-                pojmovi: ["SUNCE", "SVETLOST", "JUTRO", "VREME"],
-                rešenje: "DAN",
+                clues: ["SUNCE", "SVETLOST", "JUTRO", "VREME"],
+                solution: "DAN",
                 col: 2,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 3,
             },
             {
-                pojmovi: ["UDOLINA", "REKA", "BRDO", "ZELENILO"],
-                rešenje: "DOLINA",
+                clues: ["UDOLINA", "REKA", "BRDO", "ZELENILO"],
+                solution: "DOLINA",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "PLODNA",
+        finalSolution: "PLODNA",
     },
     {
         columns: [
             {
-                pojmovi: ["MAST", "MOTOR", "TEČNOST", "GUSTO"],
-                rešenje: "ULJE",
+                clues: ["MAST", "MOTOR", "TEČNOST", "GUSTO"],
+                solution: "ULJE",
                 col: 1,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 2,
             },
             {
-                pojmovi: ["METAL", "VODA", "PROTOK", "INSTALACIJA"],
-                rešenje: "CEV",
+                clues: ["METAL", "VODA", "PROTOK", "INSTALACIJA"],
+                solution: "CEV",
                 col: 3,
             },
             {
-                pojmovi: ["TOPLOTA", "ENERGIJA", "KUĆA", "ZIMA"],
-                rešenje: "ZAGREVANJE",
+                clues: ["TOPLOTA", "ENERGIJA", "KUĆA", "ZIMA"],
+                solution: "ZAGREVANJE",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "RADIJATOR",
+        finalSolution: "RADIJATOR",
     },
     {
         columns: [
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 1,
             },
             {
-                pojmovi: ["PTICA", "BELA", "PLIVANJE", "GRACIJA"],
-                rešenje: "LABUD",
+                clues: ["PTICA", "BELA", "PLIVANJE", "GRACIJA"],
+                solution: "LABUD",
                 col: 2,
             },
             {
-                pojmovi: ["SRBIJA", "TURIZAM", "VODA", "SUBOTICA"],
-                rešenje: "PALIĆ",
+                clues: ["SRBIJA", "TURIZAM", "VODA", "SUBOTICA"],
+                solution: "PALIĆ",
                 col: 3,
             },
             {
-                pojmovi: ["MAKEDONIJA", "TURIZAM", "VODA", "GRAD"],
-                rešenje: "OHRID",
+                clues: ["MAKEDONIJA", "TURIZAM", "VODA", "GRAD"],
+                solution: "OHRID",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "JEZERO",
+        finalSolution: "JEZERO",
     },
     {
         columns: [
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 1,
             },
             {
-                pojmovi: ["TOPLOTA", "ENERGIJA", "KUĆA", "ZIMA"],
-                rešenje: "RADIJATOR",
+                clues: ["TOPLOTA", "ENERGIJA", "KUĆA", "ZIMA"],
+                solution: "RADIJATOR",
                 col: 2,
             },
             {
-                pojmovi: ["ŽELEZO", "ČELIK", "ALUMINIJUM", "BRONZA"],
-                rešenje: "METAL",
+                clues: ["ŽELEZO", "ČELIK", "ALUMINIJUM", "BRONZA"],
+                solution: "METAL",
                 col: 3,
             },
             {
-                pojmovi: ["GRAĐEVINA", "PODUPIRAČ", "RAD", "VISINA"],
-                rešenje: "SKELA",
+                clues: ["GRAĐEVINA", "PODUPIRAČ", "RAD", "VISINA"],
+                solution: "SKELA",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "CEV",
+        finalSolution: "CEV",
     },
     {
         columns: [
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 1,
             },
             {
-                pojmovi: ["PLAMEN", "TOPLOTA", "ENERGIJA", "OGANJ"],
-                rešenje: "VATRA",
+                clues: ["PLAMEN", "TOPLOTA", "ENERGIJA", "OGANJ"],
+                solution: "VATRA",
                 col: 2,
             },
             {
-                pojmovi: ["TLO", "POLJE", "BAŠTA", "ORANICA"],
-                rešenje: "ZEMLJA",
+                clues: ["TLO", "POLJE", "BAŠTA", "ORANICA"],
+                solution: "ZEMLJA",
                 col: 3,
             },
             {
-                pojmovi: ["VETAR", "DISANJE", "ATMOSFERA", "KISEONIK"],
-                rešenje: "VAZDUH",
+                clues: ["VETAR", "DISANJE", "ATMOSFERA", "KISEONIK"],
+                solution: "VAZDUH",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "ELEMENT",
+        finalSolution: "ELEMENT",
     },
     {
         columns: [
             {
-                pojmovi: ["SAN", "CILJ", "NADA", "OSTVARENJE"],
-                rešenje: "ŽELJA",
+                clues: ["SAN", "CILJ", "NADA", "OSTVARENJE"],
+                solution: "ŽELJA",
                 col: 1,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 2,
             },
             {
-                pojmovi: ["GRAD", "ŠPANIJA", "GAUDI", "KATALONIJA"],
-                rešenje: "BARSELONA",
+                clues: ["GRAD", "ŠPANIJA", "GAUDI", "KATALONIJA"],
+                solution: "BARSELONA",
                 col: 3,
             },
             {
-                pojmovi: ["PRSKANJE", "TEČNOST", "SNAGA", "IZVOR"],
-                rešenje: "MLAZ",
+                clues: ["PRSKANJE", "TEČNOST", "SNAGA", "IZVOR"],
+                solution: "MLAZ",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "FONTANA",
+        finalSolution: "FONTANA",
     },
     {
         columns: [
             {
-                pojmovi: ["CVET", "MITOLOGIJA", "LEPOTA", "SAMOZALJUBLJENOST"],
-                rešenje: "NARCIS",
+                clues: ["CVET", "MITOLOGIJA", "LEPOTA", "SAMOZALJUBLJENOST"],
+                solution: "NARCIS",
                 col: 1,
             },
             {
-                pojmovi: ["ZAKRIVLJEN", "OBLIK", "SLOMLJEN", "REFLEKSIJA"],
-                rešenje: "KRIVA",
+                clues: ["ZAKRIVLJEN", "OBLIK", "SLOMLJEN", "REFLEKSIJA"],
+                solution: "KRIVA",
                 col: 2,
             },
             {
-                pojmovi: ["METAL", "SIJAJ", "OGLEDALO", "PLEMENIT"],
-                rešenje: "SREBRO",
+                clues: ["METAL", "SIJAJ", "OGLEDALO", "PLEMENIT"],
+                solution: "SREBRO",
                 col: 3,
             },
             {
-                pojmovi: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
-                rešenje: "VODA",
+                clues: ["TEČNOST", "PIĆE", "JEZERO", "KIŠA"],
+                solution: "VODA",
                 col: 4,
             },
         ],
 
-        konačnoRešenje: "OGLEDALO",
+        finalSolution: "OGLEDALO",
     },
 ];

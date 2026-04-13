@@ -1,3 +1,4 @@
+import common_sr from "../../public/i18n/common/sr.json";
 import loby_sr from "../../public/i18n/loby/sr.json";
 import menu_sr from "../../public/i18n/menu/sr.json";
 import slagalica_sr from "../../public/i18n/slagalica/sr.json";
@@ -10,6 +11,7 @@ import spojnice_sr from "../../public/i18n/spojnice/sr.json";
 export type Lang = "sr" | "en";
 
 type ViewKeyMap = {
+    common: keyof typeof common_sr;
     loby: keyof typeof loby_sr;
     menu: keyof typeof menu_sr;
     slagalica: keyof typeof slagalica_sr;

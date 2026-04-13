@@ -74,6 +74,8 @@ export default abstract class Page {
         element.addEventListener(event, callback);
     }
 
+    //THIS IS JUST TEMP!!!
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
     addSocketEvents(name: string, callback: (...args: any[]) => void): void {
         this._socketEvents.push({ eventName: name, eventHandler: callback });
         this._socket.on(name, callback);
@@ -162,5 +164,4 @@ export default abstract class Page {
             this._timerInterval = null;
         }
     }
-
 }

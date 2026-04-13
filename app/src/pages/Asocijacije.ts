@@ -10,13 +10,13 @@ import App from "../App";
 const COL_LABELS = ["A", "B", "C", "D"];
 
 interface Column {
-    pojmovi: string[];
-    rešenje: string;
+    clues: string[];
+    solution: string;
 }
 
 interface GameData {
     columns: Column[];
-    konačnoRešenje: string;
+    finalSolution: string;
     gameId: string;
 }
 
@@ -65,7 +65,7 @@ export class Asocijacije extends Page {
 
         this._gameData = {
             columns: asocijacija?.columns ?? [],
-            konačnoRešenje: asocijacija?.konačnoRešenje ?? "",
+            finalSolution: asocijacija?.finalSolution ?? "",
             gameId: state?.gameId ?? "",
         };
 
@@ -87,7 +87,7 @@ export class Asocijacije extends Page {
             column.className = "flex flex-col gap-1.5";
 
             const cards: HTMLElement[] = [];
-            col.pojmovi.forEach((clue, rowIndex) => {
+            col.clues.forEach((clue, rowIndex) => {
                 const card = document.createElement("div");
                 card.textContent = `${COL_LABELS[colIndex]}${rowIndex + 1}`;
                 card.className = [
@@ -158,7 +158,7 @@ export class Asocijacije extends Page {
         const input = this._columnInputs[colIndex];
         const value = input.value.trim().toUpperCase();
 
-        if (value === this._gameData.columns[colIndex].rešenje) {
+        if (value === this._gameData.columns[colIndex].solution) {
             this._columnSolved[colIndex] = true;
             this._points += 5;
             this._markColumnSolved(colIndex);
@@ -174,7 +174,7 @@ export class Asocijacije extends Page {
         if (this._submitted) return;
 
         const value = this._localDom.finalInput.value.trim().toUpperCase();
-        if (value === this._gameData.konačnoRešenje) {
+        if (value === this._gameData.finalSolution) {
             this._points = 30;
             this._revealAll();
             this._submit();
@@ -186,13 +186,13 @@ export class Asocijacije extends Page {
     private _markColumnSolved(colIndex: number): void {
         const input = this._columnInputs[colIndex];
         input.readOnly = true;
-        input.value = this._gameData.columns[colIndex].rešenje;
+        input.value = this._gameData.columns[colIndex].solution;
         input.classList.remove("border-border-default", "opacity-40");
         input.classList.add("border-positive", "bg-positive/10", "text-positive");
 
         this._columnCards[colIndex].forEach((card, i) => {
             setTimeout(() => {
-                card.textContent = this._gameData.columns[colIndex].pojmovi[i];
+                card.textContent = this._gameData.columns[colIndex].clues[i];
                 card.dataset.revealed = "1";
                 card.classList.remove(
                     "bg-surface-raised",
@@ -256,7 +256,7 @@ export class Asocijacije extends Page {
     private _receiveResult(): void {
         this.addSocketEvents(SOCKET_EVENTS.GAMES.ASOCIJACIJE.SUCCESS, (result) => {
             const colSolutions = this._gameData.columns
-                .map((col, i) => `${COL_LABELS[i]}: ${col.rešenje}`)
+                .map((col, i) => `${COL_LABELS[i]}: ${col.solution}`)
                 .join(" | ");
             const finalLabel = I18nService.getMessage("asocijacije", "final_solution_label");
             this._partial.showModal({
@@ -265,7 +265,7 @@ export class Asocijacije extends Page {
                     "{n}",
                     String(result.data)
                 ),
-                solution: `${colSolutions} — ${finalLabel}: ${this._gameData.konačnoRešenje}`,
+                solution: `${colSolutions} — ${finalLabel}: ${this._gameData.finalSolution}`,
                 primaryText: I18nService.getMessage("asocijacije", "close"),
                 secondaryText: I18nService.getMessage("asocijacije", "next"),
                 secondaryAction: () => this._app.go(VIEWS.MENU),

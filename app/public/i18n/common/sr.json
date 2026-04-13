@@ -1,4 +1,7 @@
 {
   "back": "Nazad",
-  "solution_label": "Rešenje"
+  "solution_label": "Rešenje",
+  "opponent_left_title": "Protivnik je napustio igru",
+  "opponent_left_text": "Vaš protivnik je napustio igru. Bićete vraćeni u meni.",
+  "close": "Zatvori"
 }

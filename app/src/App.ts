@@ -81,7 +81,7 @@ export default class App {
             this.go(VIEWS.MENU);
         });
 
-        this._socket.on(SOCKET_EVENTS.STATE.GAME_DATA, ({ gameKey, gameState }) => {
+        this._socket.on(SOCKET_EVENTS.STATE.GAME_DATA, ({ gameKey }) => {
             this.go(gameKey as keyof Views);
         });
 
@@ -90,7 +90,12 @@ export default class App {
         });
 
         this._socket.on(SOCKET_EVENTS.CORE.OPPONENT_LEFT, () => {
-            alert("Opponent left the game!!!");
+            this._partial.showModal({
+                title: I18nService.getMessage("common", "opponent_left_title"),
+                text: I18nService.getMessage("common", "opponent_left_text"),
+                primaryText: I18nService.getMessage("common", "close"),
+                primaryAction: () => this.go(VIEWS.LOBY),
+            });
         });
 
         this._socket.on(SOCKET_EVENTS.STATE.NOTIFICATION, (msg) => {

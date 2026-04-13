@@ -30,14 +30,14 @@ interface KoznaznaQuestion {
 type KoznaznaState = KoznaznaQuestion[];
 
 interface AsocijacijeColumn {
-    pojmovi: string[];
-    rešenje: string;
+    clues: string[];
+    solution: string;
     col: number;
 }
 
 interface AsocijacijeAsocijacija {
     columns: AsocijacijeColumn[];
-    konačnoRešenje: string;
+    finalSolution: string;
 }
 
 interface AsocijacijeState {
