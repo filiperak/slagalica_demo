@@ -1,16 +1,10 @@
 // @vitest-environment jsdom
 import Page from "../../app/src/Page";
-import { Store, GameState } from "../../app/src/Store";
+import { Store } from "../../app/src/Store";
 
 // ── Concrete subclass for testing the abstract Page ───────────────────────────
 
 class TestPage extends Page {
-    public rendered: GameState[] = [];
-
-    render(state: GameState) {
-        this.rendered.push(state);
-    }
-
     // Expose protected methods
     callAddEvents(el: HTMLElement, ev: string, cb: EventListener) {
         this.addEvents(el, ev, cb);
@@ -20,9 +14,6 @@ class TestPage extends Page {
     }
     callInitHeader(duration?: number) {
         this.initHeader(duration);
-    }
-    callSubscribeToStore() {
-        this.subscribeToStore();
     }
     callClearTimer() {
         this.clearTimer();
@@ -138,51 +129,6 @@ describe("Page — addSocketEvents / dispose", () => {
     });
 });
 
-describe("Page — subscribeToStore", () => {
-    test("render is called immediately with current state on subscribe", () => {
-        const { page, store } = makePage();
-        const state = { gameId: "g1" } as GameState;
-        store.setState(state);
-
-        page.callSubscribeToStore();
-
-        expect(page.rendered).toHaveLength(1);
-        expect(page.rendered[0]).toBe(state);
-    });
-
-    test("render is called when state updates after subscribing", () => {
-        const { page, store } = makePage();
-        page.callSubscribeToStore();
-
-        const state = { gameId: "g2" } as GameState;
-        store.setState(state);
-
-        expect(page.rendered).toContain(state);
-    });
-
-    test("dispose unsubscribes from the store", () => {
-        const { page, store } = makePage();
-        page.callSubscribeToStore();
-        page.dispose();
-
-        const before = page.rendered.length;
-        store.setState({ gameId: "g3" } as GameState);
-
-        expect(page.rendered.length).toBe(before);
-    });
-
-    test("calling subscribeToStore twice does not double-subscribe", () => {
-        const { page, store } = makePage();
-        page.callSubscribeToStore();
-        page.callSubscribeToStore();
-
-        const before = page.rendered.length;
-        store.setState({ gameId: "g4" } as GameState);
-
-        // Only one render call, not two
-        expect(page.rendered.length).toBe(before + 1);
-    });
-});
 
 describe("Page — initHeader / timer", () => {
     test("initHeader inserts timer HTML into #gameHeader", () => {
