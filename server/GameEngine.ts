@@ -1,17 +1,56 @@
-import { srDictCapital } from "./db/sr-latin-capital-dict.js";
-import { spojniceCombDb } from "./db/spojnice-comb-db.js";
-// import { initialize } from "@paunovic/questionnaire";
-import { asocijacijeDB } from "./db/asocijacije-db.js";
+import { srDictCapital } from "./data/sr-latin-capital-dict.js";
+import { spojniceCombDb } from "./data/spojnice-comb-db.js";
+import { asocijacijeDB } from "./data/asocijacije-db.js";
+import { koznaznaDB, KoznaznaQuestion } from "./data/koznazna-db.js";
+
+interface GameScore {
+    opend: boolean;
+    score: number;
+}
+
+interface PlayerGames {
+    slagalica: GameScore;
+    mojBroj: GameScore;
+    spojnice: GameScore;
+    skocko: GameScore;
+    koZnaZna: GameScore;
+    asocijacije: GameScore;
+}
+
+interface GamePlayer {
+    id: string;
+    name: string;
+    score: {
+        games: PlayerGames;
+        readonly total: number;
+    };
+}
+
+interface SpojniceElement {
+    id: number;
+    name: string;
+}
+
+interface ServerGameState {
+    slagalica: { word: string; letterComb: string[] };
+    mojBroj: { target: number; numbers: number[]; solution: string };
+    spojnice: { title: string; set: SpojniceElement[] };
+    skocko: number[];
+    koznazna: KoznaznaQuestion[];
+    asocijacije: { asocijacija: (typeof asocijacijeDB)[number] };
+}
 
 export class Game {
     gameId: string;
-    players: any[];
-    gameState: any;
+    players: GamePlayer[];
+    gameState: ServerGameState;
     gameCompleted: boolean;
+    finishedPlayers: Set<string>;
 
     constructor(gameId: string) {
         this.gameId = gameId;
         this.players = [];
+        this.finishedPlayers = new Set();
         this.gameState = {
             slagalica: this.createSlagalica(),
             mojBroj: this.createMojBroj(),
@@ -59,7 +98,7 @@ export class Game {
     handleOpendGame(gameKey: string, playerId: string) {
         this.players.forEach((player) => {
             if (player.id === playerId) {
-                player.score.games[gameKey].opend = true;
+                player.score.games[gameKey as keyof PlayerGames].opend = true;
             }
         });
     }
@@ -67,15 +106,25 @@ export class Game {
     addScore(gameKey: string, playerId: string, score: number) {
         this.players.forEach((player) => {
             if (player.id === playerId) {
-                player.score.games[gameKey].score += score;
+                player.score.games[gameKey as keyof PlayerGames].score += score;
             }
         });
+    }
+
+    markPlayerFinished(playerId: string): void {
+        this.finishedPlayers.add(playerId);
+    }
+
+    bothPlayersFinished(): boolean {
+        return (
+            this.players.length >= 2 && this.players.every((p) => this.finishedPlayers.has(p.id))
+        );
     }
 
     isCompleted() {
         let completed = true;
         this.players.forEach((e) => {
-            Object.values(e.score.games).forEach((g: any) => {
+            Object.values(e.score.games).forEach((g: GameScore) => {
                 if (!g.opend) {
                     completed = false;
                 }
@@ -145,7 +194,7 @@ export class Game {
             }
         };
         const getRandowLetter = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
-        const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
+        const shuffle = <T>(arr: T[]): T[] => arr.sort(() => Math.random() - 0.5);
 
         const wordCombination = () => {
             const maxLen = 12;
@@ -181,7 +230,7 @@ export class Game {
         let correctPositions = 0;
         let score = 0;
 
-        const correctCombCopy = [...correctComb];
+        const correctCombCopy: (number | null)[] = [...correctComb];
         if (inputComb) {
             inputComb.forEach((num, index) => {
                 if (num === correctComb[index]) {
@@ -205,11 +254,11 @@ export class Game {
 
     createSpojnice() {
         const randomSpojnica = spojniceCombDb[Math.floor(Math.random() * spojniceCombDb.length)];
-        const shuffle = (arr: any[]) => arr.sort(() => Math.random() - 0.5);
+        const shuffle = <T>(arr: T[]): T[] => arr.sort(() => Math.random() - 0.5);
 
-        const firstElementsWithIds: any[] = [];
+        const firstElementsWithIds: SpojniceElement[] = [];
         const seenIds = new Set();
-        const remainingElements: any[] = [];
+        const remainingElements: SpojniceElement[] = [];
 
         randomSpojnica.set.forEach((elem) => {
             if (elem.id && !seenIds.has(elem.id)) {
@@ -253,9 +302,13 @@ export class Game {
     }
 
     createKoznazna() {
-        // const QUESTIONNAIRE = initialize();
-        //const Q4 = QUESTIONNAIRE.questions({ howMany: 10, wrong: 2 });
-        //return Q4
+        const shuffle = <T>(arr: T[]): T[] => arr.sort(() => Math.random() - 0.5);
+        const pool = shuffle([...koznaznaDB]);
+        return pool.slice(0, 10).map((q) => ({
+            question: q.question,
+            answer: q.answer,
+            wrong: q.wrong,
+        }));
     }
 
     createAsocijacije() {
@@ -269,7 +322,6 @@ export class Game {
     createMojBroj() {
         const target = Math.floor(Math.random() * 900) + 100;
 
-        const operations = ["+", "-", "*", "/"];
         const mediumNimbers = [10, 15, 20];
         const largeNumbers = [25, 50, 75, 100];
         const numbers = [];
@@ -279,7 +331,6 @@ export class Game {
         numbers.push(mediumNimbers[Math.floor(Math.random() * mediumNimbers.length)]);
         numbers.push(largeNumbers[Math.floor(Math.random() * largeNumbers.length)]);
 
-        //const solution = "123"
         const solution = this.solveMojBroj(numbers, target);
 
         return { target, numbers, solution };
@@ -289,7 +340,7 @@ export class Game {
         const target = this.gameState.mojBroj.target;
         console.log(combination);
 
-        let points = 0;
+        let points: number;
 
         const safeEval = (expression: string) => {
             try {
@@ -315,6 +366,7 @@ export class Game {
     }
 
     solveMojBroj(numbers: number[], target: number) {
+        return "Nemamo broj Trenutno";
         let bestSolution = null;
         let closestDiff = Infinity;
         const memo = new Map();
@@ -341,8 +393,8 @@ export class Game {
             }
 
             if (currentNumbers.length === 1) {
-                let result = currentNumbers[0];
-                let diff = Math.abs(target - result);
+                const result = currentNumbers[0];
+                const diff = Math.abs(target - result);
 
                 if (diff < closestDiff) {
                     closestDiff = diff;
@@ -353,21 +405,21 @@ export class Game {
                 return;
             }
 
-            let seen = new Set();
+            const seen = new Set();
 
             for (let i = 0; i < currentNumbers.length; i++) {
                 for (let j = i + 1; j < currentNumbers.length; j++) {
-                    let a = currentNumbers[i];
-                    let b = currentNumbers[j];
+                    const a = currentNumbers[i];
+                    const b = currentNumbers[j];
 
-                    let nextNumbers = currentNumbers.filter(
+                    const nextNumbers = currentNumbers.filter(
                         (_, index) => index !== i && index !== j
                     );
-                    let nextExpressions = expressions.filter(
+                    const nextExpressions = expressions.filter(
                         (_, index) => index !== i && index !== j
                     );
 
-                    let operations = [
+                    const operations = [
                         { result: a + b, expr: `(${expressions[i]} + ${expressions[j]})` },
                         { result: a - b, expr: `(${expressions[i]} - ${expressions[j]})` },
                         { result: b - a, expr: `(${expressions[j]} - ${expressions[i]})` },
@@ -387,7 +439,7 @@ export class Game {
                         });
                     }
 
-                    for (let op of operations) {
+                    for (const op of operations) {
                         if (op.result > 0 && !seen.has(op.result)) {
                             seen.add(op.result);
 
@@ -406,7 +458,7 @@ export class Game {
             memo.set(key, { result: null, expressions });
         }
 
-        let expressions = numbers.map((num) => num.toString());
+        const expressions = numbers.map((num) => num.toString());
         backtrack(numbers, expressions);
 
         if (bestSolution) {

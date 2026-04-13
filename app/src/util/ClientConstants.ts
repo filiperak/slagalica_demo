@@ -68,3 +68,14 @@ export const GAME_KEYS = Object.freeze({
     ASOCIJACIJE: "asocijacije",
     MOJ_BROJ: "mojBroj",
 });
+
+export const VIEWS = Object.freeze({
+    LOBY: "loby",
+    MENU: "menu",
+    SLAGALICA: "slagalica",
+    MOJ_BROJ: "mojBroj",
+    SPOJNICE: "spojnice",
+    SKOCKO: "skocko",
+    KO_ZNA_ZNA: "koZnaZna",
+    ASOCIJACIJE: "asocijacije",
+});

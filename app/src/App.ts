@@ -1,0 +1,103 @@
+import { io, Socket } from "socket.io-client";
+import { ThemeService } from "./util/ThemeService";
+import Loby from "./pages/Loby";
+import { Menu } from "./pages/Menu";
+import { SOCKET_EVENTS, VIEWS } from "./util/ClientConstants";
+import Page from "./Page";
+import { Partial } from "./util/Partials";
+import { Store } from "./Store";
+import { Slagalica } from "./pages/Slagalica";
+import { MojBroj } from "./pages/MojBroj";
+import { Spojnice } from "./pages/Spojnice";
+import { Skocko } from "./pages/Skocko";
+import { Asocijacije } from "./pages/Asocijacije";
+import { KoZnaZna } from "./pages/Koznazna";
+import { I18nService } from "./util/I18n";
+
+interface Views {
+    loby: Loby;
+    menu: Menu;
+    slagalica: Slagalica;
+    mojBroj: MojBroj;
+    spojnice: Spojnice;
+    skocko: Skocko;
+    koZnaZna: KoZnaZna;
+    asocijacije: Asocijacije;
+}
+
+export default class App {
+    private _socket: Socket;
+    private _previousView: Page | null;
+    private _views: Views;
+    private _partial: Partial;
+    private _store: Store;
+
+    constructor() {
+        ThemeService.apply(ThemeService.get());
+        this._socket = io();
+        this._previousView = null;
+        this._partial = new Partial();
+        this._store = new Store();
+
+        this._views = {
+            loby: new Loby(this._socket, this._partial, this._store, this),
+            menu: new Menu(this._socket, this._store, this, this._partial),
+            slagalica: new Slagalica(this._socket, this._store, this, this._partial),
+            mojBroj: new MojBroj(this._socket, this._store, this, this._partial),
+            spojnice: new Spojnice(this._socket, this._store, this, this._partial),
+            skocko: new Skocko(this._socket, this._store, this, this._partial),
+            koZnaZna: new KoZnaZna(this._socket, this._store, this, this._partial),
+            asocijacije: new Asocijacije(this._socket, this._store, this, this._partial),
+        };
+
+        this.addSocketEvents();
+    }
+
+    async init() {
+        await I18nService.load("common");
+        I18nService.translate(document.body, "common");
+        this.go(VIEWS.LOBY);
+        console.log(this._socket);
+    }
+
+    go(page: keyof Views) {
+        if (this._previousView) {
+            this._previousView.dispose();
+        }
+
+        this._views[page].init();
+        this._previousView = this._views[page];
+    }
+
+    addSocketEvents() {
+        this._socket.on(SOCKET_EVENTS.STATE.START_GAME, ({ game }) => {
+            this._store.setState(game);
+            this._partial.hideModal();
+            this.go(VIEWS.MENU);
+        });
+
+        this._socket.on(SOCKET_EVENTS.STATE.START_SINGLE_PLAYER, ({ game }) => {
+            this._store.setState(game);
+            this._partial.hideModal();
+            this.go(VIEWS.MENU);
+        });
+
+        this._socket.on(SOCKET_EVENTS.STATE.GAME_DATA, ({ gameKey, gameState }) => {
+            console.log("Received game data:", gameKey, gameState);
+            this.go(gameKey as keyof Views);
+        });
+
+        this._socket.on(SOCKET_EVENTS.STATE.PLAYERS_STATE, (state) => {
+            this._store.setState(state);
+            console.log(state);
+        });
+
+        this._socket.on(SOCKET_EVENTS.CORE.OPPONENT_LEFT, () => {
+            alert("Opponent left the game!!!");
+        });
+
+        this._socket.on(SOCKET_EVENTS.STATE.NOTIFICATION, (msg) => {
+            console.error("NOTIFICATION!!!:" + msg);
+        });
+    }
+}

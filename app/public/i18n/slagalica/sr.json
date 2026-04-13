@@ -1,0 +1,11 @@
+{
+  "title": "Slagalica",
+  "stop": "Stop",
+  "check_word": "Proveri Reč",
+  "submit": "Potvrdi",
+  "game_over": "Igra gotova!",
+  "close": "Zatvori",
+  "next": "Sledeće",
+  "result_score": "Osvojili ste {n} poena",
+  "solution_word_label": "Reč je"
+}

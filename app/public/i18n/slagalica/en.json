@@ -1,0 +1,11 @@
+{
+  "title": "Slagalica",
+  "stop": "Stop",
+  "check_word": "Check Word",
+  "submit": "Confirm",
+  "game_over": "Game over!",
+  "close": "Close",
+  "next": "Next",
+  "result_score": "You scored {n} points",
+  "solution_word_label": "The word was"
+}

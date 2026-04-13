@@ -1,0 +1,287 @@
+import { Socket } from "socket.io-client";
+import Page from "../Page";
+import { FetchHTML } from "../util/Util";
+import { Store, GameState, GameScore, Player } from "../Store";
+import { SOCKET_EVENTS, VIEWS } from "../util/ClientConstants";
+import { Partial } from "../util/Partials";
+import { I18nService } from "../util/I18n";
+import App from "../App";
+
+interface LocalDomElements {
+    leaveBtn: HTMLElement;
+    slagalicaBtn: HTMLElement;
+    mojBrojBtn: HTMLElement;
+    spojniceBtn: HTMLElement;
+    skockoBtn: HTMLElement;
+    koZnaZnaBtn: HTMLElement;
+    asocijacijeBtn: HTMLElement;
+    p0Name: HTMLElement;
+    p0Total: HTMLElement;
+    p0Slagalica: HTMLElement;
+    p0MojBroj: HTMLElement;
+    p0Spojnice: HTMLElement;
+    p0Skocko: HTMLElement;
+    p0KoZnaZna: HTMLElement;
+    p0Asocijacije: HTMLElement;
+    p1Name: HTMLElement;
+    p1Total: HTMLElement;
+    p1Slagalica: HTMLElement;
+    p1MojBroj: HTMLElement;
+    p1Spojnice: HTMLElement;
+    p1Skocko: HTMLElement;
+    p1KoZnaZna: HTMLElement;
+    p1Asocijacije: HTMLElement;
+}
+
+interface GameOverPlayer {
+    id: string;
+    name: string;
+    score: number;
+}
+
+interface GameOverData {
+    winnerPlayer: GameOverPlayer | null;
+    loser: GameOverPlayer | null;
+    draw: boolean;
+}
+
+export class Menu extends Page {
+    private _unsub: (() => void) | null = null;
+    private _localDom!: LocalDomElements;
+    private _partial: Partial;
+
+    constructor(socket: Socket, store: Store, app: App, partial: Partial) {
+        super(socket, store, app);
+        this._partial = partial;
+    }
+
+    async init() {
+        super.init();
+
+        const menuHTML = await FetchHTML("/views/menu.html");
+        this._domElements.gameContainer.innerHTML = menuHTML;
+        await I18nService.load("menu");
+        I18nService.translate(this._domElements.gameContainer, "menu");
+
+        this._localDom = {
+            leaveBtn: document.querySelector("#leave-game-btn")!,
+            slagalicaBtn: document.querySelector("#slagalica")!,
+            mojBrojBtn: document.querySelector("#mojBroj")!,
+            spojniceBtn: document.querySelector("#spojnice")!,
+            skockoBtn: document.querySelector("#skocko")!,
+            koZnaZnaBtn: document.querySelector("#koZnaZna")!,
+            asocijacijeBtn: document.querySelector("#asocijacije")!,
+
+            p0Name: document.querySelector("#p0-name")!,
+            p0Total: document.querySelector("#p0-total")!,
+            p0Slagalica: document.querySelector("#p0-slagalica")!,
+            p0MojBroj: document.querySelector("#p0-mojBroj")!,
+            p0Spojnice: document.querySelector("#p0-spojnice")!,
+            p0Skocko: document.querySelector("#p0-skocko")!,
+            p0KoZnaZna: document.querySelector("#p0-koZnaZna")!,
+            p0Asocijacije: document.querySelector("#p0-asocijacije")!,
+
+            p1Name: document.querySelector("#p1-name")!,
+            p1Total: document.querySelector("#p1-total")!,
+            p1Slagalica: document.querySelector("#p1-slagalica")!,
+            p1MojBroj: document.querySelector("#p1-mojBroj")!,
+            p1Spojnice: document.querySelector("#p1-spojnice")!,
+            p1Skocko: document.querySelector("#p1-skocko")!,
+            p1KoZnaZna: document.querySelector("#p1-koZnaZna")!,
+            p1Asocijacije: document.querySelector("#p1-asocijacije")!,
+        };
+
+        this._unsub = this._store.subscribe((state: GameState) => {
+            this.render(state);
+        });
+
+        const initialState = this._store.getState();
+        if (initialState) {
+            if (initialState.gameId?.startsWith("sg")) {
+                this.applySinglePlayerLayout();
+            }
+            this.render(initialState);
+        }
+
+        this.addEvents(this._localDom.leaveBtn, "click", this.leaveGame.bind(this));
+
+        const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
+        games.forEach((game) => {
+            const btn = this._localDom[`${game}Btn` as keyof LocalDomElements] as HTMLElement;
+            if (btn) {
+                this.addEvents(btn, "click", this.openGame.bind(this, game));
+            }
+        });
+
+        const state = this._store.getState();
+        const gameId = state?.gameId ?? "";
+        if (gameId && !gameId.startsWith("sg")) {
+            this.addSocketEvents(SOCKET_EVENTS.STATE.GAME_COMPLETED, (payload: { data: GameOverData }) => {
+                this._showGameOverModal(payload.data);
+            });
+
+            const localPlayer = state?.players.find((p: Player) => p.id === this._socket.id);
+            const allDone =
+                localPlayer && Object.values(localPlayer.score.games).every((g: GameScore) => g.opend);
+            if (allDone) {
+                this._socket.emit(SOCKET_EVENTS.STATE.PLAYER_FINISHED, { gameId });
+            }
+        }
+    }
+
+    render(state: GameState) {
+        if (!state || !state.players) return;
+        console.log("Rendering Menu with state:", state);
+
+        const games = ["slagalica", "mojBroj", "spojnice", "skocko", "koZnaZna", "asocijacije"];
+
+        const localPlayer = state.players.find((p) => p.id === this._socket.id);
+
+        if (localPlayer) {
+            games.forEach((gameKey) => {
+                const btn = this._localDom[
+                    `${gameKey}Btn` as keyof LocalDomElements
+                ] as HTMLButtonElement;
+                if (btn) {
+                    const gameInfo =
+                        localPlayer.score.games[gameKey as keyof typeof localPlayer.score.games];
+                    const isOpened = gameInfo?.opend ?? false;
+
+                    if (isOpened) {
+                        btn.classList.add(
+                            "opacity-50",
+                            "grayscale",
+                            "pointer-events-none",
+                            "cursor-not-allowed"
+                        );
+                        btn.classList.remove(
+                            "hover:border-brand/50",
+                            "hover:bg-surface-overlay",
+                            "cursor-pointer",
+                            "active:scale-[0.98]"
+                        );
+                    } else {
+                        btn.classList.remove(
+                            "opacity-50",
+                            "grayscale",
+                            "pointer-events-none",
+                            "cursor-not-allowed"
+                        );
+                        btn.classList.add(
+                            "hover:border-brand/50",
+                            "hover:bg-surface-overlay",
+                            "cursor-pointer",
+                            "active:scale-[0.98]"
+                        );
+                    }
+                }
+            });
+        }
+
+        state.players.forEach((player, index) => {
+            const prefix = `p${index}`;
+
+            const nameEl = this._localDom[`${prefix}Name` as keyof LocalDomElements];
+            if (nameEl) nameEl.textContent = player.name || `Igrač ${index + 1}`;
+
+            const totalEl = this._localDom[`${prefix}Total` as keyof LocalDomElements];
+            if (totalEl) totalEl.textContent = player.score.total.toString();
+
+            games.forEach((gameKey) => {
+                const domKey =
+                    `${prefix}${gameKey.charAt(0).toUpperCase() + gameKey.slice(1)}` as keyof LocalDomElements;
+                const scoreEl = this._localDom[domKey] as HTMLElement;
+
+                if (scoreEl) {
+                    const gameData = player.score.games[gameKey as keyof typeof player.score.games];
+                    scoreEl.textContent = (gameData?.score ?? 0).toString();
+                }
+            });
+        });
+    }
+
+    dispose() {
+        super.dispose();
+        if (this._unsub) {
+            this._unsub();
+            this._unsub = null;
+        }
+    }
+
+    applySinglePlayerLayout() {
+        document.querySelectorAll<HTMLElement>("[data-p1]").forEach((el) => {
+            el.classList.add("hidden");
+        });
+
+        document.querySelectorAll<HTMLElement>(".game-row").forEach((row) => {
+            row.style.gridTemplateColumns = "1fr 5rem";
+        });
+
+        const playerHeaders = document.querySelector<HTMLElement>("#player-headers");
+        if (playerHeaders) playerHeaders.style.gridTemplateColumns = "1fr";
+
+        const totalsSection = document.querySelector<HTMLElement>("#totals-section");
+        if (totalsSection) totalsSection.style.gridTemplateColumns = "1fr";
+    }
+
+    private _showGameOverModal(data: GameOverData): void {
+        const { winnerPlayer, loser, draw } = data;
+        const isWinner = winnerPlayer?.id === this._socket.id;
+
+        let title: string;
+        let text: string;
+
+        if (draw) {
+            title = "Nerešeno!";
+            text = `Oba igrača su postigla jednak broj poena: ${winnerPlayer?.score ?? 0}`;
+        } else if (isWinner) {
+            title = "Pobedili ste!";
+            text = `Vaš rezultat: ${winnerPlayer?.score ?? 0}\n${loser?.name ?? "Protivnik"}: ${loser?.score ?? 0}`;
+        } else {
+            title = "Izgubili ste!";
+            text = `${winnerPlayer?.name ?? "Protivnik"} je pobedio sa ${winnerPlayer?.score ?? 0} poena\nVaš rezultat: ${loser?.score ?? 0}`;
+        }
+
+        this._partial.showModal({
+            title,
+            text,
+            primaryText: "Napusti igru",
+            primaryAction: () => {
+                this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
+                this._app.go(VIEWS.LOBY);
+            },
+        });
+    }
+
+    leaveGame() {
+        this._partial.showModal({
+            title: "Napuštanje",
+            text: "Da li ste sigurni da želite da napustite partiju?",
+            primaryText: "Da",
+            secondaryText: "Ne",
+            primaryAction: () => {
+                this._socket.emit(SOCKET_EVENTS.CORE.LEAVE_GAME);
+                this._app.go(VIEWS.LOBY);
+            },
+            secondaryAction: () => {},
+        });
+    }
+
+    openGame(gameKey: string) {
+        const state = this._store.getState();
+        console.log(state);
+
+        const localPlayer = state?.players.find((p) => p.id === this._socket.id);
+
+        const alreadyOpened =
+            localPlayer?.score.games[gameKey as keyof typeof localPlayer.score.games]?.opend;
+        if (alreadyOpened) return;
+
+        console.log(`Menu requested game: ${gameKey}`);
+        this._socket.emit(SOCKET_EVENTS.STATE.OPEN_GAME, {
+            gameId: state?.gameId,
+            gameKey,
+            playerId: this._socket.id,
+        });
+    }
+}

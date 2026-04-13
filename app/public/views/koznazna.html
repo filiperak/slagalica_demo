@@ -1,0 +1,27 @@
+<main id="koznaznaMain" class="bg-surface flex flex-col items-center pt-6 pb-10 px-4 h-full">
+    <div class="w-full flex-1 flex flex-col max-w-2xl mx-auto">
+
+        <h2 class="text-center text-lg font-bold text-content tracking-wide mb-4" data-i18n="title">Ko Zna Zna</h2>
+
+        <div class="flex items-center justify-between mb-auto px-1">
+            <span id="question-counter" class="text-content-muted text-sm font-medium">Pitanje 1 / 10</span>
+            <span id="running-score" class="text-sm font-semibold text-brand">0 poena</span>
+        </div>
+
+        <div id="question-card" class="w-full bg-surface-raised border border-border-default rounded-xl px-6 py-5 mb-6 min-h-[80px] flex items-center justify-center">
+            <p id="question-text" class="text-content font-semibold text-base text-center leading-relaxed"></p>
+        </div>
+
+        <div id="options-container" class="grid grid-cols-2 gap-3">
+        </div>
+
+        <button
+            id="skip-btn"
+            class="mt-4 w-full py-3 bg-surface-raised border border-border-default hover:border-border-strong hover:bg-surface-overlay text-content-muted text-sm font-semibold rounded-lg transition-all"
+            data-i18n="skip"
+        >
+            Ne znam
+        </button>
+
+    </div>
+</main>

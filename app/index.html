@@ -1,40 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>document.documentElement.setAttribute('data-theme', localStorage.getItem('user-theme') || 'dark');</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slagalica</title>
     <script src="https://kit.fontawesome.com/aef9bef605.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.8.1/socket.io.min.js" integrity="sha512-8ExARjWWkIllMlNzVg7JKq9RKWPlJABQUNq6YvAjE/HobctjH/NA+bSiDMDvouBVjp4Wwnf1VP1OEv7Zgjtuxw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script defer type="module" src="./js/app.js"></script>
-    <link rel="stylesheet" href="./style/style.css">
+    <script type="module" src="./src/Main.ts"></script>
     <link rel="icon" href="./assets/owl_logo.png">
 </head>
-<body>
-    <main class="app-menu">
-        <img src="./assets/owl_logo.png" class="logo-img"/>
-        <h3>SLAGALICA</h3>
+<body class="flex flex-col h-screen bg-surface">
+    <header id="gameHeader"></header>
+    <div id="gameContainer" class="flex-1 flex flex-col"></div>
 
-        <input type="text" class="menu-input username-inp" placeholder="Enter Username">
-        <button class="menu-button" id="randomGame">Play random</button>
 
-        <button class="menu-button" id="createGame">Create Game</button>
+<div id="modalOverlay" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50">
+    <div id="modalDialog" class="bg-surface-raised rounded-lg shadow-overlay max-w-md w-full mx-4 border border-border-default overflow-hidden text-center">
 
-        <input type="text" placeholder="Enter game code" id="gameId" class="menu-input">
-        <button class="menu-button" id="joinGame">Play With Friend</button>
+        <div class="px-6 py-5">
 
-        <button class="menu-button" id="singlePlayer">Single Player</button>
+            <h2 id="modalTitle" class="text-base font-bold text-content uppercase tracking-wider mb-4">Title</h2>
 
-        <p class="trade-mark">2025 copyrigth &copy; Slagalica</p>
-    </main>
-    <section id="gameContainer"></section>
+            <div id="modalLoadingAnimation" class="flex items-center justify-center gap-1.5 mb-4 hidden">
+                <span class="w-2 h-2 bg-brand rounded-full animate-bounce"></span>
+                <span class="w-2 h-2 bg-brand rounded-full animate-bounce [animation-delay:150ms]"></span>
+                <span class="w-2 h-2 bg-brand rounded-full animate-bounce [animation-delay:300ms]"></span>
+            </div>
 
-    <section class="loading-model hide">
-        <div class="loading-modal-message">
-            <p>Waithing for opponent </p>
-            <p><i class="fa-solid fa-spinner fa-spin"></i></p>
-            <button class="loading-model-cancle">Cancel</button>
+            <p id="modalText" class="text-content-subtle text-sm font-medium leading-relaxed mb-4">Description text goes here.</p>
+
+            <div id="modalSolution" class="hidden mb-6 px-4 py-3 rounded-lg bg-surface border border-border-default">
+                <span data-i18n="solution_label" class="block text-xs uppercase tracking-wider text-content-muted mb-1">Rešenje</span>
+                <span id="modalSolutionText" class="text-content font-semibold text-sm"></span>
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-4 border-t border-border-default">
+
+                <button id="modalPrimary" class="px-5 py-2.5 text-sm font-semibold text-content bg-transparent hover:bg-white/[0.08] active:bg-white/[0.12] rounded transition-colors uppercase tracking-wide">
+                    Zatvori
+                </button>
+
+                <button id="modalSecondary" class="px-5 py-2.5 text-sm font-semibold text-content-on-brand bg-brand hover:bg-brand-hover active:bg-brand-active rounded hover:-translate-y-px active:translate-y-0 transition-all uppercase tracking-wide shadow-brand-sm">
+                    Zatvori
+                </button>
+
+            </div>
         </div>
-    </section>
+    </div>
+</div>
+
+<audio autoplay loop muted id="baseSoundtrack">
+    <source src="./public/assets/sounds/base-soundtrack.mp3">
+</audio>
 </body>
 </html>

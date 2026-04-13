@@ -1,0 +1,10 @@
+{
+  "title": "My Number",
+  "stop": "Stop",
+  "submit": "Confirm",
+  "game_over": "Game over!",
+  "close": "Close",
+  "next": "Next",
+  "result_score": "You scored {n} points",
+  "solution_label": "Solution"
+}
