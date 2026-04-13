@@ -25,6 +25,7 @@ const expressServer = app.listen(PORT, () => {
     console.log(`App is running on ${PORT}`);
 });
 
+//leave cors open for now, there's no auth
 const io = new Server(expressServer, {
     cors: {
         origin: "*",

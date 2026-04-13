@@ -59,6 +59,7 @@ export class Asocijacije extends Page {
             boardBottom: document.querySelector("#boardBottom")!,
             finalInput: document.querySelector("#finalInput")!,
         };
+        this._localDom.finalInput.enterKeyHint = "go";
 
         const state = this._store.getState();
         const asocijacija = state?.gameState.asocijacije?.asocijacija;
@@ -105,6 +106,7 @@ export class Asocijacije extends Page {
 
             const input = document.createElement("input");
             input.type = "text";
+            input.enterKeyHint = "go";
             input.placeholder = `Rešenje ${COL_LABELS[colIndex]}`;
             input.readOnly = true;
             input.setAttribute("autocomplete", "off");

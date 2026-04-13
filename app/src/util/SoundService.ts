@@ -6,7 +6,8 @@ _audio.volume = 0.4;
 
 export const SoundService = {
     isMuted(): boolean {
-        return localStorage.getItem(MUTED_KEY) === "true";
+        const stored = localStorage.getItem(MUTED_KEY);
+        return stored === null ? true : stored === "true";
     },
 
     play(): void {

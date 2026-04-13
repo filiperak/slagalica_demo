@@ -3,7 +3,7 @@ export type Theme = "light" | "dark";
 
 export const ThemeService = {
     get(): Theme {
-        return (localStorage.getItem(THEME_KEY) as Theme) ?? "dark";
+        return (localStorage.getItem(THEME_KEY) as Theme) ?? "light";
     },
     apply(theme: Theme): void {
         document.documentElement.setAttribute("data-theme", theme);
